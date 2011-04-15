@@ -1,0 +1,42 @@
+/* 
+    Document   : custom
+    Created on : Apr 15, 2011, 8:50:20 AM
+    Author     : sqv
+    Description:
+        Purpose of the stylesheet follows.
+*/
+
+/* 
+   TODO customize this sample style
+   Syntax recommendation http://www.w3.org/TR/REC-CSS2/
+*/
+
+root { 
+    display: block;
+}
+
+h1 {
+    font-style:normal;
+    font-size:2em;
+    color: maroon;
+}
+h2 {
+    font-style:normal;
+    font-size:1.5em;
+    color: maroon;
+}
+div.prop {
+        display: inline-block;
+        margin: .5em 0;
+}
+fieldset legend {
+        color:#8C1919;
+        font-size:1.25em;
+        font-weight:bold;
+}
+.maroonRoundRect {
+        margin-bottom:1em;
+        border:silver solid thin; -moz-border-radius:0.5em; -webkit-border-radius:0.5em;
+        padding: 0em 1em 1em 1em;
+        line-height:2;
+}

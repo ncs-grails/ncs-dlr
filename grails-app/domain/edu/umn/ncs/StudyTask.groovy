@@ -13,13 +13,11 @@ class StudyTask {
     }
 
     static constraints = {
-
         name(maxSize:1024)
         obsolete()
         dateCreated()
         userCreated(blank:false)
         appCreated(blank:false)
-
     }
 
 }

@@ -13,13 +13,11 @@ class LaborCategory {
     }
 
     static constraints = {
-
         name(blank:false, maxSize:1024)
         obsolete()
         dateCreated()
         userCreated(blank:false)
         appCreated(blank:false)
-
     }
 
 }
