@@ -6,14 +6,23 @@ class AssignedEffort {
     BigDecimal assignedEffort
     Date dateAssigned = new Date()
     ReportingStaff assigningStaff
-    // application used to assign effort
-    String appCreated = 'ncs-dlr'
+    String appCreated = 'ncs-dlr'       // application used to assign effort
     Date dateCommitted
     ReportingStaff commitingStaff
+
+    AssignedEffort getPreviousAssignedEffort() {
+        def assignedEffort = null
+
+        // TODO: look it up here
+
+        return assignedEffort
+    }
 
     String toString() {
         assignedEffort
     }
+
+    def transients = ['previousAssignedEffort']
 
     static belongsTo = [reportingStaff: ReportingStaff, period: ReportingPeriod]
     static hasMany = [emails: NotificationEmail, reportedEfforts: ReportedEffort]
