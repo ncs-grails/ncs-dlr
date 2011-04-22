@@ -4,6 +4,32 @@ class BootStrap {
 
     def init = { servletContext ->
 
+        // Reporting Period ****************************************************
+        def reportingPeriodList = [
+            '12/1/2010',
+            '1/1/2011',
+            '2/1/2011'
+        ]
+
+        reportingPeriodList.each{
+
+            def reportingPeriodInstance = ReportingPeriod.findByPeriodDate(it)
+
+            if ( ! reportingPeriodInstance ) {
+
+                reportingPeriodInstance = new ReportingPeriod(periodDate:it)
+
+                if ( ! reportingPeriodInstance.save() ) {
+                    println "failed to save ${it}:"
+                    reportingPeriodInstance.errors.each{ e ->
+                        println "\t${e}"
+                    }
+                }
+
+            } //if ( ! reportingPeriodInstance )
+
+        } //reportingPeriodList.each
+
         // LABOR CATEGORY ******************************************************
         def laborCategoryList = [
             'Administrative Assistant',
