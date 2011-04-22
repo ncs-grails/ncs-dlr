@@ -19,9 +19,13 @@ class ReportingPeriod {
         def localMonth = new LocalDate(periodDate)
         return localMonth.monthOfYear
     }
+
+    String toString() {
+        "${month}/${year}"
+    }
     
     static constraints = {
-        referenceInvoiceNumber()
+        referenceInvoiceNumber(nullable:true)
         periodDate()
         preparedDate(nullable:true)
         completedReportDate(nullable:true)
