@@ -1,4 +1,8 @@
 package edu.umn.ncs
+import org.joda.time.*
+import org.joda.time.format.*
+//import java.text.DateFormat
+
 
 // security annotation
 import org.codehaus.groovy.grails.plugins.springsecurity.Secured
@@ -8,35 +12,62 @@ class MainController {
 
     def authenticateService
     def laborService
+    //static debug = true
 
     def index = {
 
-        // principal is whoever is logged in
-        def principal = authenticateService.principal()
-
+        // STAFF
+        def principal = authenticateService.principal()                         // principal is whoever is logged in
         def reportingStaffInstance = laborService.getReportingStaff(principal)
+        // println "PRINTLN MainController.reportingStaffInstance: ${reportingStaffInstance}"
 
-        //  optional pull from params.reportingPeriod.id
+        /*
+        // noncommitted effort
+        def nonCommittedReportedEffortInstance = laborService.getNoncommittedReportedEffort()
+        // println "PRINTLN MainController.nonCommittedReportingPeriodIntance: ${nonCommittedReportedEffortInstance}"
+        */
+
+        // PERIOD
         def reportingPeriodInstance
         if (params?.reportingPeriod?.id) {
+            // optional pull from params.reportingPeriod.id
             reportingPeriodInstance = ReportingPeriod.read(params?.reportingPeriod?.id)
         } else {
-            reportingPeriodInstance laborService.getCurrentReportingPeriod()
+            reportingPeriodInstance = laborService.getCurrentReportingPeriod()
         }
 
+        // ASSIGNED EFFORT
         def assignedEffortInstance = AssignedEffort.findByReportingStaffAndPeriod(reportingStaffInstance, reportingPeriodInstance)
-        def studyActivityInstanceList = StudyActivity.findAllByObsolete(false)
-        def studyTaskInstanceList = StudyTask.findAllByObsolete(false)
-        def reportedEffortInstanceList
-        def previouslyReportedEffortInstanceList
 
+        // EFFORT COMMITTED DATE
+        def committedDateInstance = AssignedEffort.findByReportingStaffAndPeriod(reportingStaffInstance, reportingPeriodInstance)
+        // println "PRINTLN MainController.committedDateInstance: ${committedDateInstance}"
+        
         [
             reportingStaffInstance: reportingStaffInstance,
-            studyActivityInstanceList: studyActivityInstanceList,
-            studyTaskInstanceList: studyTaskInstanceList
+            reportingPeriodInstance: reportingPeriodInstance,
+            assignedEffortInstance: assignedEffortInstance,
+            committedDateInstance: committedDateInstance,
         ]
 
+    } //def index
 
-    }
+    def show = {
 
-}
+        // activity
+        //def studyActivityInstanceList = StudyActivity.findAllByObsolete(false)
+
+        // task
+        //def studyTaskInstanceList = StudyTask.findAllByObsolete(false)
+
+        // reported effort
+        //def reportedEffortInstanceList
+
+        // past committed effort
+        //def previouslyReportedEffortInstanceList
+
+    } //def show
+
+
+
+} //class MainController
