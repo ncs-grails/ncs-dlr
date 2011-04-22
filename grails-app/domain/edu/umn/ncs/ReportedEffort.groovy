@@ -2,8 +2,6 @@ package edu.umn.ncs
 
 class ReportedEffort {
 
-    //ReportingStaff reportingStaff
-    //ReportingPeriod period
     StudyActivity activity
     StudyTask task
     BigDecimal percentEffort
