@@ -51,3 +51,39 @@ fieldset legend {
     font-size:.75em;
     font-style:normal;
 }
+
+th.basic{
+    background-image:none;
+    border:1px solid silver;
+    padding:.5em;
+    text-align: center;
+    color:black;
+}
+
+td.basic{
+    background-image:none;
+    border:1px solid silver;
+    padding:.5em;
+    color:grey;
+}
+
+.tableFooterNote{
+    font-size:smaller;
+    color:black;
+}
+
+select.basic{
+    color:navy;
+    border:.01em gray solid;
+    padding:.2em;
+}
+
+.controlBackground {
+    border:.01em grey solid;
+    background-color: silver;
+    padding:.5em;
+}
+
+div.padding{
+    margin: .8em 0;
+}
