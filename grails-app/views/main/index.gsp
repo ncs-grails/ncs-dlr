@@ -27,7 +27,6 @@ sqv<%@ page contentType="text/html;charset=UTF-8" %>
       -->
 
         <div class="prop">
-
           
             <!-- if there are ASSIGNED effort and they have not been committed yet, alert user to complete them -->
             <g:if test="${assignedEffortInstance}">
