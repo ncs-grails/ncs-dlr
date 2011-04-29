@@ -18,7 +18,6 @@ class ReportingStaff {
     static hasMany = [assignedEfforts: AssignedEffort]
 
     static constraints = {
-
         username(blank:false, unique:true)
         lastName(blank:false)
         firstName(blank:false)
@@ -31,6 +30,6 @@ class ReportingStaff {
         dateCreated()
         userCreated(blank:false)
         appCreated(blank:false)
-
     }
+    
 }
