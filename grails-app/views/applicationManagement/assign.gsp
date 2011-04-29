@@ -13,70 +13,70 @@
 
       <h1>DLR Application Management : Effort Assignment</h1>
 
-      <!-- REPORTING MONTH control -->
-      <g:form>
-        <p>Reporting Month
-          <g:select
-            name="reportingPeriod.id"
-            from="${periodList}"
-            optionKey="id"
-            value="${reportingPeriod?.id}" />
-        </p>        
-      </g:form>
-
-      <!-- STAFF EFFORT-->
       <g:form action="update">
+        
+        <g:hiddenField name="reportingPeriod" value="${reportingPeriodInstance}" />
 
-        <g:hiddenField name="reportinPeriod" value="${reportingPeriod?.id}" />
+      <!-- REPORTING MONTH control -->
+        <div class="padding">
+          <span class="controlBackground">Reporting Month
+            <g:select class="basic"
+              name="reportingPeriodInstance.id"
+              from="${periodList}"
+              optionKey="id"
+              value="reportingPeriod" />
+          </span>
+        </div>
 
+        <!-- STAFF EFFORT-->
         <table>
 
           <thead>
             <tr>
-              <th colspan="11">
-                
-                (Period ID: ${reportinPeriod?.id})
+              <th class="basic" colspan="11">
+                <strong>${reportingPeriodInstance}  (Period ID: ${reportingPeriodInstance?.id})</strong>
               </th>
             </tr>
             <tr>
-              <th></th>
-              <th>Staff Name (Code)</th>
-              <th colspan="3">Assigned Effort</th>
-              <th colspan="2">Committed Effort *</th>
-              <th colspan="4">Email Notification</th>
+              <th class="basic" rowspan="2"></th>
+              <th class="basic" rowspan="2">Staff Name (Staff Id)</th>
+              <th class="basic" colspan="3">Assigned Effort</th>
+              <th class="basic" colspan="2">Committed Effort *</th>
+              <th class="basic" colspan="4">Email Notification</th>
             </tr>
             <tr>
-              <th>Copy Previous<br />to Current</th>
-              <th>Previous<br />Perod</th>
-              <th>Current<br />Perod</th>
-              <th>%</th>
-              <th>Date</th>
-              <th>Date<br />Initial Sent</th>
-              <th>Date Last<br />Reminder<br />Send</th>
-              <th>Total<br />Sent</th>
-              <th>Send<br />Now</th>
+              <th class="basic">Copy Previous<br />to Current</th>
+              <th class="basic">Previous<br />Perod</th>
+              <th class="basic">Current<br />Perod</th>
+              <th class="basic">%</th>
+              <th class="basic">Date</th>
+              <th class="basic">Date<br />Initial Sent</th>
+              <th class="basic">Date Last<br />Reminder<br />Send</th>
+              <th class="basic">Total<br />Sent</th>
+              <th class="basic">Send<br />Now</th>
             </tr>
           </thead>
 
           <tbody>
-            <g:each var="ai" in="${reportingPeriod?.assignedEfforts}" >
+            <g:each var="ai" in="${reportingPeriodInstance?.assignedEfforts}" >
               <tr>
-                <td>${ai.reportingStaff?.fullName}</td>
-                <td><input type="checkbox" /></td>
-                <td>${ai.previousAssignedEffort.assignedEffort}</td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
+                <td class="basic">${AssignedEffort.reportingStaff?.fullName}</td>
+                <td class="basic"><input type="checkbox" /></td>
+                <td class="basic">${ai.previousAssignedEffort.assignedEffort}</td>
+                <td class="basic"></td>
+                <td class="basic"></td>
+                <td class="basic"></td>
+                <td class="basic"></td>
+                <td class="basic"></td>
+                <td class="basic"></td>
+                <td class="basic"></td>
+                <td class="basic"></td>
               </tr>
             </g:each>
           </tbody>
 
         </table>
+        <span class="tableFooterNote">* Effort not committed yet appear in brackets []</span>
 
       </g:form>
 
