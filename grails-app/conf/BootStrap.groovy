@@ -4,6 +4,63 @@ class BootStrap {
 
     def init = { servletContext ->
 
+        
+        // Reporting Staff *****************************************************
+        
+        def reportingStaffList = [
+            [
+                username:'ngp', 
+                lastName:'PortNov', 
+                firstName:'Natalya', 
+                middleInit:'G', 
+                fullName:'PortNov, Natalya G', 
+                laborCategory:LaborCategory.read(4),
+                email:'ngp@cccs.umn.edu'
+            ], 
+            [
+                username:'ajz', 
+                lastName:'Zirbes', 
+                firstName:'Aaron', 
+                middleInit:'J', 
+                fullName:'Zirbes, Aaron J', 
+                laborCategory:LaborCategory.read(11),
+                email:'ajz@cccs.umn.edu'
+            ]
+        ]
+        
+        reportingStaffList.each{
+
+            def reportingStaffInstance = ReportingStaff.findByFullName(it.fullName)
+
+            if ( ! reportingStaffInstance ) {
+
+                reportingStaffInstance = new ReportingStaff(
+                    username:it.username,
+                    lastName:it.lastName,
+                    firstName:it.firstName, 
+                    middleInit:it.middleInit,
+                    fullName:it.fullName,
+                    laborCategory:it.laborCategory,
+                    email:it.email,                    
+                    isTestAccount:false, 
+                    reportsEffort:true, 
+                    userCreated:'sqv', 
+                    appCreated:'ncs-dlr'
+                )
+
+                if ( ! reportingStaffInstance.save() ) {
+                    println "failed to save ${it}:"
+                    reportingStaffInstance.errors.each{ e ->
+                        println "\t${e}"
+                    }
+                }
+
+            } 
+
+        } 
+
+
+        
         // Reporting Period ****************************************************
         def reportingPeriodList = [
             '12/1/2010',
@@ -28,7 +85,7 @@ class BootStrap {
 
             } //if ( ! reportingPeriodInstance )
 
-        } //reportingPeriodList.each
+        } 
 
         // LABOR CATEGORY ******************************************************
         def laborCategoryList = [
