@@ -16,16 +16,9 @@ class ApplicationManagementController {
 
     def assign = {
 
-        def periodList = []
-        def reportingPeriod = ReportingPeriod.read(params?.reportingPeriod?.id)
-
         // get CURRENT PERIOD --------------------------------------------------
         def currentPeriod = laborService.getCurrentReportingPeriod()
-        if ( ! reportingPeriod ) {
-            reportingPeriod = currentPeriod
-        }
-        // println "PRINTLN ApplicationManagementController.assign.currentPeriod: ${currentPeriod}"
-
+        println "PRINTLN ApplicationManagementController.assign.currentPeriod: ${currentPeriod}"
 
         // get NEXT PERIOD, after current period -------------------------------
         def c = ReportingPeriod.createCriteria()
@@ -35,7 +28,7 @@ class ApplicationManagementController {
             }
             maxResults(1)
         }
-        // println "PRINTLN ApplicationManagementController.assign.nextPeriod: ${nextPeriod}"
+        println "PRINTLN ApplicationManagementController.assign.nextPeriod: ${nextPeriod}"
 
         if ( ! nextPeriod ) {
             def nextMonthDate = laborService.getNextReportingPeriodDateTime(currentPeriod.periodDate)
@@ -44,7 +37,6 @@ class ApplicationManagementController {
             nextPeriod.save(flush:true)
             // println "PRINTLN ApplicationManagementController.assign.nextPeriod: ${nextPeriod}"
         }
-
 
        // get PREVIOUS TWO PERIODS, before current period ----------------------
         def c2 = ReportingPeriod.createCriteria()
@@ -55,26 +47,39 @@ class ApplicationManagementController {
                 maxResults(2)
                 order("periodDate","desc")
         }
-        // println "PRINTLN ApplicationManagementController.assign.previousTwoPeriods: ${previousTwoPeriods}"
+        println "PRINTLN ApplicationManagementController.assign.previousTwoPeriods: ${previousTwoPeriods}"
        
+        // create PERIOD LIST for "Reporting Month" control by adding all (NEXT, CURRENT, and PREVIOUS TWO) to list
+        def periodList = []
         periodList.addAll(nextPeriod)
         periodList.add(currentPeriod)
         periodList.addAll(previousTwoPeriods)
-        /*
         //println "PRINTLN ApplicationManagementController.assign.periodList: ${periodList}"
+        /*
         periodList.each{
             println "PRINTLN ApplicationManagementController.assign.periodList: ${it.periodDate}"
         }
         */
 
-        // REPORTING PERIOD
-        def reportingPeriodInstance = ReportingPeriod.get(params?.reportingPeriod?.id)
-        println "PRINTLN ApplicationManagementController.assign.reportingPeriodInstance: ${reportingPeriodInstance}"
+        // get the appropriate REPORTING PERIOD to display in Effort Assignment table
+        def reportingPeriodInstance = ReportingPeriod.read(params?.reportingPeriodInstance?.id)
+        println "PRINTLN ApplicationManagementController.assign.(params?.reportingPeriod?.id).reportingPeriodInstance: ${reportingPeriodInstance}"
+        
+        // if no reportingPeriod param, assume current period
+        if ( ! reportingPeriodInstance ) {
+            reportingPeriodInstance = laborService.getCurrentReportingPeriod()
+            println "PRINTLN ApplicationManagementController.assign.laborService.getCurrentReportingPeriod().reportingPeriodInstance: ${reportingPeriodInstance}"
+        }
+        
+        // get reportingPeriodMonthName
+        //def reportingreportingPeriodMonth = reportingPeriodInstance.getMonth()
+        //println "PRINTLN ApplicationManagementController.assign.reportingreportingPeriodMonth: ${reportingreportingPeriodMonth}"
+        //def reportingreportingPeriodMonthName = laborService.getMonthName(reportingreportingPeriodMonth)
+        //println "PRINTLN ApplicationManagementController.assign.reportingreportingPeriodMonthName: ${reportingreportingPeriodMonthName}"
 
         [
             periodList: periodList,
-            reportingPeriod: reportingPeriod,
-            reportingPeriodInstance: reportingPeriodInstance
+            reportingPeriodInstance: reportingPeriodInstance 
         ]
 
     } //def assign
