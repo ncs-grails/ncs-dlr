@@ -57,6 +57,7 @@ th.basic{
     border:1px solid silver;
     padding:.5em;
     text-align: center;
+    background-color: powderblue;
     color:black;
 }
 
@@ -64,18 +65,20 @@ td.basic{
     background-image:none;
     border:1px solid silver;
     padding:.5em;
-    color:grey;
 }
 
 .tableFooterNote{
-    font-size:smaller;
+    padding-bottom:1em;
     color:black;
+    font-size:smaller;
 }
 
 select.basic{
-    color:navy;
     border:.01em gray solid;
     padding:.2em;
+    background-color: lemonchiffon;
+    color:navy;
+    
 }
 
 .controlBackground {
@@ -85,5 +88,11 @@ select.basic{
 }
 
 div.padding{
-    margin: .8em 0;
+    margin: 1em 0;
+}
+
+.buttonBasic{
+    border:1px solid black;
+    padding:.2em;
+    background-color: lemonchiffon;
 }
