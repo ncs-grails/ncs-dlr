@@ -12,7 +12,6 @@ class MainController {
 
     def authenticateService
     def laborService
-    //static debug = true
 
     def index = {
 
@@ -20,12 +19,6 @@ class MainController {
         def principal = authenticateService.principal()                         // principal is whoever is logged in
         def reportingStaffInstance = laborService.getReportingStaff(principal)
         // println "PRINTLN MainController.reportingStaffInstance: ${reportingStaffInstance}"
-
-        /*
-        // noncommitted effort
-        def nonCommittedReportedEffortInstance = laborService.getNoncommittedReportedEffort()
-        // println "PRINTLN MainController.nonCommittedReportingPeriodIntance: ${nonCommittedReportedEffortInstance}"
-        */
 
         // PERIOD
         def reportingPeriodInstance
