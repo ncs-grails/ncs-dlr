@@ -13,7 +13,7 @@ class BootStrap {
                 lastName:'PortNov', 
                 firstName:'Natalya', 
                 middleInit:'G', 
-                fullName:'PortNov, Natalya G', 
+                fullName:'Natalya G Portnov', 
                 laborCategory:LaborCategory.read(4),
                 email:'ngp@cccs.umn.edu'
             ], 
@@ -22,7 +22,7 @@ class BootStrap {
                 lastName:'Zirbes', 
                 firstName:'Aaron', 
                 middleInit:'J', 
-                fullName:'Zirbes, Aaron J', 
+                fullName:'Aaron J Zirbes', 
                 laborCategory:LaborCategory.read(11),
                 email:'ajz@cccs.umn.edu'
             ]
