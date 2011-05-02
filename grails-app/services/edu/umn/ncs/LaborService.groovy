@@ -38,6 +38,8 @@ class LaborService {
             // println "PRINTLN LaborService.getReportingStaff.nameParts[1] = ${nameParts[1]}"
             // println "PRINTLN LaborService.getReportingStaff.nameParts[2] = ${nameParts[2]}"
 
+            
+
             reportingStaff.save(flush:true)
 
         } //if ( !reportingStaff )
@@ -95,12 +97,6 @@ class LaborService {
         return nextReportingPeriodDateTime
 
     } //def getNextReportingPeriodDate
-
-    def getNoncommittedReportedEffort() {
-
-        def nonCommittedReportedEffort = AssignedEffort.findAllByDateCommittedIsNull()
-        // println "PRINTLN LaborService.getNoncommittedReportedEffort.nonCommittedReportedEffort = ${nonCommittedReportedEffort}"
-    }
     
     def getMonthName(monthNum) {
         
