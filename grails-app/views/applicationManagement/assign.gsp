@@ -22,9 +22,11 @@
           <span class="controlBackground">Reporting Month
             <g:select class="basic"
               name="reportingPeriodInstance.id"
-              from="${periodList}"
+              from="${periodSelectList}"
               optionKey="id"
-              value="reportingPeriod" />
+              optionValue="name"
+              value="${reportingPeriodInstance.id}" />&nbsp;&nbsp;
+            <g:actionSubmit class="buttonBasic" value="GO" />          
           </span>
         </div>
 
@@ -34,7 +36,7 @@
           <thead>
             <tr>
               <th class="basic" colspan="11">
-                <strong>${reportingPeriodInstance}  (Period ID: ${reportingPeriodInstance?.id})</strong>
+                <strong><g:formatDate date="${reportingPeriodInstance.periodDate}" format="MMMM yyyy" />  (Period ID: ${reportingPeriodInstance?.id})</strong>
               </th>
             </tr>
             <tr>
@@ -42,7 +44,7 @@
               <th class="basic" rowspan="2">Staff Name (Staff Id)</th>
               <th class="basic" colspan="3">Assigned Effort</th>
               <th class="basic" colspan="2">Committed Effort *</th>
-              <th class="basic" colspan="4">Email Notification</th>
+              <th class="basic" colspan="2">Email Notification</th>
             </tr>
             <tr>
               <th class="basic">Copy Previous<br />to Current</th>
@@ -50,33 +52,32 @@
               <th class="basic">Current<br />Perod</th>
               <th class="basic">%</th>
               <th class="basic">Date</th>
-              <th class="basic">Date<br />Initial Sent</th>
-              <th class="basic">Date Last<br />Reminder<br />Send</th>
-              <th class="basic">Total<br />Sent</th>
+              <th class="basic">Dates<br />Email Sent</th>
               <th class="basic">Send<br />Now</th>
             </tr>
           </thead>
 
           <tbody>
-            <g:each var="ai" in="${reportingPeriodInstance?.assignedEfforts}" >
+            <g:each var="ea" in="${effortAssignmentList}" >
               <tr>
-                <td class="basic">${AssignedEffort.reportingStaff?.fullName}</td>
-                <td class="basic"><input type="checkbox" /></td>
-                <td class="basic">${ai.previousAssignedEffort.assignedEffort}</td>
-                <td class="basic"></td>
-                <td class="basic"></td>
-                <td class="basic"></td>
-                <td class="basic"></td>
-                <td class="basic"></td>
-                <td class="basic"></td>
-                <td class="basic"></td>
-                <td class="basic"></td>
+                <td class="basic">${ea.rowNum}</td>
+                <td class="basic">${ea.fullName}</td>
+                <td class="basic" style="text-align:center;"><input type="checkbox" /></td>
+                <td class="basic" style="text-align:right;"><g:formatNumber number="${ea.previousPeriodEffort}" type="percent" /></td>
+                <td class="basic">
+                  <g:if test="${ea.isCommitted}" >${ea.currentPeriodEffort}</g:if>
+                  <g:else><g:textField name="staff-${ea.staffId}.currentPeriodEffort" value="${ea.currentPeriodEffort}"/></g:else>
+                </td>
+                <td class="basic" style="text-align:right;"><g:formatNumber number="${ea.percentCommitted}" type="percent" /></td>
+                <td class="basic">${ea.dateCommitted}</td>
+                <td class="basic">${ea.datesEmailSent?.join(', ')}</td>
+                <td class="basic" style="text-align:center;"><input type="checkbox"/></td>
               </tr>
             </g:each>
           </tbody>
 
         </table>
-        <span class="tableFooterNote">* Effort not committed yet appear in brackets []</span>
+        <div class="tableFooterNote">* Effort not committed yet appear in brackets []</div>
 
       </g:form>
 
