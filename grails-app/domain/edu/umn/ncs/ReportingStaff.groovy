@@ -16,7 +16,13 @@ class ReportingStaff {
     String appCreated = 'ncs-dlr'
 
     static hasMany = [assignedEfforts: AssignedEffort]
+    static transients = ['fullNameLFM']
 
+    ReportingPeriod getFullNameLFM() {
+        def fullNameLFM = lastName + ', ' + firstName + middleInit ? ' ' + middleInit : null
+        return fullNameLFM
+    }
+    
     static constraints = {
         username(blank:false, unique:true)
         lastName(blank:false)
