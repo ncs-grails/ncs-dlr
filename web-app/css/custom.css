@@ -54,17 +54,19 @@ fieldset legend {
 
 th.basic{
     background-image:none;
-    border:1px solid silver;
+    border:1px solid gray;
     padding:.5em;
-    text-align: center;
-    background-color: powderblue;
+    background-color: lightblue;
     color:black;
+    text-align: center;
+    font-size:small;
 }
 
 td.basic{
     background-image:none;
-    border:1px solid silver;
+    border:1px solid gray;
     padding:.5em;
+    font-size:small;
 }
 
 .tableFooterNote{
@@ -73,26 +75,31 @@ td.basic{
     font-size:smaller;
 }
 
-select.basic{
-    border:.01em gray solid;
-    padding:.2em;
-    background-color: lemonchiffon;
-    color:navy;
-    
-}
-
-.controlBackground {
-    border:.01em grey solid;
-    background-color: silver;
-    padding:.5em;
-}
-
 div.padding{
     margin: 1em 0;
 }
 
-.buttonBasic{
-    border:1px solid black;
+.controlBackground {
+    border:.05em grey solid;
+    background-color: silver;
+    padding:.5em;
+}
+
+.textfieldBasic{
+    border:.01em solid gray;
+}
+
+select.basic{
+    border:.01em solid gray;
     padding:.2em;
+    background-color: white;
+    color:navy;
+    
+}
+
+.buttonBasic{
+    border:.2em outset gray;
+    padding:.1em;
     background-color: lemonchiffon;
 }
+
