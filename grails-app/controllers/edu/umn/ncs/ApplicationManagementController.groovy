@@ -20,7 +20,7 @@ class ApplicationManagementController {
 
         // get current period 
         def currentPeriod = laborService.getCurrentReportingPeriod()
-        println "PRINTLN ApplicationManagementController.assign.currentPeriod: ${currentPeriod}"
+        //println "PRINTLN ApplicationManagementController.assign.currentPeriod: ${currentPeriod}"
 
         // get next period, after current period 
         def c = ReportingPeriod.createCriteria()
@@ -30,14 +30,14 @@ class ApplicationManagementController {
             }
             maxResults(1)
         }
-        println "PRINTLN ApplicationManagementController.assign.nextPeriod: ${nextPeriod}"
+        //println "PRINTLN ApplicationManagementController.assign.nextPeriod: ${nextPeriod}"
 
         if ( ! nextPeriod ) {
             def nextMonthDate = laborService.getNextReportingPeriodDateTime(currentPeriod.periodDate)
             // println "PRINTLN ApplicationManagementController.assign.nextMonthDate: ${nextMonthDate}"
             nextPeriod = new ReportingPeriod(periodDate:nextMonthDate)
             nextPeriod.save(flush:true)
-            // println "PRINTLN ApplicationManagementController.assign.nextPeriod: ${nextPeriod}"
+            //println "PRINTLN ApplicationManagementController.assign.nextPeriod: ${nextPeriod}"
         }
 
        // get previous two periods, before current period 
@@ -49,7 +49,7 @@ class ApplicationManagementController {
                 maxResults(2)
                 order("periodDate","desc")
         }
-        println "PRINTLN ApplicationManagementController.assign.previousTwoPeriods: ${previousTwoPeriods}"
+        //println "PRINTLN ApplicationManagementController.assign.previousTwoPeriods: ${previousTwoPeriods}"
        
         // create PERIOD LIST for "Reporting Month" control by adding all (NEXT, CURRENT, and PREVIOUS TWO) to list
         def periodList = []
@@ -67,15 +67,15 @@ class ApplicationManagementController {
         
         // get the selected REPORTING PERIOD to display in Effort Assignment table
         def reportingPeriodInstance = ReportingPeriod.read(params?.reportingPeriodInstance?.id)
-        println "PRINTLN ApplicationManagementController.assign.(params?.reportingPeriod?.id).reportingPeriodInstance: ${reportingPeriodInstance}"
+        //println "PRINTLN ApplicationManagementController.assign.(params?.reportingPeriod?.id).reportingPeriodInstance: ${reportingPeriodInstance}"
         
         // if no reportingPeriod selected, assume current period
         if ( ! reportingPeriodInstance ) {
             reportingPeriodInstance = laborService.getCurrentReportingPeriod()
-            println "PRINTLN ApplicationManagementController.assign.laborService.getCurrentReportingPeriod().reportingPeriodInstance: ${reportingPeriodInstance}"
+            //println "PRINTLN ApplicationManagementController.assign.laborService.getCurrentReportingPeriod().reportingPeriodInstance: ${reportingPeriodInstance}"
         }
         
-       
+        // create list containing data for Effort Assignment table
         def effortAssignmentList = []
         
         def reportingStaffInstanceList = ReportingStaff.list([sort:'lastName'])
@@ -87,7 +87,7 @@ class ApplicationManagementController {
             record.rowNum = i + 1
             
             // staff full name
-            record.fullName = rs.fullName
+            record.fullName = rs.fullNameLFM
             record.staffId = rs.id
                         
             // effort of current period
@@ -115,11 +115,6 @@ class ApplicationManagementController {
             
             record.datesEmailSent = currentAssignedEffort?.emails?.sort{it.dateSent}?.collect{g.formatDate(date:it.dateSent, format:'MM-dd-yyyy')}
             
-            
-            
-            
-            
-            
             effortAssignmentList.add(record)
             
         }
@@ -128,8 +123,6 @@ class ApplicationManagementController {
         periodList.each{
             periodSelectList.add([id:it.id, name: g.formatDate(date:it.periodDate, format:'MMMM yyyy')])
         }
-        
-        
         
         [
             periodList: periodList,
