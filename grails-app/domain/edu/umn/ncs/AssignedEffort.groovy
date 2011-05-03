@@ -28,7 +28,6 @@ class AssignedEffort {
     static hasMany = [emails: NotificationEmail, reportedEfforts: ReportedEffort]
 
     static constraints = {
-
         reportingStaff()
         laborCategory()
         period()
@@ -38,7 +37,6 @@ class AssignedEffort {
         appCreated(blank:false)
         dateCommitted()
         commitingStaff()
-
     }
 
 }
