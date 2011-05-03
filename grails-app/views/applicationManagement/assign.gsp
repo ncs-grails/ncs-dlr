@@ -25,7 +25,7 @@
               from="${periodSelectList}"
               optionKey="id"
               optionValue="name"
-              value="${reportingPeriodInstance.id}" />&nbsp;&nbsp;
+              value="${reportingPeriodInstance.id}" />&nbsp;
             <g:actionSubmit class="buttonBasic" value="GO" />          
           </span>
         </div>
@@ -47,8 +47,8 @@
               <th class="basic" colspan="2">Email Notification</th>
             </tr>
             <tr>
-              <th class="basic">Copy Previous<br />to Current</th>
               <th class="basic">Previous<br />Perod</th>
+              <th class="basic">Copy Previous<br />to Current</th>
               <th class="basic">Current<br />Perod</th>
               <th class="basic">%</th>
               <th class="basic">Date</th>
@@ -59,17 +59,16 @@
 
           <tbody>
             <g:each var="ea" in="${effortAssignmentList}" >
-              <tr>
-                <td class="basic">${ea.rowNum}</td>
-                <td class="basic">${ea.fullName}</td>
-                <td class="basic" style="text-align:center;"><input type="checkbox" /></td>
+              <tr><td class="basic" style="text-align:right;">${ea.rowNum}</td>
+                <td class="basic">${ea.fullName}&nbsp;&nbsp;(${ea.staffId})</td>
                 <td class="basic" style="text-align:right;"><g:formatNumber number="${ea.previousPeriodEffort}" type="percent" /></td>
-                <td class="basic">
+                <td class="basic" style="text-align:center;"><input type="checkbox" /></td>
+                <td class="basic" style="text-align:right;">
                   <g:if test="${ea.isCommitted}" >${ea.currentPeriodEffort}</g:if>
-                  <g:else><g:textField name="staff-${ea.staffId}.currentPeriodEffort" value="${ea.currentPeriodEffort}"/></g:else>
+                  <g:else><g:textField name="staff-${ea.staffId}.currentPeriodEffort" value="${ea.currentPeriodEffort}" class="textfieldBasic" size="3" style="text-align:right;"/> %</g:else>
                 </td>
                 <td class="basic" style="text-align:right;"><g:formatNumber number="${ea.percentCommitted}" type="percent" /></td>
-                <td class="basic">${ea.dateCommitted}</td>
+                <td class="basic" style="text-align:right;">${ea.dateCommitted}</td>
                 <td class="basic">${ea.datesEmailSent?.join(', ')}</td>
                 <td class="basic" style="text-align:center;"><input type="checkbox"/></td>
               </tr>
@@ -77,6 +76,7 @@
           </tbody>
 
         </table>
+        
         <div class="tableFooterNote">* Effort not committed yet appear in brackets []</div>
 
       </g:form>
