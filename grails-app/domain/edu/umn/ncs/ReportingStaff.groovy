@@ -18,9 +18,8 @@ class ReportingStaff {
     static hasMany = [assignedEfforts: AssignedEffort]
     static transients = ['fullNameLFM']
 
-    ReportingPeriod getFullNameLFM() {
-        def fullNameLFM = lastName + ', ' + firstName + middleInit ? ' ' + middleInit : null
-        return fullNameLFM
+    String getFullNameLFM() {
+        (lastName + ', ' + firstName + ' ' + middleInit).trim()
     }
     
     static constraints = {
