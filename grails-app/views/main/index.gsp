@@ -11,11 +11,11 @@ sqv<%@ page contentType="text/html;charset=UTF-8" %>
   <body>
 
     <g:form name="directLaborReporting" method="post" controller="main" action="add">
-
-      <g:link controller="applicationManagement" action="index">Application Management</g:link>
-
+      
       <h1>Direct Labor Reporting</h1>
 
+      <p class="breadcrumbs"><g:link controller="applicationManagement" action="index">Application Management</g:link></p>
+    
       <p class="fontMaroon">Welcome, <strong>${reportingStaffInstance.fullName}!</strong></p>
       
       <!-- <fieldset class="maroonRoundRect"> -->
