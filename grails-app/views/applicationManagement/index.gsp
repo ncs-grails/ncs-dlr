@@ -18,7 +18,17 @@
       <h1>DLR Application Management</h1>
 
       <p class="breadcrumbs">
-        <g:link controller="applicationManagement" action="assign">Effort Assignment</g:link>
+        <g:link controller="main" action="index">DLR Home</g:link>
+        &nbsp;&nbsp;&gt&nbsp;&nbsp;
+        Application Management
+        &nbsp;&nbsp;&gt&nbsp;&nbsp;
+        Staff
+        &nbsp;&nbsp;::&nbsp;&nbsp;
+        <g:link controller="assignEffort" action="show">Effort Assignment</g:link>
+        &nbsp;&nbsp;::&nbsp;&nbsp;
+        Report Generation
+        &nbsp;&nbsp;::&nbsp;&nbsp;
+        Report Archive   
       </p>
 
   </body>
