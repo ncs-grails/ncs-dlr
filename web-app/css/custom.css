@@ -47,6 +47,12 @@ fieldset legend {
 }
 
 .breadcrumbs{
+    margin-top:.5em;
+    margin-bottom:.5em;
+    border-top:.1em solid silver;
+    border-bottom: : .1em solid silver;
+    padding-top:.25em;
+    padding-bottom:.25em;
     color:gray;
     font-size:.75em;
     font-style:normal;
