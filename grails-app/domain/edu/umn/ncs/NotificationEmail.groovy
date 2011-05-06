@@ -12,11 +12,9 @@ class NotificationEmail {
     static belongsTo = [assignedEffort: AssignedEffort]
 
     static constraints = {
-
         assignedEffort()
         dateSent()
         userSent(blank:false)
-        
     }
     
 }
