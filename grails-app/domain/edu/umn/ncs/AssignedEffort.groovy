@@ -35,7 +35,7 @@ class AssignedEffort {
         dateAssigned()
         assigningStaff()
         appCreated(blank:false)
-        dateCommitted()
+        dateCommitted(nullable:true)
         commitingStaff()
     }
 
