@@ -27,8 +27,10 @@
         Report Archive   
       </p>
 
-      <!-- REPORTING MONTH control -->
-      <g:form action="show">
+      <!-- start FORM -->
+      <g:form>
+
+        <!-- REPORTING MONTH control -->
         
         <g:hiddenField name="reportingPeriod" value="${reportingPeriodInstance}" />
 
@@ -44,10 +46,7 @@
           </span>
         </div>
 
-      </g:form>
-
-      <!-- STAFF EFFORT-->
-      <g:form action="update">
+        <!-- STAFF EFFORT-->
         <table>
 
           <thead>
@@ -95,28 +94,32 @@
 
                 <!-- previous effort -->
                 <td class="basic" style="text-align:right;">
-                  <g:formatNumber number="${ea.previousPeriodEffort}" type="percent" />
+                  <g:formatNumber number="${ea.previousPeriodEffort}" type="percent" maxFractionDigits="2"/>
+                  <g:hiddenField name="staff-${ea.staffId}.previousPeriodEffort" value="${ea.previousPeriodEffort}" />
                 </td>
 
                 <!-- checkbox: copy previous to current -->
                 <td class="basic" style="text-align:center;">
-                  <input type="checkbox" name="staff-${ea.staffId}.copyPreviousToCurrent"/>
+                  <g:if test="${ea.previousPeriodEffort}">
+                    <input type="checkbox" name="staff-${ea.staffId}.copyPreviousToCurrent"/>
+                  </g:if>
                 </td>
 
                 <!-- textbox: this period's effort -->
                 <td class="basic" style="text-align:right;">
                   <g:if test="${ea.isCommitted}" >
-                    ${ea.thisPeriodPeriodEffort}
+                    <g:formatNumber number='${ea.thisPeriodAssignedEffort}' type='percent' />                    
                   </g:if>
-                  <g:else>
+                <g:else>
                     <g:textField 
-                      name="staff-${ea.staffId}.thisPeriodEffort" 
-                      value="${ea.thisPeriodEffort}" 
+                      name="staff-${ea.staffId}.thisPeriodAssignedEffort" 
                       class="textfieldBasic" 
-                      size="3" 
                       style="text-align:right;"
+                      size="3" 
+                      value="${g.formatNumber(number:(ea.thisPeriodAssignedEffort ?: 0) * 100, maxFractionDigits:2)}"
                     /> %
-                  </g:else>                  
+                  </g:else>
+
                 </td>
 
                 <!-- effort committed -->
@@ -151,6 +154,7 @@
         
         <g:actionSubmit class="buttonBasic" value="SUBMIT" action="update"/>
 
+      <!-- end FORM -->
       </g:form>
 
   </body>
