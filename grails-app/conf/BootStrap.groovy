@@ -29,6 +29,12 @@ class BootStrap {
                     preparedDate:'2/30/2011', 
                     completedReportDate:'2/29/2011'
                 ).save()
+                def reportingPeriodApril = new ReportingPeriod(
+                    referenceInvoiceNumber:55555, 
+                    periodDate:'4/1/2011', 
+                    preparedDate:'', 
+                    completedReportDate:''
+                ).save()
              
                 // Labor Categories
                 def laborCategoryDataQualityStaff = new LaborCategory(name:'Data Quality Staff', userCreated:'sqv').save()
@@ -87,13 +93,12 @@ class BootStrap {
                     userCreated:'sqv', 
                     appCreated:'ncs-dlr'
                 ).save()
-                /*
                 def reportingStaffSxv = new ReportingStaff(
                     username:'sxv', 
                     lastName:'Vuong', 
                     firstName:'Sim', 
                     middleInit:'', 
-                    fullName:'Simone Vuong', 
+                    fullName:'Sim Vuong', 
                     laborCategory:laborCategoryOther,
                     email:'sqv@cccs.umn.edu', 
                     isTestAccount:false, 
@@ -101,7 +106,6 @@ class BootStrap {
                     userCreated:'sqv', 
                     appCreated:'ncs-dlr'
                 ).save()
-                */
                 
                 // Assigned Effort 
                 def reportedEffortfMarchNgp = new AssignedEffort(
@@ -118,12 +122,34 @@ class BootStrap {
                     reportingStaff:reportingStaffAjz,
                     laborCategory:laborCategoryItCoordinator,
                     period:reportingPeriodMarch, 
-                    assignedEffort:0.65, 
+                    assignedEffort:0.655, 
                     dateAssigned:'4/1/2011',
                     assigningStaff:reportingStaffSqv, 
                     dateCommitted:'4/30/2011', 
                     commitingStaff:reportingStaffAjz
                 ).save()
+                def reportedEffortlAprilSqv = new AssignedEffort(
+                    reportingStaff:reportingStaffSqv,
+                    laborCategory:laborCategoryOther,
+                    period:reportingPeriodApril, 
+                    assignedEffort:0.50, 
+                    dateAssigned:'5/1/2011',
+                    assigningStaff:reportingStaffSqv, 
+                    dateCommitted:'', 
+                    commitingStaff:reportingStaffSqv
+                ).save()
+                def reportedEffortlAprilNgp = new AssignedEffort(
+                    reportingStaff:reportingStaffNgp,
+                    laborCategory:laborCategoryDataQualityStaff,
+                    period:reportingPeriodApril, 
+                    assignedEffort:0.4, 
+                    dateAssigned:'5/1/2011',
+                    assigningStaff:reportingStaffSqv, 
+                    dateCommitted:'', 
+                    commitingStaff:reportingStaffSqv
+                ).save()
+                
+                
                
                 /*
                 // email notification sent
