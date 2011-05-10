@@ -15,6 +15,40 @@ root {
     display: block;
 }
 
+/* sections *******************************************************************/
+div.pageSpacing{
+    margin-bottom:1.5em;
+}
+
+div.padding{
+    margin: 1em 0;
+}
+div.prop {
+        display: inline-block;
+        margin: .5em 0;
+}
+.breadcrumbs{
+    margin-top:1em;
+    margin-bottom:1.5em;
+    border-top:.1em solid silver;
+    border-bottom: .1em solid silver;
+    padding-top:.25em;
+    padding-bottom:.25em;
+    color:gray;
+    font-size:.75em;
+    font-style:normal;
+}
+
+/* fonts **********************************************************************/
+.fontMaroon{
+   color: maroon;
+}
+.fontMaroonBold{
+   color: maroon;
+   font-weight:bold;
+}
+
+/* headers ********************************************************************/
 h1 {
     font-style:normal;
     font-size:1.5em;
@@ -26,38 +60,8 @@ h2 {
     font-size:1.25em;
     color: maroon;
 }
-div.prop {
-        display: inline-block;
-        margin: .5em 0;
-}
-fieldset legend {
-        color:#8C1919;
-        font-size:1.25em;
-        font-weight:bold;
-}
-.maroonRoundRect {
-        margin-bottom:1em;
-        border:silver solid thin; -moz-border-radius:0.5em; -webkit-border-radius:0.5em;
-        padding: 0em 1em 1em 1em;
-        line-height:2;
-}
 
-.fontMaroon{
-   color: maroon;
-}
-
-.breadcrumbs{
-    margin-top:.5em;
-    margin-bottom:.5em;
-    border-top:.1em solid silver;
-    border-bottom: : .1em solid silver;
-    padding-top:.25em;
-    padding-bottom:.25em;
-    color:gray;
-    font-size:.75em;
-    font-style:normal;
-}
-
+/* tables *********************************************************************/
 th.basic{
     background-image:none;
     border:1px solid gray;
@@ -81,8 +85,18 @@ td.basic{
     font-size:smaller;
 }
 
-div.padding{
-    margin: 1em 0;
+/* controls *******************************************************************/
+
+fieldset legend {
+        color:#8C1919;
+        font-size:1.25em;
+        font-weight:bold;
+}
+.maroonRoundRect {
+        margin-bottom:1em;
+        border:silver solid thin; -moz-border-radius:0.5em; -webkit-border-radius:0.5em;
+        padding: 0em 1em 1em 1em;
+        line-height:2;
 }
 
 .controlBackground {
