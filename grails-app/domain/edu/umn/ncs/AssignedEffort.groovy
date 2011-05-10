@@ -31,12 +31,12 @@ class AssignedEffort {
         reportingStaff()
         laborCategory()
         period()
-        assignedEffort(blank:false, max:1.0, scale:3)
+        assignedEffort(max:1.0, scale:3)
         dateAssigned()
-        assigningStaff()
+        assigningStaff(blank:false)
         appCreated(blank:false)
         dateCommitted(nullable:true)
-        commitingStaff()
+        commitingStaff(blank:true)
     }
 
 }
