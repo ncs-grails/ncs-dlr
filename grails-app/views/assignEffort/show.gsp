@@ -18,13 +18,17 @@
         &nbsp;&nbsp;&gt&nbsp;&nbsp;
         <g:link controller="applicationManagement" action="index">Application Management</g:link>
         &nbsp;&nbsp;&gt&nbsp;&nbsp;
+        <!--
         Staff
         &nbsp;&nbsp;::&nbsp;&nbsp;
-        <g:link controller="assignedEffort" action="show">Effort Assignment</g:link>
+        -->
+        <span class="fontMaroon">Effort Assignment</span>
+        <!--
         &nbsp;&nbsp;::&nbsp;&nbsp;
         Report Generation
         &nbsp;&nbsp;::&nbsp;&nbsp;
         Report Archive   
+        -->
       </p>
 
       <!-- start FORM -->
@@ -156,7 +160,10 @@
 
       <!-- end FORM -->
       </g:form>
+      
+      <div class="pageSpacing"> </div>
 
+      
   </body>
 
 </html>
