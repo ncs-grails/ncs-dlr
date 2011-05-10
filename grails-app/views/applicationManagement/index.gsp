@@ -20,7 +20,8 @@
       <p class="breadcrumbs">
         <g:link controller="main" action="index">DLR Home</g:link>
         &nbsp;&nbsp;&gt&nbsp;&nbsp;
-        Application Management
+        <span class="fontMaroon">Application Management</span>
+        <!--
         &nbsp;&nbsp;&gt&nbsp;&nbsp;
         Staff
         &nbsp;&nbsp;::&nbsp;&nbsp;
@@ -29,7 +30,21 @@
         Report Generation
         &nbsp;&nbsp;::&nbsp;&nbsp;
         Report Archive   
+        -->
       </p>
+      
+      <dl>
+        <dt>Staff</dt>
+          <dd>Enter staff information</dd>
+        <dt><g:link controller="assignEffort" action="show">Effort Assignment</g:link></dt>
+          <dd>Enter assigned effort</dd>
+        <dt>Report Generation</dt>
+          <dd>Generate reports for submission</dd>
+        <dt>Report Archive</dt>
+          <dd>View past reported effort</dd>
+      </dl>
+
+      <div class="pageSpacing"> </div>
 
   </body>
 
