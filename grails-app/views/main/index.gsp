@@ -14,9 +14,13 @@ sqv<%@ page contentType="text/html;charset=UTF-8" %>
       
       <h1>Direct Labor Reporting</h1>
 
-      <p class="breadcrumbs"><g:link controller="applicationManagement" action="index">Application Management</g:link></p>
+      <p class="breadcrumbs">
+        <g:link controller="applicationManagement" action="index">Application Management</g:link>
+      </p>
     
-      <p class="fontMaroon">Welcome, <strong>${reportingStaffInstance.fullName}!</strong></p>
+      <p class="fontMaroon">
+        Welcome, <strong>${reportingStaffInstance.fullName}!</strong>
+      </p>
       
       <!-- <fieldset class="maroonRoundRect"> -->
 
