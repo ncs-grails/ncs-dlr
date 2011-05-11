@@ -18,17 +18,7 @@
         &nbsp;&nbsp;&gt&nbsp;&nbsp;
         <g:link controller="applicationManagement" action="index">Application Management</g:link>
         &nbsp;&nbsp;&gt&nbsp;&nbsp;
-        <!--
-        Staff
-        &nbsp;&nbsp;::&nbsp;&nbsp;
-        -->
         <span class="fontMaroon">Effort Assignment</span>
-        <!--
-        &nbsp;&nbsp;::&nbsp;&nbsp;
-        Report Generation
-        &nbsp;&nbsp;::&nbsp;&nbsp;
-        Report Archive   
-        -->
       </p>
 
       <!-- start FORM -->
