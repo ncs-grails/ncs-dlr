@@ -29,24 +29,23 @@ root {
 }
 
 dl {
-    width:100%
-    margin-bottom:1em;
+    width:100%;
+    margin-bottom: 18em;
 }
 
-dt {
-    width: 20%;
+dt.basicMenu {
     float: left;
-    padding-top:.5em;
-    padding-bottom:.5em;
-    padding-right:.5em;
-    background-color: orchid
+    width: 100%;
+    margin: .5em 0;
+    border: 1px solid silver;
+    padding: .5em .5em;
+    background-color: lemonchiffon;
 }
-
-dd {
-    width: 79%;
-    float:left;
-    padding:.5em 0;
-    background-color:orange;
+dt.basicMenu:hover {
+    background-color: lavender;
+}
+dt.basicMenu:active {
+    font-size: larger;
 }
 
 div.pageSpacing{
@@ -62,12 +61,16 @@ div.prop {
 }
 
 /* fonts **********************************************************************/
-.fontMaroon{
+.fontMaroon {
    color: maroon;
 }
-.fontMaroonBold{
+.fontMaroonBold {
    color: maroon;
    font-weight:bold;
+}
+
+.fontSmaller {
+    font-size:smaller;
 }
 
 /* headers ********************************************************************/
@@ -88,7 +91,7 @@ th.basic{
     background-image:none;
     border:1px solid gray;
     padding:.5em;
-    background-color: lightblue;
+    background-color: lavender;
     color:black;
     text-align: center;
     font-size:small;
@@ -123,7 +126,7 @@ fieldset legend {
 
 .controlBackground {
     border:.05em grey solid;
-    background-color: silver;
+    background-color: lightgray;
     padding:.5em;
 }
 
