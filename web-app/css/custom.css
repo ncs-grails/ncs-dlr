@@ -16,6 +16,39 @@ root {
 }
 
 /* sections *******************************************************************/
+.breadcrumbs {
+    margin-top:1em;
+    margin-bottom:1.5em;
+    border-top:.1em solid silver;
+    border-bottom: .1em solid silver;
+    padding-top:.25em;
+    padding-bottom:.25em;
+    color:gray;
+    font-size:.75em;
+    font-style:normal;
+}
+
+dl {
+    width:100%
+    margin-bottom:1em;
+}
+
+dt {
+    width: 20%;
+    float: left;
+    padding-top:.5em;
+    padding-bottom:.5em;
+    padding-right:.5em;
+    background-color: orchid
+}
+
+dd {
+    width: 79%;
+    float:left;
+    padding:.5em 0;
+    background-color:orange;
+}
+
 div.pageSpacing{
     margin-bottom:1.5em;
 }
@@ -26,17 +59,6 @@ div.padding{
 div.prop {
         display: inline-block;
         margin: .5em 0;
-}
-.breadcrumbs{
-    margin-top:1em;
-    margin-bottom:1.5em;
-    border-top:.1em solid silver;
-    border-bottom: .1em solid silver;
-    padding-top:.25em;
-    padding-bottom:.25em;
-    color:gray;
-    font-size:.75em;
-    font-style:normal;
 }
 
 /* fonts **********************************************************************/
