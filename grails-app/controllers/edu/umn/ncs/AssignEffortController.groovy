@@ -9,12 +9,13 @@ class AssignEffortController {
 
     def authenticateService
     def laborService
+    def mailService
    
-    // display page
     def index = {
         redirect(action:'show')        
     }
     
+    // display page
     def show = {
         
         // GET PERIODS FOR PERIOD CONTROL --------------------------------------
@@ -90,7 +91,6 @@ class AssignEffortController {
             order("lastName", "asc")
             order("firstName", "asc")
             order("middleInit", "asc")
-
         }
         
         // Add records to Staff List Instance
@@ -166,133 +166,200 @@ class AssignEffortController {
                 
         //println "PRINTLN AssignedEffortController.update.params: ${params}"
         
-        // Get reporting period instance from gsp page
+        // Get logged in user account
+        def principal = authenticateService.principal()
+        def username = principal.getUsername()
+        def loggedInReportingStaffInstance = ReportingStaff.findByUsername(username)
+        //println "PRINTLN AssignedEffortController.update.loggedInReportingStaffInstance: ${loggedInReportingStaffInstance}"
+        
+        // Get reporting period instance from gsp 
         def reportingPeriodInstance = ReportingPeriod.read(params?.reportingPeriodInstance?.id)
-        println "PRINTLN AssignedEffortController.update.reportingPeriodInstance: ${reportingPeriodInstance}"
+        //println "PRINTLN AssignedEffortController.update.reportingPeriodInstance: ${reportingPeriodInstance}"
                 
+        // loop through each parameter
         params.each{
                         
-            //println "PRINTLN AssignedEffortController.update.params: ${it}"
+            //println "PRINTLN AssignedEffortController.update.params.each: ${it}"
             //println "PRINTLN AssignedEffortController.update.params.each IT: ${it}, KEY: ${it.key}, VALUE: ${it.value}"
 
             if ( it.key =~ /^staff-[0-9]*$/) {
 
-                // Get reporting STAFF ID from form
-                def reportingStaffId = Integer.parseInt(it.key.replace('staff-', ''))
-                println "PRINTLN AssignedEffortController.update.params.each.reportingStaffId: ${reportingStaffId}"
-
-                // Get REPORTING STAFF instance
-                def reportingStaffInstance = ReportingStaff.read(reportingStaffId)
-                //println "PRINTLN AssignedEffortController.update.params.each.reportingStaffInstance: ${reportingStaffInstance}"
+                /********************************************************************************************************
+                 * REPORTING STAFF
+                 ********************************************************************************************************/
                 
-                // Get CURRENT PERIOD ASSIGNED EFFORT from form
-                def currentPeriodAssignedEffortValue = it.value.thisPeriodEffort
+                // Get reporting staff id from gsp 
+                def reportingStaffId = Integer.parseInt(it.key.replace('staff-', ''))
+                //println "PRINTLN AssignedEffortController.update.params.each.reportingStaffId: ${reportingStaffId}"
+
+                // Create reporting staff instance
+                def reportingStaffInstance = ReportingStaff.read(reportingStaffId)
+                //println "PRINTLN AssignedEffortController.update.params.each.reportingStaffInstance: ${reportingStaffInstance}"                
+
+                /********************************************************************************************************
+                 * CURRENT PERIOD'S ASSIGNED EFFORT
+                 ********************************************************************************************************/
+                
+                // Get current period's assigned effort from gsp
+                def currentPeriodAssignedEffortValue = it.value.thisPeriodEffort                                
                 //println "PRINTLN AssignedEffortController.update.params.each.currentPeriodAssignedEffortValue: ${currentPeriodAssignedEffortValue}"
-                 
-                // Get CURRENT PERIOD ASSIGNED EFFORT instance
+                
+                // validate current period's assigned effort from gsp
+                // if effort has 0-3 digits before the decimal, and 0-2 after the decimal
+                if ( currentPeriodAssignedEffortValue =~ /[0-9]{1,3}\.?[0-9]{0,2}/ ) {
+                    // convert effort to bigDecimal
+                    currentPeriodAssignedEffortValue = currentPeriodAssignedEffortValue.toBigDecimal()
+                    // if the effort value is NOT between 0 - 100
+                    if ( ! currentPeriodAssignedEffortValue.between(0..100)) {
+                        // make effort null
+                        currentPeriodAssignedEffortValue = null
+                    }
+                // if effort is NOT 0-3 digits before the decimal, and 0-2 after the decimal
+                } else {
+                    // make effort null
+                    currentPeriodAssignedEffortValue = null
+                }
+                //println "PRINTLN AssignedEffortController.update.params.each.validated.currentPeriodAssignedEffortValue: ${currentPeriodAssignedEffortValue}"
+                
+                // Get curent period's assigned effort instance
                 def currentPeriodAssignedEffortInstance = AssignedEffort.findByPeriodAndReportingStaff(reportingPeriodInstance,reportingStaffInstance)
                 //println "PRINTLN AssignedEffortController.update.params.each.currentPeriodAssignedEffortInstance: ${currentPeriodAssignedEffortInstance}"
                 
 
-                // COPY PREVIOUS TO CURRENT ---------------------------------------------------------------------------------------
+                /********************************************************************************************************
+                 * PREVIOUS PERIOD'S ASSIGNED EFFORT
+                 ********************************************************************************************************/
                 
-                // Get value of "Copy Previous to Current" checkbox
+                // Get previous period's assigned effort from gsp
+                def previousPeriodAssignedEffortValue = it.value.previousPeriodEffort
+                //println "PRINTLN AssignedEffortController.update.params.each.previousPeriodAssignedEffortValue: ${previousPeriodAssignedEffortValue}"
+                
+                // validate previous period's assigned effort from gsp
+                // if effort is not null or is 0
+                if ( previousPeriodAssignedEffortValue || previousPeriodAssignedEffortValue == '0' ) {
+                    // convert effort to bigdecimal
+                    previousPeriodAssignedEffortValue = previousPeriodAssignedEffortValue.toBigDecimal()
+                // otherwise, make effort null
+                } else {
+                    previousPeriodAssignedEffortValue = null
+                }
+                //println "PRINTLN AssignedEffortController.update.params.each.validated.previousPeriodAssignedEffortValue: ${previousPeriodAssignedEffortValue}"
+                
+                // Get value of checkbox "Copy Previous to Current" from gsp
                 def copyPreviousToCurrentValue = it.value.copyPreviousToCurrent
-                //println "PRINTLN AssignedEffortController.update.params.each.copyPreviousToCurrentValue: ${copyPreviousToCurrentValue}"
+                //println "PRINTLN AssignedEffortController.update.params.each.copyPreviousToCurrentValue: ${previousPeriodAssignedEffortValue}"
+                 
                 
-                // if "Copy Previous to Current" checkbox is checked
-                if ( copyPreviousToCurrentValue ) { 
-                    
-                    // Get previous period assigned effort
-                    def previousPeriodEffortValue = it.value.previousPeriodEffort
-                    //println "PRINTLN AssignedEffortController.update.params.each.previousPeriodEffortValue: ${previousPeriodEffortValue}"
-                                                                                
-                    // if there is a previous effort, to copy over
-                    if ( previousPeriodEffortValue ) {
-                                                                       
-                        // TODO: if current effort is null, insert previous period effort to current assigned effort
-                        if ( currentPeriodAssignedEffortInstance == null ) {                            
-                            
-                            /*
-                            // insert previous effort to current                            
-                            def assignedEffortInstance = new AssignedEffort(
-                                reportingStaff: reportingStaffId, 
-                                laborCategory: , 
-                                period: reportingPeriodInstance.id, 
-                                assignedEffort: previousPeriodEffortValue, 
-                                dateAssigned: , 
-                                assigningStaff: , 
-                                appCreated: , 
-                                dateCommitted: '', 
-                                commitingStaff: ''
-                            ).save()
-                            
-                            if ( ! assignedEffortInstance.save(flush:true) ) {
-                                flash.message = "Unable to save previous effort to current period for ${reportingStaffInstance.fullName}}"
-                            }
-                            */    
-                            //println "PRINTLN currentPeriodAssignedEffortInstance == null"  
-                            
-                        // TODO: if current effort is not null
-                        } else {
-                            
-                            // if previous and current effort are different, conduct update
-                            if ( previousPeriodEffortValue != currentPeriodAssignedEffortInstance ) {
-                                println "PRINTLN previousPeriodEffortValue != currentPeriodAssignedEffortInstance"
-                                
-                            } //if ( previousPeriodEffortValue != currentPeriodAssignedEffortInstance )
-                            
-                        } //if ( currentPeriodAssignedEffortInstance == null )
-                        
-                    }//if ( previousPeriodEffortValue ) 
-                    
-                } //if (copyPreviousToCurrentValue )
+                /********************************************************************************************************
+                 * SUBMIT CURRENT PERIOD'S ASSIGNED EFFORT
+                 ********************************************************************************************************/
                 
+                // if checkbox "Copy Previous to Current" is checked
+                if ( copyPreviousToCurrentValue ) {
+                //println "PRINTLN AssignedEffortController.update.params.each.if(copyPreviousToCurrentValue) = true"                    
+                    
+                    // set current period's assigned effort from gsp to previous period's assigned effort
+                    currentPeriodAssignedEffortValue = previousPeriodAssignedEffortValue
+                    //println "PRINTLN AssignedEffortController.update.params.each.if(copyPreviousToCurrentValue).currentPeriodAssignedEffortValue=previousPeriodAssignedEffortValue.currentPeriodAssignedEffortValue: ${currentPeriodAssignedEffortValue}"
+                    
+                }
                                 
-                // TODO: ENTER CURRENT EFFORT -----------------------------------------------------------------------------
+                // if current period's assigned effort from gsp has a value
+                if (currentPeriodAssignedEffortValue) {
+                //println "PRINTLN AssignedEffortController.update.params.each.if(currentPeriodAssignedEffortValue) = true"                    
 
-                // if "Copy Previous to Current" checkbox was not check, but there is effort in the "Assigned Effort:Curent Period" textbox
-                if ( ! copyPreviousToCurrentValue && currentPeriodAssignedEffortValue != null) {
+                    // if current period's assigned effort instance has a value
+                    if ( currentPeriodAssignedEffortInstance ) {                        
+                    //println "PRINTLN AssignedEffortController.update.params.each.if(currentPeriodAssignedEffortInstance) = true"                    
                     
-                    // Does current period assigned effort already exist in db?
+                        // update this existing instance with effort from gsp
+                        currentPeriodAssignedEffortInstance.assignedEffort = currentPeriodAssignedEffortValue
+                        //println "PRINTLN AssignedEffortController.update.params.each.currentPeriodAssignedEffortInstance.assignedEffort=currentPeriodAssignedEffortValue.currentPeriodAssignedEffortInstance.assignedEffort: ${currentPeriodAssignedEffortInstance.assignedEffort}"
+                        
+                    // if current period's assigned effort instance is null                       
+                    } else  {                        
+                        
+                        // Create current period's assigned effort intance here, with effort from gsp, and save it
+                        currentPeriodAssignedEffortInstance = new AssignedEffort(
+                            reportingStaff: reportingStaffInstance, 
+                            laborCategory: reportingStaffInstance.laborCategory, 
+                            period: reportingPeriodInstance,
+                            assignedEffort: currentPeriodAssignedEffortValue, 
+                            assigningStaff: loggedInReportingStaffInstance, 
+                            appCreated: 'ncs-dlr'
+                        ).save()
+                        
+                    } //if ( currentPeriodAssignedEffortInstance )
                     
-                    // TODO: no - perform insert
-                    if ( currentPeriodAssignedEffortInstance == null ) {
+                    // if current period's assgined effort instance has been modified
+                    if ( currentPeriodAssignedEffortInstance.isDirty ) {
                         
-                    // TODO: yes - update if current period assigned effort is different in textbox from what is in db
-                    } else {
-                        
-                        if ( currentPeriodAssignedEffortValue != currentPeriodAssignedEffortInstance ) {
+                        // if save failed
+                        if ( ! currentPeriodAssignedEffortInstance.save(flush:true) ) {
                             
-                        }
+                            // if checkbox "Copy Previous to Current" is checked, notify user it failed
+                            if ( copyPreviousToCurrentValue ) {
+                                flash.message = "Unable to copy previous period's assigned effort to current period for ${reportingStaffInstance.fullName}}"                            
+                            // if user enter modifies effort in textbox "Current Period's Assigned Effort", notify user it failed    
+                            } else {
+                                flash.message = "Unable to save current period's assigned effort for ${reportingStaffInstance.fullName}}"                                                            
+                            } //if ( copyPreviousToCurrentValue )
+                            
+                        } //if ( ! currentPeriodAssignedEffortInstance.save(flush:true) )
                         
-                    } //if ( currentPeriodAssignedEffortInstance == null )
-                    
-                } //if ( ! copyPreviousToCurrentValue && currentPeriodAssignedEffortValue == null)
+                    } //if ( currentPeriodAssignedEffortInstance.isDirty )
+
+                } //if (currentPeriodAssignedEffortValue) {
+
+                                
+                /********************************************************************************************************
+                 * SEND EMAIL NOTIFICATION 
+                 ********************************************************************************************************/
                 
-                // SEND NOW -----------------------------------------------------------------------------------------------
+                // Get value of checkbox "Send Now" from gsp
                 def sendNowValue = it.value.sendNow
                 //println "PRINTLN AssignedEffortController.update.params.each.sendNowValue: ${sendNowValue}"
                 
+                // if checkbox "Send Now" from gsp is checked
                 if ( sendNowValue ) { 
-                    //println "PRINTLN send now"
+                //println "PRINTLN AssignedEffortController.update.params.each.if(sendNowValue) = TRUE"
+
+                    // Get notification email instance, if there is one
+                    def notificationEmailInstance = currentPeriodAssignedEffortInstance.email
+                    //println "PRINTLN AssignedEffortController.update.params.each.notificationEmailInstance: ${notificationEmailInstance}"
                     
-                    // TODO: run send email
+                    // if notification email instance already exists, send a REMINDER
+                    if ( notificationEmailInstance ) {
+                        def emailSubjectTitle = "Reminder - NCS Direct Labor Report due ${g.formatDate(date:reportingPeriodInstance.periodDate, format:'MMMM')} 20 ${g.formatDate(date:reportingPeriodInstance.periodDate, format:'yyyy')}"
+                    // otherwise, send an INITIAL
+                    } else {
+                        def emailSubjectTitle = "Notification - NCS Direct Labor Report due ${g.formatDate(date:reportingPeriodInstance.periodDate, format:'MMMM')} 20 ${g.formatDate(date:reportingPeriodInstance.periodDate, format:'yyyy')}"                        
+                    }
                     
+                    mailService.sendMail {
+                        to reportingStaffInstance.email
+                        from loggedInReportingStaffInstance.email
+                        subject emailSubjectTitle
+                        body( 
+                            view:"/assignEffort/email",
+                            model:[ 
+                                reportingPeriodInstance: reportingPeriodInstance, 
+                                reportingStaffInstance: reportingStaffInstance
+                            ]
+                        )                    
+                    } //mailService.sendMail
+                                            
                 } //if ( sendNowValue )
-                    
                 
             } //if ( it.key =~ /staff-[0-9]*/)
-
 
         } //params.each
         
         
-        // REDIRECT TO SHOW GSP PAGE
+        // REDIRECT TO SHOW GSP PAGE ----------------------------------------------------------------------------------------------------
         def params = ['reportingPeriodInstance.id': reportingPeriodInstance?.id ]
         redirect(action:'show', params:params)
-                
-        
+                        
     } //def update
 
 
