@@ -19,7 +19,7 @@ sqv<%@ page contentType="text/html;charset=UTF-8" %>
       </p>
     
       <p class="fontMaroon">
-        Welcome, <strong>${reportingStaffInstance.fullName}!</strong>
+        Welcome, <strong>${reportingStaffInstance.firstName} ${reportingStaffInstance.lastName}!</strong>
       </p>
       
       <!-- <fieldset class="maroonRoundRect"> -->
