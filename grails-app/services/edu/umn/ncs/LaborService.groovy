@@ -6,6 +6,8 @@ class LaborService {
     static transactional = true
     static debug = true
 
+    def mailService
+
     def getReportingStaff(principal) {
 
         def uname = principal.getUsername()          //getUsername() came from UMN Acegi
@@ -93,9 +95,67 @@ class LaborService {
         //println "PRINTLN LaborService.getNextReportingPeriodDate.nextReportingPeriodDate = ${nextReportingPeriodDate}"
 
         def nextReportingPeriodDateTime = nextReportingPeriodDate.toDateTime(midnight).toCalendar().getTime()
+        //println "PRINTLN LaborService.getNextReportingPeriodDate.nextReportingPeriodDateTime = ${nextReportingPeriodDateTime}"
 
         return nextReportingPeriodDateTime
 
     } //def getNextReportingPeriodDate
+    
+    
+    def SendEmailNotification (periodId, staffId) {
+        
+        // Get logged in user account
+        def principal = authenticateService.principal()
+        def username = principal.getUsername()
+        def loggedInReportingStaffInstance = ReportingStaff.findByUsername(username)
+        println "PRINTLN AssignedEffortController.update.loggedInReportingStaffInstance: ${loggedInReportingStaffInstance}"
+        
+        //Get next month/year after current reporting period
+        def reportingDueDate = laborService.getNextReportingPeriodDateTime(reportingPeriodInstance.periodDate)
+        println "PRINTLN LaborService.reportingPeriodInstance.reportingDueDate: ${reportingDueDate}"
+        
+        // Get curent period's assigned effort instance
+        def currentPeriodAssignedEffortInstance = AssignedEffort.findByPeriodAndReportingStaff(reportingPeriodInstance,reportingStaffInstance)
+        println "PRINTLN LaborService.currentPeriodAssignedEffortInstance: ${currentPeriodAssignedEffortInstance}"
+        
+        // Get notification email instance, if there is one
+        def notificationEmailInstance = currentPeriodAssignedEffortInstance.emails
+        println "PRINTLN LaborService.notificationEmailInstance: ${notificationEmailInstance}"
+
+        // if notification email instance already exists, send a REMINDER
+        def emailSubjectTitle
+        if ( notificationEmailInstance ) {
+        //println "PRINTLN LaborService.if(notificationEmailInstance) = TRUE"
+
+            emailSubjectTitle = "Reminder - NCS Direct Labor Report due ${g.formatDate(date:reportingDueDate, format:'MMMM')} 20 ${g.formatDate(date:reportingDueDate, format:'yyyy')}"
+
+        // otherwise, send an INITIAL
+        } else {
+        //println "PRINTLN LaborService.if(notificationEmailInstance) = FALSE"
+
+            emailSubjectTitle = "Notification - NCS Direct Labor Report due ${g.formatDate(date:reportingDueDate, format:'MMMM')} 20 ${g.formatDate(date:reportingDueDate, format:'yyyy')}"                        
+
+        }
+
+        println "reportingStaffInstance.email = ${reportingStaffInstance.email}}"
+        println "loggedInReportingStaffInstance.email = ${loggedInReportingStaffInstance.email}}"
+        println "emailSubjectTitle = ${emailSubjectTitle}}"
+        
+/*        
+        mailService.sendMail {
+            to reportingStaffInstance.email
+            from loggedInReportingStaffInstance.email
+            subject emailSubjectTitle
+            body( 
+                view:"/assignEffort/email",
+                model:[ 
+                    reportingPeriodInstance: reportingPeriodInstance, 
+                    reportingStaffInstance: reportingStaffInstance
+                ]
+            )                    
+        } //mailService.sendMail
+*/
+
+    }
     
 } //class LaborService
