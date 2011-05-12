@@ -118,7 +118,9 @@
 
                 <!-- effort committed -->
                 <td class="basic" style="text-align:right;">
+                  <g:if test="${ea.percentCommitted && !ea.isCommitted}" >[</g:if>
                   <g:formatNumber number="${ea.percentCommitted}" type="percent" />
+                  <g:if test="${ea.percentCommitted && !ea.isCommitted}" >]</g:if>
                 </td>
 
                 <!-- date effort committed -->
@@ -128,7 +130,7 @@
 
                 <!-- dates email sent -->
                 <td class="basic">
-                  ${ea.datesEmailsSent?.join(', ')}
+                  <br />${ea.datesEmailsSent?.join(', ')}
                 </td>
 
                 <!-- checkbox: send email -->
