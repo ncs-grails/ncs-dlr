@@ -1,13 +1,12 @@
-<%@ page contentType="text/html;charset=UTF-8" %>
-
-<html>
+<%@ page contentType="text/html"%><html>
   
   <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <title>NCS Direct Labor Reporting Notification Email</title>
   </head>
   
   <body>
+    
+    Dear ${reportingStaffInstance.firstName} ${reportingStaffInstance.lastName}:
 
     <p>Please submit your EFFORT for work done in 
       <strong><g:formatDate date="${reportingPeriodInstance.periodDate}" format="MMMM yyyy" /></strong>
@@ -18,7 +17,7 @@
     
     <ol>
       <li>Go to the <em>University of Minnesota - National Children's Study</em> login page (https://www.cccs.umn.edu/ncs/).</li>
-      <li>Login with your University of Minnesota Internet ID (x.500 username) ${reportingStaffInstance.username} and password.</li>
+      <li>Login with your University of Minnesota Internet ID (x.500 username) <strong>${reportingStaffInstance.username}</strong> and password.</li>
     </ol>
     
     <p>Instructions for using the NCS Direct Labor Reporting application is available once you successfully login.</p>
