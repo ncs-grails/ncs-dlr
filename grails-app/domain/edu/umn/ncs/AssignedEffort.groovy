@@ -10,6 +10,11 @@ class AssignedEffort {
     Date dateCommitted
     ReportingStaff commitingStaff
 
+    def transients = ['previousAssignedEffort']
+
+    static belongsTo = [reportingStaff: ReportingStaff, period: ReportingPeriod]
+    static hasMany = [emails: NotificationEmail, reportedEfforts: ReportedEffort]
+
     AssignedEffort getPreviousAssignedEffort() {
         def assignedEffort = null
 
@@ -22,11 +27,6 @@ class AssignedEffort {
         assignedEffort
     }
 
-    def transients = ['previousAssignedEffort']
-
-    static belongsTo = [reportingStaff: ReportingStaff, period: ReportingPeriod]
-    static hasMany = [emails: NotificationEmail, reportedEfforts: ReportedEffort]
-
     static constraints = {
         reportingStaff()
         laborCategory()
@@ -36,7 +36,7 @@ class AssignedEffort {
         assigningStaff(blank:false)
         appCreated(blank:false)
         dateCommitted(nullable:true)
-        commitingStaff(blank:true)
+        commitingStaff(nullable:true)
     }
 
 }
