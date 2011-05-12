@@ -132,6 +132,7 @@ fieldset legend {
 
 .textfieldBasic{
     border:.01em solid gray;
+    padding:.15em .15em;
 }
 
 select.basic{
