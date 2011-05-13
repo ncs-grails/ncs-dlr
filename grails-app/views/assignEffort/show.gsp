@@ -11,7 +11,6 @@
 
   <body>
 
-      <h1>Effort Assignment</h1>
       
       <p class="breadcrumbs">
         <g:link controller="main" action="index">DLR Home</g:link>
@@ -21,6 +20,8 @@
         <span class="fontMaroon">Effort Assignment</span>
       </p>
 
+      <h1>Effort Assignment</h1>
+
       <!-- start FORM -->
       <g:form>
 
@@ -28,16 +29,25 @@
         
         <g:hiddenField name="reportingPeriod" value="${reportingPeriodInstance}" />
 
-        <div class="padding">
-          <span class="controlBackground">Reporting Month
-            <g:select class="basic"
-              name="reportingPeriodInstance.id"
-              from="${periodSelectiontList}"
-              optionKey="id"
-              optionValue="name"
-              value="${reportingPeriodInstance.id}" />&nbsp;
-            <g:actionSubmit class="buttonBasic" value="GO" constructor="" action="show" />          
-          </span>
+        <div class="clearBoth"
+          <div class="floatLeft">
+            <div class="spacing">
+              <span class="controlBackground">Reporting Month
+                <g:select class="basic"
+                  name="reportingPeriodInstance.id"
+                  from="${periodSelectiontList}"
+                  optionKey="id"
+                  optionValue="name"
+                  value="${reportingPeriodInstance.id}" />&nbsp;
+                <g:actionSubmit class="buttonBasic" value="GO" constructor="" action="show" />          
+              </span>
+            </div>
+          </div>
+          <div class="floatRight">
+            <div class="spacing">
+              <g:actionSubmit class="buttonBasic" value="SUBMIT ASSGINED EFFORT" action="update"/>
+            </div>
+          </div>
         </div>
 
         <!-- STAFF EFFORT-->
@@ -53,20 +63,22 @@
               </th>
             </tr>
             <tr>
-              <th class="basic" rowspan="2"></th>
-              <th class="basic" rowspan="2">Staff Name (Staff Id)</th>
-              <th class="basic" colspan="3">Assigned Effort</th>
-              <th class="basic" colspan="2">Committed Effort *</th>
+              <th class="basic" rowspan="3"></th>
+              <th class="basic" rowspan="3">Staff Name (Staff Id)</th>
+              <th class="basic" colspan="5">Effort</th>
               <th class="basic" colspan="2">Email Notification</th>
             </tr>
             <tr>
-              <th class="basic">Previous<br />Perod</th>
-              <th class="basic">Copy Previous<br />to Current</th>
-              <th class="basic">Current<br />Perod</th>
-              <th class="basic">%</th>
-              <th class="basic">Date</th>
-              <th class="basic">Dates<br />Email Sent</th>
-              <th class="basic">Send<br />Now</th>
+              <th class="basic" colspan="3">ASSIGNED</th>
+              <th class="basic" rowspan="2">REPORTED</th>
+              <th class="basic" rowspan="2">COMMITTED<br/>(date)</th>
+              <th class="basic" rowspan="2">Dates<br />Email Sent</th>
+              <th class="basic" rowspan="2">Send<br />Now</th>
+            </tr>
+            <tr>
+              <th class="basic">Previous</th>
+              <th class="basic">Copy Over</th>
+              <th class="basic">Current</th>
             </tr>
           </thead>
 
@@ -74,7 +86,8 @@
             
             <g:each var="ea" in="${effortAssignmentList}" >
               
-              <tr>
+              <g:if test="${ea.isCommitted}" ><tr class="backgroundColorLemonchiffon"></g:if>
+              <g:else><tr></g:else>
                 
                 <!-- row number -->
                 <td class="basic" style="text-align:right;">
@@ -83,13 +96,17 @@
 
                 <!-- staff name & id -->
                 <td class="basic">
-                  ${ea.fullName}&nbsp;&nbsp;(${ea.staffId})
+                  <div class="nowrap">
+                    ${ea.fullName}&nbsp;&nbsp;(${ea.staffId})
+                  </div>
                 </td>
 
                 <!-- previous effort -->
                 <td class="basic" style="text-align:right;">
-                  <g:formatNumber number="${ea.previousPeriodEffort}" type="percent" maxFractionDigits="2"/>
-                  <g:hiddenField name="staff-${ea.staffId}.previousPeriodEffort" value="${ea.previousPeriodEffort}" />
+                  <div class="nowrap">                  
+                    <g:formatNumber number="${ea.previousPeriodEffort}" type="percent" maxFractionDigits="2"/>
+                    <g:hiddenField name="staff-${ea.staffId}.previousPeriodEffort" value="${ea.previousPeriodEffort}" />
+                  </div>
                 </td>
 
                 <!-- checkbox: copy previous to current -->
@@ -101,41 +118,48 @@
 
                 <!-- textbox: this period's effort -->
                 <td class="basic" style="text-align:right;">
-                  <g:if test="${ea.isCommitted}" >
-                    <g:formatNumber number='${ea.thisPeriodAssignedEffort}' type='percent' />                    
-                  </g:if>
-                <g:else>
-                    <g:textField 
-                      name="staff-${ea.staffId}.thisPeriodAssignedEffort" 
-                      class="textfieldBasic" 
-                      style="text-align:right;"
-                      size="3" 
-                      value="${g.formatNumber(number:(ea.thisPeriodAssignedEffort ?: 0) * 100, maxFractionDigits:2)}"
-                    /> %
-                  </g:else>
-
+                  <div class="nowrap">                  
+                    <g:if test="${ea.isCommitted}" >
+                      <g:formatNumber number='${ea.thisPeriodAssignedEffort}' type='percent' />                    
+                    </g:if>
+                    <g:else>
+                      <g:textField 
+                        name="staff-${ea.staffId}.thisPeriodAssignedEffort" 
+                        class="textfieldBasic" 
+                        style="text-align:right;"
+                        size="3" 
+                        value="${g.formatNumber(number:(ea.thisPeriodAssignedEffort ?: 0) * 100, maxFractionDigits:2)}"
+                      /> %
+                    </g:else>
+                  </div>
                 </td>
 
-                <!-- effort committed -->
+                <!-- effort reported -->
                 <td class="basic" style="text-align:right;">
-                  <g:if test="${ea.percentCommitted && !ea.isCommitted}" >[</g:if>
-                  <g:formatNumber number="${ea.percentCommitted}" type="percent" />
-                  <g:if test="${ea.percentCommitted && !ea.isCommitted}" >]</g:if>
+                  <div class="nowrap">                                    
+                    <g:formatNumber number="${ea.currentPeriodReportedEffort}" type="percent" maxFractionDigits="2"/>
+                  </div>
                 </td>
 
                 <!-- date effort committed -->
-                <td class="basic" style="text-align:right;">
-                  ${ea.dateCommitted}
+                <td class="basic" style="text-align:center;">
+                  <div class="nowrap">                                    
+                    <g:formatDate date="${ea.dateCommitted}" format="MM-dd-yyyy"/>
+                  </div>
                 </td>
 
                 <!-- dates email sent -->
                 <td class="basic">
-                  <br />${ea.datesEmailsSent?.join(', ')}
+                  <div class="topAlign">
+                    ${ea.datesEmailsSent?.join(', ')}
+                  </div>
                 </td>
 
                 <!-- checkbox: send email -->
                 <td class="basic" style="text-align:center;">
-                  <input type="checkbox" name="staff-${ea.staffId}.sendNow"/>
+                  <g:if test="${!ea.isCommitted}" >
+                    <input type="checkbox" name="staff-${ea.staffId}.sendNow"/>
+                  </g:if>
                 </td>
                 
               </tr>
@@ -145,11 +169,7 @@
           </tbody>
 
         </table>
-        
-        <div class="tableFooterNote">* Effort not committed yet appear in brackets []</div>
-        
-        <g:actionSubmit class="buttonBasic" value="SUBMIT" action="update"/>
-
+                        
       <!-- end FORM -->
       </g:form>
       
