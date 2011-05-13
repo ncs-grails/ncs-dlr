@@ -107,7 +107,7 @@ class BootStrap {
                 */
                 
                 // Assigned Effort 
-                def reportedEffortfMarchNgp = new AssignedEffort(
+                def assignedEffortMarchNgp = new AssignedEffort(
                     reportingStaff:reportingStaffNgp,
                     period:reportingPeriodMarch, 
                     laborCategory:laborCategoryDataQualityStaff,
@@ -117,7 +117,7 @@ class BootStrap {
                     dateCommitted:'4/20/2011', 
                     commitingStaff:reportingStaffNgp
                 ).save()                
-                def reportedEffortMarchAjz = new AssignedEffort(
+                def assignedEffortMarchAjz = new AssignedEffort(
                     reportingStaff:reportingStaffAjz,
                     laborCategory:laborCategoryItCoordinator,
                     period:reportingPeriodMarch, 
@@ -127,17 +127,17 @@ class BootStrap {
                     dateCommitted:'4/30/2011', 
                     commitingStaff:reportingStaffAjz
                 ).save()
-                def reportedEffortlAprilNgp = new AssignedEffort(
+                def assignedEffortlAprilNgp = new AssignedEffort(
                     reportingStaff:reportingStaffNgp,
                     laborCategory:laborCategoryDataQualityStaff,
                     period:reportingPeriodApril, 
                     assignedEffort:0.4, 
                     dateAssigned:'5/1/2011',
                     assigningStaff:reportingStaffSqv, 
-                    dateCommitted:'', 
-                    commitingStaff:reportingStaffSqv
+                    dateCommitted:'5/30/2011', 
+                    commitingStaff:reportingStaffNgp
                 ).save()
-                def reportedEffortAprilAjz = new AssignedEffort(
+                def assignedEffortAprilAjz = new AssignedEffort(
                     reportingStaff:reportingStaffAjz,
                     laborCategory:laborCategoryItCoordinator,
                     period:reportingPeriodApril, 
@@ -147,7 +147,7 @@ class BootStrap {
                     dateCommitted:'', 
                     commitingStaff:''
                 ).save()
-                def reportedEffortlAprilSqv = new AssignedEffort(
+                def assignedEffortlAprilSqv = new AssignedEffort(
                     reportingStaff:reportingStaffSqv,
                     laborCategory:laborCategoryOther,
                     period:reportingPeriodApril, 
@@ -157,16 +157,51 @@ class BootStrap {
                     dateCommitted:'', 
                     commitingStaff:''
                 ).save()
+                
+                // Effort Reported
+                def reportedEffortAprilNgp1 = new ReportedEffort(
+                    assignedEffort:assignedEffortlAprilNgp, 
+                    activity:studyActivityHighLowRecruitmentVanguard, 
+                    task:studyTaskDataManagement, 
+                    percentEffort:0.2,
+                    dateCreated:'5/31/2011',
+                    userCreated:reportingStaffNgp.username, 
+                    appCreated:'ncs-dlr'
+                ).save()
+                def reportedEffortAprilNgp2 = new ReportedEffort(
+                    assignedEffort:assignedEffortlAprilNgp, 
+                    activity:studyActivityHighLowRecruitmentVanguard, 
+                    task:studyTaskOther, 
+                    percentEffort:0.2,
+                    dateCreated:'5/31/2011',
+                    userCreated:reportingStaffNgp.username, 
+                    appCreated:'ncs-dlr'
+                ).save()
+                def reportedEffortAprilAjz1 = new ReportedEffort(
+                    assignedEffort:assignedEffortAprilAjz, 
+                    activity:studyActivityHighLowRecruitmentVanguard, 
+                    task:studyTaskDataManagement, 
+                    percentEffort:0.1,
+                    dateCreated:'5/29/2011',
+                    userCreated:reportingStaffAjz.username, 
+                    appCreated:'ncs-dlr'
+                ).save()
+                
                                         
                 // email notification sent
                 def emailNotificationAprilNgp1 = new NotificationEmail(
-                    assignedEffort:reportedEffortlAprilNgp, 
+                    assignedEffort:assignedEffortlAprilNgp, 
                     dateSent:'5/5/2011', 
                     userSent:'sqv'
                 ).save()
                 def emailNotificationAprilNgp2 = new NotificationEmail(
-                    assignedEffort:reportedEffortlAprilNgp, 
+                    assignedEffort:assignedEffortlAprilNgp, 
                     dateSent:'5/10/2011', 
+                    userSent:'sqv'
+                ).save()
+                def emailNotificationAprilAjz1 = new NotificationEmail(
+                    assignedEffort:assignedEffortAprilAjz, 
+                    dateSent:'5/5/2011', 
                     userSent:'sqv'
                 ).save()
               
