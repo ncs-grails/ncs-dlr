@@ -12,23 +12,17 @@ sqv<%@ page contentType="text/html;charset=UTF-8" %>
 
     <g:form name="directLaborReporting" method="post" controller="main" action="add">
       
-      <h1>Direct Labor Reporting</h1>
-
       <p class="breadcrumbs">
         <g:link controller="applicationManagement" action="index">Application Management</g:link>
       </p>
     
+      <h1>Direct Labor Reporting</h1>
+
       <p class="fontMaroon">
         Welcome, <strong>${reportingStaffInstance.firstName} ${reportingStaffInstance.lastName}!</strong>
       </p>
       
       <!-- <fieldset class="maroonRoundRect"> -->
-
-      <!--
-        <legend>
-          <g:formatDate date="${reportingPeriodInstance.periodDate}" format="MMMM" /> ${reportingPeriodInstance.year}
-        </legend>
-      -->
 
         <div class="prop">
           
