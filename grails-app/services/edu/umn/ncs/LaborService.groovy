@@ -102,7 +102,7 @@ class LaborService {
     } //def getNextReportingPeriodDate
     
     
-    def SendEmailNotification (periodId, staffId) {
+    def sendEmailNotification (periodId, staffId) {
         
         // Get logged in user account
         def principal = authenticateService.principal()
@@ -119,12 +119,12 @@ class LaborService {
         println "PRINTLN LaborService.currentPeriodAssignedEffortInstance: ${currentPeriodAssignedEffortInstance}"
         
         // Get notification email instance, if there is one
-        def notificationEmailInstance = currentPeriodAssignedEffortInstance.emails
-        println "PRINTLN LaborService.notificationEmailInstance: ${notificationEmailInstance}"
+        def notificationEmailInstanceList = currentPeriodAssignedEffortInstance.emails
+        println "PRINTLN LaborService.notificationEmailInstanceList: ${notificationEmailInstanceList}"
 
         // if notification email instance already exists, send a REMINDER
         def emailSubjectTitle
-        if ( notificationEmailInstance ) {
+        if ( notificationEmailInstanceList ) {
         //println "PRINTLN LaborService.if(notificationEmailInstance) = TRUE"
 
             emailSubjectTitle = "Reminder - NCS Direct Labor Report due ${g.formatDate(date:reportingDueDate, format:'MMMM')} 20 ${g.formatDate(date:reportingDueDate, format:'yyyy')}"
@@ -141,7 +141,6 @@ class LaborService {
         println "loggedInReportingStaffInstance.email = ${loggedInReportingStaffInstance.email}}"
         println "emailSubjectTitle = ${emailSubjectTitle}}"
         
-/*        
         mailService.sendMail {
             to reportingStaffInstance.email
             from loggedInReportingStaffInstance.email
@@ -154,8 +153,13 @@ class LaborService {
                 ]
             )                    
         } //mailService.sendMail
-*/
 
+        // create row that email was sent
+        def notificationEmailInstance = new NotificationEmail(
+            assignedEffort:currentPeriodAssignedEffortInstance,
+            userSent:loggedInReportingStaffInstance
+        )
+        notificationEmailInstance.save(flush:true)
     }
     
 } //class LaborService
