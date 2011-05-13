@@ -21,19 +21,23 @@ class ReportingPeriod {
     }
     
     ReportingPeriod getPreviousPeriod() {
+        
         ReportingPeriod.createCriteria().get{
             lt("periodDate", periodDate)
             maxResults(1)
             order("periodDate","desc")
         }
+        
     }
 
     ReportingPeriod getNextPeriod() {
+        
         ReportingPeriod.createCriteria().get{
             gt("periodDate", periodDate)
             maxResults(1)
             order("periodDate")
         }
+        
     }
 
     String toString() {
