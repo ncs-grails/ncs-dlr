@@ -15,19 +15,28 @@
   </head>
 
   <body>
-      <h1>DLR Application Management</h1>
 
-      <p class="breadcrumbs">
+    <p class="breadcrumbs">
         <g:link controller="main" action="index">DLR Home</g:link>
         &nbsp;&nbsp;&gt&nbsp;&nbsp;
         <span class="fontMaroon">Application Management</span>
       </p>
       
+      <h1>DLR Application Management</h1>
+
       <dl>
-        <dt class="basicMenu">Staff <span class="fontSmaller">- enter staff information</span></dt>
-        <dt class="basicMenu"><g:link controller="assignEffort" action="show">Effort Assignment</g:link> <span class="fontSmaller">- enter assigned effort for reporting period</span></dt>
-        <dt class="basicMenu">Report Generation <span class="fontSmaller">- generate effort reports for submission</dt>
-        <dt class="basicMenu">Report Archive <span class="fontSmaller">- view past reported effort that have been generated</span></dt>
+        <dt class="basicMenu">
+          Staff - enter staff information
+        </dt>
+        <dt class="basicMenu">
+          <g:link controller="assignEffort" action="show">Effort Assignment</g:link> - enter assigned effort for reporting period
+        </dt>
+        <dt class="basicMenu">
+          Report Generation - generate effort reports for submission
+        </dt>
+        <dt class="basicMenu">
+          Report Archive - view past reported effort that have been generated
+        </dt>
       </dl>
 
       <div class="pageSpacing"> </div>
