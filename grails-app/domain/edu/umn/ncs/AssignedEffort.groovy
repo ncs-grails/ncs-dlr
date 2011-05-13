@@ -16,6 +16,7 @@ class AssignedEffort {
     static hasMany = [emails: NotificationEmail, reportedEfforts: ReportedEffort]
 
     AssignedEffort getPreviousAssignedEffort() {
+        
         def assignedEffort = null
 
         // TODO: look it up here
