@@ -99,48 +99,68 @@ class AssignEffortController {
             // Create record map
             def record = [:]
             
-            // row number
+            // Get row number
             record.rowNum = i + 1
             //println "PRINTLN AssignedEffortController.show.record.rowNum: ${record.rowNum}"
             
+            // Get staff id 
             record.staffId = rs.id
-            //println "PRINTLN AssignedEffortController.show.record.staffId: ${record.staffId}"
+            println "PRINTLN AssignedEffortController.show.record.staffId: ${record.staffId}"
 
-            // staff full name
+            // Get staff full name
             record.fullName = rs.fullNameLFM
             //println "PRINTLN AssignedEffortController.show.record.fullName: ${record.fullName}"
                                     
-            // effort ofthis period
+            // Get this period's assigned effort
             def thisPeriodAssignedEffort = AssignedEffort.findByPeriodAndReportingStaff(reportingPeriodInstance, rs)
             //println "PRINTLN AssignedEffortController.show.thisPeriodPeriodEffort: ${thisPeriodAssignedEffort}"
             
-            record.thisPeriodAssignedEffort = thisPeriodAssignedEffort?.assignedEffort
-            
+            record.thisPeriodAssignedEffort = thisPeriodAssignedEffort?.assignedEffort       
             //println "PRINTLN AssignedEffortController.show.record.thisPeriodAssignedEffort: ${record.thisPeriodAssignedEffort}"
             
-            // dateCommitted of this period, if it was committed
+            // Was this period's effort committed
             record.isCommitted = thisPeriodAssignedEffort?.dateCommitted ? true : false
+            //println "PRINTLN AssignedEffortController.show.record.isCommitted: ${record.isCommitted}"
                     
-            // effort of previous period
+            // Get previous period's effort 
             def previousPeriod = reportingPeriodInstance.previousPeriod
+            
             def previousAssignedEffort = AssignedEffort.findByPeriodAndReportingStaff(previousPeriod, rs)
+            
             record.previousPeriodEffort = previousAssignedEffort?.assignedEffort
             if ( record.previousPeriodEffort ) {
                 record.previousPeriodEffort = record.previousPeriodEffort
             }
+            //println "PRINTLN AssignedEffortController.show.record.previousPeriodEffort: ${record.previousPeriodEffort}"
             
-            // percent effort of period, that has been committed
-            record.percentCommitted = thisPeriodAssignedEffort?.dateCommitted ? AssginedEffort.assignedEffort : null
-            if ( record.percentCommitted ) {
-                record.percentCommitted = record.percentCommitted / 100
+            // Get this period's percent effort has been reported
+            //record.currentPeriodReportedEffort = thisPeriodAssignedEffort.reportedEfforts.percentEffort
+            
+            def cCPRE = ReportedEffort.createCriteria()
+            
+            def sumReportedEffort = cCPRE.get {
+                eq("assignedEffort", thisPeriodAssignedEffort)
+                projections {
+                    sum("percentEffort")
+                }
             }
+            record.currentPeriodReportedEffort = sumReportedEffort
+            println "PRINTLN AssignedEffortController.show.record.currentPeriodReportedEffort: ${record.currentPeriodReportedEffort}"
             
-            // date current effort was committed
+            /*
+            record.percentCommitted = thisPeriodAssignedEffort?.dateCommitted ? thisPeriodAssignedEffort.assignedEffort : null
+            if ( record.percentCommitted ) {
+                record.percentCommitted = record.percentCommitted 
+            }
+            */
+            //println "PRINTLN AssignedEffortController.show.record.currentPeriodReportedEffort: ${record.currentPeriodReportedEffort}"
+            
+            // Get date current effort was committed
             record.dateCommitted = thisPeriodAssignedEffort?.dateCommitted
+            //println "PRINTLN AssignedEffortController.show.record.dateCommitted: ${record.dateCommitted}"
             
-            // email notifications sent
-            //record.datesEmailsSent = thisPeriodAssignedEffort?.emails?.sort{it.dateSent}?.collect{ g.formatDate(date:it.dateSent, format:'MM-dd-yyyy')} 
-            record.datesEmailsSent = thisPeriodAssignedEffort?.emails
+            // Get email notifications sent
+            record.datesEmailsSent = thisPeriodAssignedEffort?.emails?.sort{it.dateSent}?.collect{g.formatDate(date:it.dateSent, format:'MM-dd-yyyy')} 
             //println "PRINTLN AssignedEffortController.show.record.datesEmailsSent: ${record.datesEmailsSent}"
            
             // load all data collected to the LIST that is passed to gsp page
