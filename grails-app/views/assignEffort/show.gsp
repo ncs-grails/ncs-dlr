@@ -86,8 +86,13 @@
             
             <g:each var="ea" in="${effortAssignmentList}" >
               
-              <g:if test="${ea.isCommitted}" ><tr class="backgroundColorLemonchiffon"></g:if>
-              <g:else><tr></g:else>
+              <!-- if effort has not been committed yet, highlight row-->
+              <g:if test="${!ea.isCommitted}" >
+                <tr class="backgroundColorLemonchiffon">
+              </g:if>
+              <g:else>
+                <tr>
+              </g:else>
                 
                 <!-- row number -->
                 <td class="basic" style="text-align:right;">
@@ -118,11 +123,22 @@
 
                 <!-- textbox: this period's effort -->
                 <td class="basic" style="text-align:right;">
-                  <div class="nowrap">                  
+                  <div class="nowrap">          
+                    <!-- if current period's assigned effort is already committed, do not display textbox. Otherwise, display textbox -->
                     <g:if test="${ea.isCommitted}" >
-                      <g:formatNumber number='${ea.thisPeriodAssignedEffort}' type='percent' />                    
+                      <g:hiddenField name="staff-${ea.staffId}.thisPeriodAssignedEffort" value="${g.formatNumber(number:(ea.thisPeriodAssignedEffort ?: 0) * 100, maxFractionDigits:2)}" />
+                      <g:formatNumber number='${ea.thisPeriodAssignedEffort}' type='percent' />             
                     </g:if>
-                    <g:else>
+                    <g:elseif test="${!ea.isCommitted && ea.thisPeriodAssignedEffort < ea.currentPeriodReportedEffort}">
+                      <g:textField 
+                        name="staff-${ea.staffId}.thisPeriodAssignedEffort" 
+                        class="textfieldBasicRed" 
+                        style="text-align:right;"
+                        size="3" 
+                        value="${g.formatNumber(number:(ea.thisPeriodAssignedEffort ?: 0) * 100, maxFractionDigits:2)}"
+                      /> %
+                    </g:elseif>
+                    <g:else test="${!ea.isCommitted}">
                       <g:textField 
                         name="staff-${ea.staffId}.thisPeriodAssignedEffort" 
                         class="textfieldBasic" 
