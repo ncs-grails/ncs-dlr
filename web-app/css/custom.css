@@ -163,6 +163,14 @@ fieldset legend {
     padding:.15em .15em;
 }
 
+.textfieldBasicRed{
+    border:.01em solid gray;
+    padding:.15em .15em;
+    background-color: firebrick;
+    color:white;
+    font-weight:bold;
+}
+
 select.basic{
     border:.01em solid gray;
     padding:.2em;
