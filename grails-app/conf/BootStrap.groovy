@@ -84,7 +84,7 @@ class BootStrap {
                     firstName:'Simone', 
                     middleInit:'Q', 
                     laborCategory:laborCategoryOther,
-                    email:'simone.vuong@gmail.com', 
+                    email:'sqv@cccs.umn.edu', 
                     isTestAccount:false, 
                     reportsEffort:true, 
                     userCreated:'sqv', 
@@ -136,12 +136,12 @@ class BootStrap {
                     assigningStaff:reportingStaffSqv, 
                     dateCommitted:'5/30/2011', 
                     commitingStaff:reportingStaffNgp
-                ).save()
+                ).save()                
                 def assignedEffortAprilAjz = new AssignedEffort(
                     reportingStaff:reportingStaffAjz,
                     laborCategory:laborCategoryItCoordinator,
                     period:reportingPeriodApril, 
-                    assignedEffort:0.10, 
+                    assignedEffort:0.20, 
                     dateAssigned:'5/1/2011',
                     assigningStaff:reportingStaffSqv,
                     dateCommitted:'', 
