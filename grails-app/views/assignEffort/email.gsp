@@ -9,7 +9,7 @@
     Dear ${reportingStaffInstance.firstName} ${reportingStaffInstance.lastName}:
 
     <p>Please submit your EFFORT for work done in 
-      <strong><g:formatDate date="${reportingPeriodInstance.periodDate}" format="MMMM yyyy" /></strong>
+      <strong><g:formatDate date="${currentReportingPeriodInstance.periodDate}" format="MMMM yyyy" /></strong>
       for the <em>National Children's Study</em>, using the University of Minnesota - National Children's Study system.
     </p>
     
