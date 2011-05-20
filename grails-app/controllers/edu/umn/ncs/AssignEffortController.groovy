@@ -65,6 +65,7 @@ class AssignEffortController {
         
         // format periodDate for control
         def periodSelectiontList = []
+
         periodList.each{
             periodSelectiontList.add([id:it.id, name: g.formatDate(date:it.periodDate, format:'MMMM yyyy')])
         }
@@ -201,7 +202,7 @@ class AssignEffortController {
             //println "PRINTLN AssignedEffortController.update.laborService.getCurrentReportingPeriod().reportingPeriodInstance: ${reportingPeriodInstance}"
         }
                 
-        // loop through each parameter
+    // loop through each parameter
         params.each{
                         
             //println "PRINTLN AssignedEffortController.update.params.each: ${it}"
@@ -393,11 +394,11 @@ class AssignEffortController {
                 if ( sendNowValue ) { 
                 println "PRINTLN AssignedEffortController.update.params.each.if(sendNowValue) = TRUE"
                 
-                    println "PRINTLN reportingPeriodInstance.id: ${reportingPeriodInstance.id}"
-                    println "PRINTLN reportingStaffInstance.id: ${reportingStaffInstance.id}"
+                    //println "PRINTLN reportingPeriodInstance.id: ${reportingPeriodInstance.id}"
+                    //println "PRINTLN reportingStaffInstance.id: ${reportingStaffInstance.id}"
                 
                     def message = laborService.sendEmailNotification(reportingPeriodInstance.id, reportingStaffInstance.id)      
-                    println "PRINTLN send email notification"
+                    //println "PRINTLN send email notification"
                     
                     
                    
