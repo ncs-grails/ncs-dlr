@@ -42,16 +42,16 @@ class BootStrap {
                 def laborCategoryOther = new LaborCategory(name:'Other', userCreated:'sqv').save()
                 
                 // Study Activity
-                def studyActivityHighLowRecruitmentVanguard = new StudyActivity(name:'High-Low Recruitment Vanguard', userCreated:'sqv').save()
-                def studyActivityExecutiveFunctionFormative = new StudyActivity(name:'WA 01 (Executive Function Formative)', userCreated:'sqv').save()
-                def studyActivityDietaryAssessmentFormative = new StudyActivity(name:'WA 02 (Dietary Assessment Formative)', userCreated:'sqv').save()
-                def studyActivityUlnarMeasurementFormative = new StudyActivity(name:'WA 03 (Ulnar Measurement Formative)', userCreated:'sqv').save()
-                def studyActivityStressAndCortisolFormative = new StudyActivity(name:'WA 04 (Stress & Cortisol Formative)', userCreated:'sqv').save()
-                def studyActivityBirthVisitQuestionnairesFormative = new StudyActivity(name:'WA 05 (Birth Visit Questionnaires Formative)', userCreated:'sqv').save()
+                def studyActivityHighLowRecruitmentVanguard = new StudyActivity(name:'High-Low Recruitment Vanguard', obsolete:false, userCreated:'sqv').save()
+                def studyActivityExecutiveFunctionFormative = new StudyActivity(name:'WA 01 (Executive Function Formative)', obsolete:false, userCreated:'sqv').save()
+                def studyActivityDietaryAssessmentFormative = new StudyActivity(name:'WA 02 (Dietary Assessment Formative)', obsolete:false, userCreated:'sqv').save()
+                def studyActivityUlnarMeasurementFormative = new StudyActivity(name:'WA 03 (Ulnar Measurement Formative)', obsolete:false, userCreated:'sqv').save()
+                def studyActivityStressAndCortisolFormative = new StudyActivity(name:'WA 04 (Stress & Cortisol Formative)', obsolete:false, userCreated:'sqv').save()
+                def studyActivityBirthVisitQuestionnairesFormative = new StudyActivity(name:'WA 05 (Birth Visit Questionnaires Formative)', obsolete:false, userCreated:'sqv').save()
  
                 // Study Task
-                def studyTaskDataManagement = new StudyTask(name:'Data Management', userCreated:'sqv').save()
-                def studyTaskOther = new StudyTask(name:'Other', userCreated:'sqv').save()
+                def studyTaskDataManagement = new StudyTask(name:'Data Management', obsolete:false, userCreated:'sqv').save()
+                def studyTaskOther = new StudyTask(name:'Other', obsolete:false, userCreated:'sqv').save()
 
                 // Reporting Staff 
                 def reportingStaffNgp = new ReportingStaff(
