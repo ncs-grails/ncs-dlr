@@ -27,7 +27,9 @@
 
         <!-- REPORTING MONTH control -->
         
+        <!--
         <g:hiddenField name="reportingPeriod" value="${reportingPeriodInstance}" />
+        -->
 
         <div class="clearBoth"
           <div class="floatLeft">
@@ -64,7 +66,7 @@
             </tr>
             <tr>
               <th class="basic" rowspan="3"></th>
-              <th class="basic" rowspan="3">Staff Name (Staff Id)</th>
+              <th class="basic" rowspan="2" colspan="2">Staff</th>
               <th class="basic" colspan="5">Effort</th>
               <th class="basic" colspan="2">Email Notification</th>
             </tr>
@@ -76,6 +78,8 @@
               <th class="basic" rowspan="2">Send<br />Now</th>
             </tr>
             <tr>
+              <th class="basic">Name</th>
+              <th class="basic">Id</th>
               <th class="basic">Previous</th>
               <th class="basic">Copy Over</th>
               <th class="basic">Current</th>
@@ -102,7 +106,13 @@
                 <!-- staff name & id -->
                 <td class="basic">
                   <div class="nowrap">
-                    ${ea.fullName}&nbsp;&nbsp;(${ea.staffId})
+                    ${ea.fullName}
+                  </div>
+                </td>
+
+                <td class="basic" style="text-align:right;">
+                  <div class="nowrap">
+                    ${ea.staffId}
                   </div>
                 </td>
 
