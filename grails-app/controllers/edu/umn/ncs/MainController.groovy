@@ -1,6 +1,6 @@
 package edu.umn.ncs
 import org.joda.time.*
-import org.joda.time.format.*
+//import org.joda.time.format.*
 //import java.text.DateFormat
 
 
@@ -15,12 +15,12 @@ class MainController {
 
     def index = {
 
-        // STAFF
+        // REPORTING STAFF
         def principal = authenticateService.principal()                         // principal is whoever is logged in
         def reportingStaffInstance = laborService.getReportingStaff(principal)
-        // println "PRINTLN MainController.reportingStaffInstance: ${reportingStaffInstance}"
+        println "PRINTLN MainController.index.reportingStaffInstance: ${reportingStaffInstance}"
 
-        // PERIOD
+        // REPORTING PERIOD
         def reportingPeriodInstance
         if (params?.reportingPeriod?.id) {
             // optional pull from params.reportingPeriod.id
@@ -28,17 +28,19 @@ class MainController {
         } else {
             reportingPeriodInstance = laborService.getCurrentReportingPeriod()
         }
+        println "PRINTLN MainController.index.reportingPeriodInstance: ${reportingPeriodInstance}"
 
-        // ASSIGNED EFFORT
-        def assignedEffortInstance = AssignedEffort.findByReportingStaffAndPeriod(reportingStaffInstance, reportingPeriodInstance)
+        // ASSIGNED EFFORT FOR PERIOD
+        def assignedEffortInstance = AssignedEffort.findByPeriodAndReportingStaff(reportingPeriodInstance, reportingStaffInstance)
+        println "PRINTLN MainController.index.assignedEffortInstance: ${assignedEffortInstance}"
 
-        // EFFORT COMMITTED DATE
-        def committedDateInstance = AssignedEffort.findByReportingStaffAndPeriod(reportingStaffInstance, reportingPeriodInstance)
-        // println "PRINTLN MainController.committedDateInstance: ${committedDateInstance}"
+        // EFFORT COMMITTED DATE FOR PERIOD
+        def committedDateInstance = assignedEffortInstance.dateCommitted
+        println "PRINTLN MainController.index.committedDateInstance: ${committedDateInstance}"
         
         [
-            reportingStaffInstance: reportingStaffInstance,
             reportingPeriodInstance: reportingPeriodInstance,
+            reportingStaffInstance: reportingStaffInstance,
             assignedEffortInstance: assignedEffortInstance,
             committedDateInstance: committedDateInstance,
         ]
@@ -46,10 +48,92 @@ class MainController {
     } //def index
 
     def show = {
+                
+        // Get REPORTING PERIOD instance
+        def reportingPeriodInstance
+        if (params?.period_id) {
+            reportingPeriodInstance = ReportingPeriod.read(params?.period_id)
+            println "PRINTLN MainController.show.reportingPeriodInstance: ${reportingPeriodInstance}"
+        }
+        
+        // Get REPORTING STAFF instance
+        def reportingStaffInstance
+        if (params?.staff_id) {
+            reportingStaffInstance = ReportingStaff.read(params?.staff_id)
+            println "PRINTLN MainController.show.reportingStaffInstance: ${reportingStaffInstance}"
+        }
 
-        // activity
-        //def studyActivityInstanceList = StudyActivity.findAllByObsolete(false)
+        // Get ASSSIGNED EFFORT instance
+        def assignedEffortInstance
+        if (params?.assigned_effort_id) {
+            assignedEffortInstance = AssignedEffort.read(params?.assigned_effort_id)
+            println "PRINTLN MainController.show.assignedEffortInstance: ${assignedEffortInstance}"
+        }
+        
+        // Get EFFORT COMMITTED DATE
+        def committedDateInstance
+        if ( assignedEffortInstance ) {
+            committedDateInstance = assignedEffortInstance.dateCommitted
+            println "PRINTLN MainController.show.committedDateInstance: ${committedDateInstance}"            
+        }
 
+        [
+            reportingPeriodInstance:reportingPeriodInstance, 
+            reportingStaffInstance:reportingStaffInstance,
+            assignedEffortInstance: assignedEffortInstance,
+            committedDateInstance: committedDateInstance,
+        ]
+       
+    } //def show
+
+    def add = {
+        
+        def reportingPeriodInstance
+        if (params?.period_id) {
+            reportingPeriodInstance = ReportingPeriod.read(params?.period_id)
+            println "PRINTLN MainController.add.reportingPeriodInstance: ${reportingPeriodInstance}"
+        }
+        
+        // Get REPORTING STAFF instance
+        def reportingStaffInstance
+        if (params?.staff_id) {
+            reportingStaffInstance = ReportingStaff.read(params?.staff_id)
+            println "PRINTLN MainController.add.reportingStaffInstance: ${reportingStaffInstance}"
+        }
+
+        // Get ASSSIGNED EFFORT instance
+        def assignedEffortInstance
+        if (params?.assigned_effort_id) {
+            assignedEffortInstance = AssignedEffort.read(params?.assigned_effort_id)
+            println "PRINTLN MainController.add.assignedEffortInstance: ${assignedEffortInstance}"
+        }
+        
+        // Get EFFORT COMMITTED DATE
+        def committedDateInstance
+        if ( assignedEffortInstance ) {
+            committedDateInstance = assignedEffortInstance.dateCommitted
+            println "PRINTLN MainController.add.committedDateInstance: ${committedDateInstance}"            
+        }
+
+        // Get STUDY ACTIVITY
+        def c = StudyActivity.createCriteria()
+        
+        def studyActivityInstanceList = c.list{
+            //eq("obsolete", false)
+            order("name", "asc")
+        }
+        println "PRINTLN MainController.add.studyActivityInstanceList: ${studyActivityInstanceList}"                    
+        studyActivityInstanceList.each{
+            println "PRINTLN MainController.add.studyActivityInstanceList.name: ${it.name}"                    
+        }
+        
+        def studyActivitySelectionList = []
+        
+        studyActivityInstanceList.each{
+            studyActivitySelectionList.add([id:it.id, name:it.name])
+        }
+        println "PRINTLN MainController.add.studyActivitySelectionList: ${studyActivitySelectionList}"                    
+        
         // task
         //def studyTaskInstanceList = StudyTask.findAllByObsolete(false)
 
@@ -59,8 +143,15 @@ class MainController {
         // past committed effort
         //def previouslyReportedEffortInstanceList
 
-    } //def show
+        [
+            reportingPeriodInstance: reportingPeriodInstance, 
+            reportingStaffInstance: reportingStaffInstance,
+            assignedEffortInstance: assignedEffortInstance,
+            committedDateInstance: committedDateInstance, 
+            studyActivitySelectionList: studyActivitySelectionList
+        ]
 
-
+    } //def add
+    
 
 } //class MainController
