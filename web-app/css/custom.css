@@ -15,14 +15,56 @@ root {
     display: block;
 }
 
+/* fonts **********************************************************************/
+.fontMaroon {
+   color: maroon;
+}
+.fontMaroonBold {
+   color: maroon;
+   font-weight:bold;
+}
+.fontPurpleBold {
+   color: purple;
+   font-weight:bold;    
+}
+
+.fontSmaller {
+    font-size:smaller;
+}
+
 /* color **********************************************************************/
 
 .backgroundColorLemonchiffon{
     background-color: lemonchiffon;
 }
 
+/* headers ********************************************************************/
+h1 {
+    font-style:normal;
+    font-size:1.5em;
+    color: maroon;
+    text-align: center;
+}
+h2 {
+    font-style:normal;
+    font-size:1.25em;
+    color: maroon;
+}
+
 /* sections *******************************************************************/
-.clearBoth {position:relative; clear:both; width:100%;}
+.clearBoth {
+    position:relative; 
+    clear:both; 
+    width:100%;
+}
+
+.clearCenterPadding {
+    position:relative; 
+    clear:both; 
+    width:100%;
+    margin: .75em .5em;
+    text-align: center;
+}
 
 .floatLeft {
     float:left;
@@ -87,36 +129,49 @@ div.prop {
         margin: .5em 0;
 }
 
-/* fonts **********************************************************************/
-.fontMaroon {
-   color: maroon;
-}
-.fontMaroonBold {
-   color: maroon;
-   font-weight:bold;
-}
-
-.fontSmaller {
-    font-size:smaller;
-}
-
-/* headers ********************************************************************/
-h1 {
-    font-style:normal;
-    font-size:1.5em;
-    color: maroon;
+.messageBoxPowderblue{
+    border:.1em solid silver;
+    -moz-border-radius: 0.1em; 
+    -webkit-border-radius: 0.1em;
+    padding: .25em 1em;
+    background-color: lightcyan;
+    color: black;
     text-align: center;
 }
-h2 {
-    font-style:normal;
-    font-size:1.25em;
-    color: maroon;
+
+.messageBoxOrange{
+    border: .1em solid silver;
+    -moz-border-radius: 0.25em; 
+    -webkit-border-radius: 0.25em;
+    padding: .25em 1em;
+    background-color: orange;
+    color: white;
 }
+
+.messageBoxRed{
+    border: .1em solid silver;
+    -moz-border-radius: 0.25em; 
+    -webkit-border-radius: 0.25em;
+    padding: .25em 1em;
+    background-color: red;
+    color: white;
+}
+
+.messageBoxGreen{
+    border: .1em solid silver;
+    -moz-border-radius:0.25em; 
+    -webkit-border-radius:0.25em;
+    padding: .25em 1em;
+    background-color: green;
+    color: white;
+}
+
+
 
 /* tables *********************************************************************/
 th.basic{
     background-image:none;
-    border:1px solid gray;
+    border:1px solid silver;
     padding:.5em;
     background-color: lavender;
     color:black;
@@ -126,7 +181,7 @@ th.basic{
 
 td.basic{
     background-image:none;
-    border:1px solid gray;
+    border:1px solid silver;
     padding:.5em;
     font-size:small;
 }
@@ -139,14 +194,30 @@ td.basic{
 
 /* controls *******************************************************************/
 
-fieldset legend {
-        color:#8C1919;
+.legendBlack {
+        color:black;
         font-size:1.25em;
         font-weight:bold;
 }
-.maroonRoundRect {
+
+.legendMaroon {
+        color:maroon;
+        font-size:1.25em;
+        font-weight:bold;
+}
+
+.roundRectMaroon {
         margin-bottom:1em;
-        border:silver solid thin; -moz-border-radius:0.5em; -webkit-border-radius:0.5em;
+        border:maroon solid thin; -moz-border-radius:0.5em; -webkit-border-radius:0.5em;
+        padding: 0em 1em 1em 1em;
+        line-height:2;
+}
+
+.roundRectSilver {
+        margin-bottom:1em;
+        border:silver solid thin; 
+        -moz-border-radius:0.5em; 
+        -webkit-border-radius:0.5em;
         padding: 0em 1em 1em 1em;
         line-height:2;
 }
@@ -174,13 +245,26 @@ select.basic{
     border:.01em solid gray;
     padding:.2em;
     background-color: white;
-    color:navy;
+    color:purple;
     
 }
 
-.buttonBasic{
-    border:.2em outset gray;
-    padding:.1em;
-    background-color: lemonchiffon;
+.buttonBasic {
+    border:.2em outset papayawhip;
+    -moz-border-radius: 1em; 
+    -webkit-border-radius: 1em;
+    padding:.2em 1em;
+    background-color: purple;    
+    color:papayawhip;
+    font-weight:bold;    
 }
 
+.buttonBasic:hover {
+    border:.2em outset purple;
+    -moz-border-radius: 1em; 
+    -webkit-border-radius: 1em;
+    padding:.2em 1em;
+    background-color: papayawhip;    
+    color:purple;
+    font-weight:bold;        
+}
