@@ -47,9 +47,16 @@
               optionKey="id"
               optionValue="name"
               value="${studyActivitySelectionList.id}" 
-              noSelection="${['null':'-- Choose --']}"/>
+              noSelection="${['null':'-- Choose --']}"/>&nbsp;&nbsp;
+          <span class="fontPurpleBold">Study Task</span>&nbsp;
+            <g:select class="basic"
+              name="studyTaskInstance.id"
+              from="${studyActivitySelectionList}"
+              optionKey="id"
+              optionValue="name"
+              value="${studyTaskSelectionList.id}" 
+              noSelection="${['null':'-- Choose --']}"/>&nbsp;&nbsp;
           <!--
-          Task&nbsp;&nbsp;
           Effort
           -->
               
