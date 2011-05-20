@@ -116,10 +116,10 @@ class MainController {
         }
 
         // Get STUDY ACTIVITY
-        def c = StudyActivity.createCriteria()
+        def csa = StudyActivity.createCriteria()
         
-        def studyActivityInstanceList = c.list{
-            //eq("obsolete", false)
+        def studyActivityInstanceList = csa.list{
+            eq("obsolete", false)
             order("name", "asc")
         }
         println "PRINTLN MainController.add.studyActivityInstanceList: ${studyActivityInstanceList}"                    
@@ -134,8 +134,24 @@ class MainController {
         }
         println "PRINTLN MainController.add.studyActivitySelectionList: ${studyActivitySelectionList}"                    
         
-        // task
-        //def studyTaskInstanceList = StudyTask.findAllByObsolete(false)
+        // Get STUDY TASK
+        def cst = StudyTask.createCriteria()
+        
+        def studyTaskInstanceList = cst.list{
+            eq("obsolete", false)
+            order("name", "asc")
+        }
+        println "PRINTLN MainController.add.studyTaskInstanceList: ${studyTaskInstanceList}"                    
+        studyTaskInstanceList.each{
+            println "PRINTLN MainController.add.studyTaskInstanceList.name: ${it.name}"                    
+        }
+        
+        def studyTaskSelectionList = []
+        
+        studyTaskInstanceList.each{
+            studyTaskSelectionList.add([id:it.id, name:it.name])
+        }
+        println "PRINTLN MainController.add.studyTaskSelectionList: ${studyTaskSelectionList}"                    
 
         // reported effort
         //def reportedEffortInstanceList
@@ -148,7 +164,8 @@ class MainController {
             reportingStaffInstance: reportingStaffInstance,
             assignedEffortInstance: assignedEffortInstance,
             committedDateInstance: committedDateInstance, 
-            studyActivitySelectionList: studyActivitySelectionList
+            studyActivitySelectionList: studyActivitySelectionList, 
+            studyTaskSelectionList: studyTaskSelectionList
         ]
 
     } //def add
