@@ -27,7 +27,9 @@ root {
    color: purple;
    font-weight:bold;    
 }
-
+.fontPurple {
+   color: purple;
+}
 .fontSmaller {
     font-size:smaller;
 }
@@ -106,12 +108,17 @@ dt.basicMenu {
     float: left;
     width: 80%;
     margin: .5em 0;
-    border: 1px solid silver; -moz-border-radius:1em; -webkit-border-radius:1em;    
+    border: .1em solid silver; 
+    -moz-border-radius:1em; 
+    -webkit-border-radius:1em;    
     padding: .5em 1em;
     background-color: lemonchiffon;
+    color:gray;
 }
 dt.basicMenu:hover {
+    border: .1em solid silver; 
     background-color: lavender;
+    color:gray;
 }
 dt.basicMenu:active {
     font-size: larger;
@@ -131,8 +138,10 @@ div.prop {
 
 .messageBoxPowderblue{
     border:.1em solid silver;
+    /*
     -moz-border-radius: 0.1em; 
     -webkit-border-radius: 0.1em;
+    */
     padding: .25em 1em;
     background-color: lightcyan;
     color: black;
@@ -141,8 +150,10 @@ div.prop {
 
 .messageBoxOrange{
     border: .1em solid silver;
+    /*
     -moz-border-radius: 0.25em; 
     -webkit-border-radius: 0.25em;
+    */
     padding: .25em 1em;
     background-color: orange;
     color: white;
@@ -150,8 +161,10 @@ div.prop {
 
 .messageBoxRed{
     border: .1em solid silver;
+    /*
     -moz-border-radius: 0.25em; 
     -webkit-border-radius: 0.25em;
+    */
     padding: .25em 1em;
     background-color: red;
     color: white;
@@ -159,8 +172,10 @@ div.prop {
 
 .messageBoxGreen{
     border: .1em solid silver;
+    /*
     -moz-border-radius:0.25em; 
     -webkit-border-radius:0.25em;
+    */
     padding: .25em 1em;
     background-color: green;
     color: white;
@@ -245,26 +260,30 @@ select.basic{
     border:.01em solid gray;
     padding:.2em;
     background-color: white;
-    color:purple;
-    
+    color:black; 
+    font-size: smaller;
 }
 
 .buttonBasic {
-    border:.2em outset papayawhip;
-    -moz-border-radius: 1em; 
-    -webkit-border-radius: 1em;
-    padding:.2em 1em;
-    background-color: purple;    
-    color:papayawhip;
-    font-weight:bold;    
-}
-
-.buttonBasic:hover {
     border:.2em outset purple;
     -moz-border-radius: 1em; 
     -webkit-border-radius: 1em;
     padding:.2em 1em;
     background-color: papayawhip;    
     color:purple;
+    font-weight:bold;    
+}
+
+.buttonBasic:hover {
+    border:.2em outset papayawhip;
+    -moz-border-radius: 1em; 
+    -webkit-border-radius: 1em;
+    padding:.2em 1em;
+    background-color: purple;    
+    color:papayawhip;
     font-weight:bold;        
+}
+
+button {
+    font-size: 1.0em;
 }
