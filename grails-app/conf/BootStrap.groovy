@@ -186,7 +186,26 @@ class BootStrap {
                     userCreated:reportingStaffAjz.username, 
                     appCreated:'ncs-dlr'
                 ).save()
-                
+                def reportedEffortAprilSqv1 = new ReportedEffort(
+                    assignedEffort:assignedEffortlAprilSqv, 
+                    activity:studyActivityHighLowRecruitmentVanguard, 
+                    task:studyTaskDataManagement, 
+                    percentEffort:0.3,
+                    dateCreated:'5/31/2011',
+                    userCreated:reportingStaffSqv.username, 
+                    appCreated:'ncs-dlr'
+                ).save()
+                /*
+                def reportedEffortAprilSqv2 = new ReportedEffort(
+                    assignedEffort:assignedEffortlAprilSqv, 
+                    activity:studyActivityHighLowRecruitmentVanguard, 
+                    task:studyTaskOther, 
+                    percentEffort:0.2,
+                    dateCreated:'5/31/2011',
+                    userCreated:reportingStaffSqv.username, 
+                    appCreated:'ncs-dlr'
+                ).save()
+                */
                                         
                 // email notification sent
                 def emailNotificationAprilNgp1 = new NotificationEmail(
