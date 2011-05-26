@@ -100,4 +100,78 @@ class AssignedEffortController {
 
     } //def show 
     
+    
+    def showPast = {
+        
+        def reportingStaffInstance
+        
+        if (params?.id) {
+            reportingStaffInstance = ReportingStaff.read(params?.id)
+        }
+        println "PRINTLN AssignedEffortController.showPast.reportingStaffInstance: ${reportingStaffInstance}"
+                
+        def cRE = ReportedEffort.createCriteria()
+        def reportedEffortInstance = cRE.list{
+            and {
+                assignedEffort{
+                    period {
+                        order("periodDate","desc")            
+                    }
+                    reportingStaff { 
+                        idEq(reportingStaffInstance.id) 
+                    }                    
+                    isNotNull("dateCommitted")    
+                    maxResults(12)
+                }                                
+            }
+            order("percentEffort", "desc")
+        }
+        println "PRINTLN AssignedEffortController.showPast.reportedEffortInstance: ${reportedEffortInstance}"
+
+        def reportedEffortList = []
+        
+        println "PRINTLN BEGIN LOOP"
+
+        // Add records to Assigned Effort Instance
+        reportedEffortInstance.eachWithIndex{ rs, i ->
+            
+            //println "PRINTLN AssignedEffortController.showPast.reportedEffortInstance.id: ${reportedEffortInstance.id}"            
+            
+            // Create record map
+            def record = [:]
+            
+            // Get Assigned Effort Id
+            record.assignedEffortId = rs.assignedEffort.id
+            println "PRINTLN AssignedEffortController.showPast.record.assignedEffortId: ${record.assignedEffortId}"
+                
+            // Get Period Date
+            record.period = rs.assignedEffort.period.periodDate          
+            println "PRINTLN AssignedEffortController.showPast.record.period: ${record.period}"
+                                    
+            // Get Study Activity
+            record.activity = rs.activity            
+            println "PRINTLN AssignedEffortController.showPast.record.activity: ${record.activity}"
+            
+            // Get Study Task
+            record.task = rs.task            
+            println "PRINTLN AssignedEffortController.showPast.record.task: ${record.task}"
+            
+            // Get Reported Effort
+            record.reportedEffort = rs.percentEffort            
+            println "PRINTLN AssignedEffortController.showPast.record.reportedEffort: ${record.reportedEffort}"
+                       
+            reportedEffortList.add(record)                        
+            
+        }
+
+        println "PRINTLN END LOOP"
+        [
+            reportedEffortList: reportedEffortList
+        ]
+        
+        
+        
+    } //def showPast
+    
+    
 }
