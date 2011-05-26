@@ -227,7 +227,7 @@ class AssignEffortController {
                  ********************************************************************************************************/
                 
                 // Get current period's assigned effort from gsp
-                def currentPeriodAssignedEffortValue = it.value. thisPeriodAssignedEffort                                
+                def currentPeriodAssignedEffortValue = it.value.thisPeriodAssignedEffort                                
                 //println "PRINTLN AssignedEffortController.update.params.each.currentPeriodAssignedEffortValue: ${currentPeriodAssignedEffortValue}"
                 
                 // validate current period's assigned effort from gsp

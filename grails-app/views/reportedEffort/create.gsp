@@ -1,51 +1,62 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
 <g:form name="reportedEffort-create" method="post" controller="reportedEffort">
         
+
   <div class="clearCenterPadding">
+    
+    <div class="effortSelection">
 
-      <div class="fontPurple">
+      <!--Study Activity -->
+      Study Activity
+        <g:select class="basic"
+          name="studyActivityInstance.id"
+          from="${studyActivityList}"
+          optionKey="id"
+          optionValue="name"
+          value="${reportedEffortInstance?.activity?.id}" 
+          noSelection="${['0':'Choose ...']}"/>&nbsp;&nbsp;
 
-        <!--Study Activity -->
-        Study Activity&nbsp;
-          <g:select class="basic"
-            name="studyActivityInstance.id"
-            from="${studyActivitySelectionList}"
-            optionKey="id"
-            optionValue="name"
-            value="${reportedEffortInstance?.activity?.id}" 
-            noSelection="${['null':'-- Choose --']}"/>&nbsp;&nbsp;&nbsp;&nbsp;
+      <!--Study Task -->
+      Study Task
+        <g:select class="basic"
+          name="studyTaskInstance.id"
+          from="${studyTaskList}"
+          optionKey="id"
+          optionValue="name"
+          value="${reportedEffortInstance?.task?.id}" 
+          noSelection="${['0':'Choose ...']}"/>&nbsp;&nbsp;
 
-        <!--Study Task -->
-        Study Task&nbsp;
-          <g:select class="basic"
-            name="studyTaskInstance.id"
-            from="${studyTaskSelectionList}"
-            optionKey="id"
-            optionValue="name"
-            value="${reportedEffortInstance?.task?.id}" 
-            noSelection="${['null':'-- Choose --']}"/>&nbsp;&nbsp;&nbsp;&nbsp;
-
-        <!-- Effort -->
-        <span class="nowrap">Effort&nbsp;
-          <g:textField 
-            name="effort" 
-            class="textfieldBasic" 
-            style="text-align:right;"
-            size="1" 
-            value="${reportedEffortInstance?.percentEffort}"
-          />&nbsp;%
-        </span>
-
+      <!-- Effort -->
+      <span class="nowrap">Effort
+        <g:textField 
+          name="reportedEffort" 
+          class="textfieldBasic" 
+          style="text-align:right;"
+          size="1" 
+          value="${reportedEffortInstance?.percentEffort}"
+        />&nbsp;%
+      </span>
+      
+      <div id="failedAddDiv">
+        <g:if test="${flash.message}">
+          ${flash.message}
+        </g:if>
       </div>
 
     </div>
 
-    <div class="clearCenterPadding">
-      <div class="clearBoth">
-        <g:actionSubmit class="buttonBasic" value="ADD" constructor="main" action="show" />          
-        &nbsp;&nbsp;&nbsp;
-        <button class="buttonBasic" onClick="return resetForm();">CANCEL</button>
-      </div>            
-    </div>
+  </div>
+    
+  <div class="clearCenterPadding">
+    <g:submitToRemote class="buttonBasic" url="${[controller:'reportedEffort',action:'save']}" update="[failure:'failedAddDiv']" value="ADD"/>
+    <!--
+    <g:actionSubmit class="buttonBasic" value="ADD" constructor="reportedEffort" action="save" />          
+    -->
+    &nbsp;&nbsp;&nbsp;
+    <button class="buttonBasic" onClick="return resetForm();">CANCEL</button>
+  </div>
+
+
+
         
 </g:form>      

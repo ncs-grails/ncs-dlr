@@ -1,16 +1,3 @@
-/* 
-    Document   : custom
-    Created on : Apr 15, 2011, 8:50:20 AM
-    Author     : sqv
-    Description:
-        Purpose of the stylesheet follows.
-*/
-
-/* 
-   TODO customize this sample style
-   Syntax recommendation http://www.w3.org/TR/REC-CSS2/
-*/
-
 root { 
     display: block;
 }
@@ -35,7 +22,6 @@ root {
 }
 
 /* color **********************************************************************/
-
 .backgroundColorLemonchiffon{
     background-color: lemonchiffon;
 }
@@ -48,6 +34,9 @@ h1 {
     text-align: center;
 }
 h2 {
+    margin: 1em 0;
+    border-bottom: .05em solid maroon;  
+    padding: .25em 0;
     font-style:normal;
     font-size:1.25em;
     color: maroon;
@@ -64,7 +53,7 @@ h2 {
     position:relative; 
     clear:both; 
     width:100%;
-    margin: .75em .5em;
+    margin: 1.5em 0;
     text-align: center;
 }
 
@@ -77,6 +66,18 @@ h2 {
     float:right;
     width:49%;
     text-align: right;
+}
+
+.effortSelection {
+    margin: 1em 0;
+    border: .2em solid purple;
+    -moz-border-radius:1em; 
+    -webkit-border-radius:1em;        
+    padding: 1.5em 0;
+    background-color: papayawhip;
+    color:purple;
+    text-align: center;
+    font-size: smaller;
 }
 
 .nowrap {
@@ -125,11 +126,11 @@ dt.basicMenu:active {
 }
 
 div.pageSpacing{
-    margin-bottom:1.5em;
+    margin-bottom: 2em;
 }
 
 div.spacing{
-    margin: 1.25em 0;
+    margin: 1em 0;
 }
 div.prop {
         display: inline-block;
@@ -229,11 +230,11 @@ td.basic{
 }
 
 .roundRectSilver {
-        margin-bottom:1em;
+        margin-bottom:1.5em;
         border:silver solid thin; 
         -moz-border-radius:0.5em; 
         -webkit-border-radius:0.5em;
-        padding: 0em 1em 1em 1em;
+        padding: .5em .25em;
         line-height:2;
 }
 
@@ -257,31 +258,28 @@ td.basic{
 }
 
 select.basic{
-    border:.01em solid gray;
+    border:.1em solid gray;
     padding:.2em;
     background-color: white;
     color:black; 
-    font-size: smaller;
 }
 
-.buttonBasic {
-    border:.2em outset purple;
+.buttonBasic:hover {
+    border:.15em outset purple;
     -moz-border-radius: 1em; 
     -webkit-border-radius: 1em;
     padding:.2em 1em;
     background-color: papayawhip;    
     color:purple;
-    font-weight:bold;    
 }
 
-.buttonBasic:hover {
-    border:.2em outset papayawhip;
+.buttonBasic {
+    border:.15em outset papayawhip;
     -moz-border-radius: 1em; 
     -webkit-border-radius: 1em;
     padding:.2em 1em;
     background-color: purple;    
     color:papayawhip;
-    font-weight:bold;        
 }
 
 button {

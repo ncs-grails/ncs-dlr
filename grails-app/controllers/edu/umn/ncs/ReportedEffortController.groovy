@@ -5,30 +5,112 @@ class ReportedEffortController {
     static allowedMethods = [save: "POST", update: "POST", delete: "POST"]
 
     def index = {
-        redirect(action: "list", params: params)
-    }
-
-    def list = {
-        params.max = Math.min(params.max ? params.int('max') : 10, 100)
-        [reportedEffortInstanceList: ReportedEffort.list(params), reportedEffortInstanceTotal: ReportedEffort.count()]
+        redirect(action: "create", params: params)
     }
 
     def create = {
-        def reportedEffortInstance = new ReportedEffort()
-        reportedEffortInstance.properties = params
-        return [reportedEffortInstance: reportedEffortInstance]
-    }
+        
+        println "PRINTLN ReportedEffortController.create.params: ${params}"        
+        
+        def csa = StudyActivity.createCriteria()        
+        def studyActivityList = csa.list{
+            eq("obsolete", false) 
+            order("name", "asc")
+        }
+        
+        def cst = StudyTask.createCriteria()        
+        def studyTaskList = cst.list{
+            eq("obsolete", false) 
+            order("name", "asc")
+        }
+        
+        return [
+            studyActivityList: studyActivityList, 
+            studyTaskList: studyTaskList
+            
+        ]
+        
+    } //def create
 
     def save = {
-        def reportedEffortInstance = new ReportedEffort(params)
-        if (reportedEffortInstance.save(flush: true)) {
-            flash.message = "${message(code: 'default.created.message', args: [message(code: 'reportedEffort.label', default: 'ReportedEffort'), reportedEffortInstance.id])}"
-            redirect(action: "show", id: reportedEffortInstance.id)
+        
+        println "PRINTLN ReportedEffortController.save"
+            
+        /*
+        println "PRINTLN ReportedEffortController.save.params: ${params}"        
+        params.each{
+            println "PRINTLN ReportedEffortController.save.params.each IT: ${it}, KEY: ${it.key}, VALUE: ${it.value}"
         }
-        else {
-            render(view: "create", model: [reportedEffortInstance: reportedEffortInstance])
+        */
+        
+        def studyActivityIdValue = params?.studyActivityInstance.id.toInteger()
+        println "PRINTLN ReportedEffortController.save.studyActivityIdValue: ${studyActivityIdValue}"        
+        
+        def studyTaskIdValue = params?.studyTaskInstance.id.toInteger()
+        println "PRINTLN ReportedEffortController.save.studyTaskIdValue: ${studyTaskIdValue}"              
+        
+        def reportedEffortValue = params?.reportedEffort
+        if ( reportedEffortValue ) {
+            //println "PRINTLN (reportedEffortValue)"        
+            if ( reportedEffortValue =~ /[0-9]{1,3}\.?[0-9]{0,2}/ ) {
+                //println "PRINTLN ( reportedEffortValue is BigDecimal )"        
+
+                reportedEffortValue = reportedEffortValue.toBigDecimal()
+                
+                def r = 0.0..100.0
+                    
+                if ( r.containsWithinBounds(reportedEffortValue) ) {
+                    //println "PRINTLN ( within range )"        
+                    reportedEffortValue = reportedEffortValue
+                } else {
+                    //println "PRINTLN ( NOT within range )"        
+                    reportedEffortValue = null
+                } 
+                
+            } else {
+                //println "PRINTLN ( reportedEffortValue is NOT BigDecimal )"        
+                reportedEffortValue = null
+            }
+        } else {
+            //println "PRINTLN (!reportedEffortValue)"        
+            reportedEffortValue = null
         }
-    }
+        println "PRINTLN ReportedEffortController.save.reportedEffortValue: ${reportedEffortValue}"        
+       
+
+        // if user data entered is NOT sufficient, direct user back to controller: reportedEffort, action:create
+        if ( studyActivityIdValue == 0 || studyTaskIdValue == 0 || !reportedEffortValue ) {
+            
+            if ( studyActivityIdValue == 0 ) {                
+                flash.message = "Must select a Study Activity."                                        
+            }
+            if ( studyTaskIdValue == 0 ) {                
+                flash.message = "Must select a Task."                                        
+            }
+            if ( !reportedEffortValue ) {                
+                flash.message = "Must enter a valid percent effort."                                        
+            }
+                        
+            render(
+                controller:'main',
+                action:'show', 
+                model: [
+                    studyActivityIdValue: studyActivityIdValue, 
+                    studyTaskIdValue: studyTaskIdValue, 
+                    reportedEffortValue: reportedEffortValue
+                ]
+            )
+            
+        // if user data entered IS sufficient, save data, then direct back to controller:main, action:show       
+        } else {
+                        
+            //TODO: SAVE DATA
+            redirect(controller:'main', action:'show')                
+            
+        }
+
+       
+    } //def save
 
     def show = {
         def reportedEffortInstance = ReportedEffort.get(params.id)

@@ -1,5 +1,8 @@
 <!-- display ASSIGNED, REPORTED & COMMITTED effort status -->
 <g:if test="${assignedEffortInstance && !committedDateInstance}">
+  
+  <span class="fontMaroon">Please report the effort you accrued this month.</span>
+
   <div class="clearCenterPadding">
     <span class="messageBoxOrange">Assigned: <g:formatNumber number="${assignedEffortInstance.assignedEffort}" type="percent" maxFractionDigits="2"/></span>          
     &nbsp;&nbsp;&nbsp;
@@ -9,13 +12,9 @@
       <g:if test="${!committedDateInstance}">0%</g:if>
     </span>
   </div>        
-</g:if>        
+  
 
-<!-- if there are ASSIGNED effort that has not been committed yet, tell user to complete dlr -->
-<g:if test="${assignedEffortInstance && !reportedEffortTotal && !committedDateInstance}">
-  <p class="clearCenterPadding">                         
-    <div class="messageBoxPowderblue">Please submit the effort you accrued this month.</div>
-  </p>          
+  
 </g:if>
 
 <!-- display currently REPORTED EFFORT -->      
