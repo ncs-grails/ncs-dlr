@@ -1,5 +1,5 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
-<g:form name="reportedEffort-create" method="post" controller="reportedEffort">
+<g:form name="reportedEffort-create" method="post" controller="reportedEffort" action="save">
         
 
   <div class="clearCenterPadding">
@@ -8,13 +8,15 @@
 
       <!--Study Activity -->
       Study Activity
+      <span class="${hasErrors(bean: reportedEffortInstance, field: 'activity', 'errors')}">
         <g:select class="basic"
           name="studyActivityInstance.id"
           from="${studyActivityList}"
           optionKey="id"
           optionValue="name"
           value="${reportedEffortInstance?.activity?.id}" 
-          noSelection="${['0':'Choose ...']}"/>&nbsp;&nbsp;
+          noSelection="${['0':'Choose ...']}"/>
+      </span>
 
       <!--Study Task -->
       Study Task
@@ -37,21 +39,20 @@
         />&nbsp;%
       </span>
       
-      <div id="failedAddDiv">
         <g:if test="${flash.message}">
           ${flash.message}
         </g:if>
-      </div>
-
+        <g:hasErrors bean="${reportedEffortInstance}">
+        <div class="errors">
+            <g:renderErrors bean="${reportedEffortInstance}" as="list" />
+        </div>
+        </g:hasErrors>
     </div>
 
   </div>
     
   <div class="clearCenterPadding">
-    <g:submitToRemote class="buttonBasic" url="${[controller:'reportedEffort',action:'save']}" update="[failure:'failedAddDiv']" value="ADD"/>
-    <!--
-    <g:actionSubmit class="buttonBasic" value="ADD" constructor="reportedEffort" action="save" />          
-    -->
+    <g:submitToRemote class="buttonBasic" url="${[controller:'reportedEffort',action:'save']}" update="[success:'addOrEditForm', failure:'addOrEditForm']" value="ADD"/>
     &nbsp;&nbsp;&nbsp;
     <button class="buttonBasic" onClick="return resetForm();">CANCEL</button>
   </div>

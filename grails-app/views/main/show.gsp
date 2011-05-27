@@ -51,14 +51,13 @@
           <!-- form for EDIT page -->
           <g:form name="reportedEffort-edit" method="post" controller="reportedEffort" action="edit" />
           
+                    
           <!-- form for SHOW page -->
           <g:form name="directLaborReporting" method="post" controller="main">
 
             <!-- include: to display ASSIGNED, REPORTED COMMITED message boxes, and effort reported so far -->
             <g:include controller="assignedEffort" action="show" id="${assignedEffortInstance.id}" />              
 
-            <!-- placeholder for ADD or EDIT sections -->
-            <div id="addOrEditForm"></div>
 
             <!-- display ADD, DELETE, EDIT and COMMIT buttons to display on SHOW page only -->
             <div id="showControls" class="clearCenterPadding">
@@ -73,6 +72,8 @@
 
           </g:form>      
           
+          <!-- placeholder for ADD or EDIT sections -->
+          <div id="addOrEditForm"></div>
         
       </g:if>        
 

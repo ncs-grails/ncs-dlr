@@ -138,11 +138,8 @@ div.prop {
 }
 
 .messageBoxPowderblue{
+    margin: 0 .5em;
     border:.1em solid silver;
-    /*
-    -moz-border-radius: 0.1em; 
-    -webkit-border-radius: 0.1em;
-    */
     padding: .25em 1em;
     background-color: lightcyan;
     color: black;
@@ -150,33 +147,24 @@ div.prop {
 }
 
 .messageBoxOrange{
+    margin: 0 .5em;
     border: .1em solid silver;
-    /*
-    -moz-border-radius: 0.25em; 
-    -webkit-border-radius: 0.25em;
-    */
     padding: .25em 1em;
     background-color: orange;
     color: white;
 }
 
 .messageBoxRed{
+    margin: 0 .5em;
     border: .1em solid silver;
-    /*
-    -moz-border-radius: 0.25em; 
-    -webkit-border-radius: 0.25em;
-    */
     padding: .25em 1em;
     background-color: red;
     color: white;
 }
 
 .messageBoxGreen{
+    margin: 0 .5em;
     border: .1em solid silver;
-    /*
-    -moz-border-radius:0.25em; 
-    -webkit-border-radius:0.25em;
-    */
     padding: .25em 1em;
     background-color: green;
     color: white;

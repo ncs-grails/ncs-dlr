@@ -1,26 +1,25 @@
 <!-- display ASSIGNED, REPORTED & COMMITTED effort status -->
 <g:if test="${assignedEffortInstance && !committedDateInstance}">
   
-  <span class="fontMaroon">Please report the effort you accrued this month.</span>
+  <p class="fontMaroon">Please report the effort you accrued this month and then commit it.</p>
 
   <div class="clearCenterPadding">
     <span class="messageBoxOrange">Assigned: <g:formatNumber number="${assignedEffortInstance.assignedEffort}" type="percent" maxFractionDigits="2"/></span>          
-    &nbsp;&nbsp;&nbsp;
     <span class="messageBoxOrange">Reported: <g:formatNumber number="${reportedEffortTotal}" type="percent" maxFractionDigits="2"/></span>
-    &nbsp;&nbsp;&nbsp;
     <span class="messageBoxRed">Committed: 
       <g:if test="${!committedDateInstance}">0%</g:if>
     </span>
-  </div>        
-  
-
+  </div>    
   
 </g:if>
 
 <!-- display currently REPORTED EFFORT -->      
 <g:if test="${assignedEffortInstance && reportedEffortTotal && !committedDateInstance}">                    
+  
   <div class="clearCenterPadding">
+    
     <table>
+      
       <thead>
         <tr>
           <th class="basic">Select to <br/>DELETE or EDIT</th>
@@ -30,6 +29,7 @@
           <th class="basic">Date Reported</th>
         </tr>
       </thead>
+      
       <tbody>
         <g:each var="re" in="${reportedEffortList}" >
           <tr>
@@ -47,6 +47,9 @@
           </tr>
         </g:each>
       </tbody>
+      
     </table>
+    
   </div>
+  
 </g:if>

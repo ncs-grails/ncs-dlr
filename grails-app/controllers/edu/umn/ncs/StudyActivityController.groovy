@@ -8,11 +8,24 @@ class StudyActivityController {
 
     def index = {
         redirect(action: "list", params: params)
+        println "PRINTLN StudyActivityController.index.params: ${params}}"
     }
 
     def list = {
+        
+        println "PRINTLN StudyActivityController.list.params: ${params}}"
         params.max = Math.min(params.max ? params.int('max') : 10, 100)
-        [studyActivityInstanceList: StudyActivity.list(params), studyActivityInstanceTotal: StudyActivity.count()]
+        println "PRINTLN StudyActivityController.list.params.max: ${params.max}"
+        println "PRINTLN StudyActivityController.list.params.int('max'): ${params.int('max')}"
+        
+        
+        println "PRINTLN StudyActivityController.list.StudyActivity.list(params): ${StudyActivity.list(params)}"
+        println "PRINTLN StudyActivityController.list.StudyActivity.count(): ${StudyActivity.count()}"
+
+        [
+            studyActivityInstanceList: StudyActivity.list(params), 
+            studyActivityInstanceTotal: StudyActivity.count()
+        ]
     }
 
     def create = {

@@ -12,6 +12,9 @@ class ReportedEffortController {
         
         println "PRINTLN ReportedEffortController.create.params: ${params}"        
         
+        def reportedEffortInstance = new ReportedEffort()
+        reportedEffortInstance.properties = params
+        
         def csa = StudyActivity.createCriteria()        
         def studyActivityList = csa.list{
             eq("obsolete", false) 
@@ -26,29 +29,48 @@ class ReportedEffortController {
         
         return [
             studyActivityList: studyActivityList, 
-            studyTaskList: studyTaskList
-            
+            studyTaskList: studyTaskList,
+            reportedEffortInstance: reportedEffortInstance            
         ]
         
     } //def create
 
     def save = {
         
-        println "PRINTLN ReportedEffortController.save"
-            
-        /*
-        println "PRINTLN ReportedEffortController.save.params: ${params}"        
-        params.each{
-            println "PRINTLN ReportedEffortController.save.params.each IT: ${it}, KEY: ${it.key}, VALUE: ${it.value}"
+        println "start SAVE"
+        
+        def reportedEffortInstance = new ReportedEffort(params)
+        if (reportedEffortInstance.save(flush: true)) {
+            flash.message = "${message(code: 'default.created.message', args: [message(code: 'reportedEffort.label', default: 'ReportedEffort'), reportedEffortInstance.id])}"
+            println "success"
+            redirect(action: "create")
         }
-        */
+        else {
+            
+            println "problem saving"
+            
+            def csa = StudyActivity.createCriteria()        
+            def studyActivityList = csa.list{
+                eq("obsolete", false) 
+                order("name", "asc")
+            }
+
+            def cst = StudyTask.createCriteria()        
+            def studyTaskList = cst.list{
+                eq("obsolete", false) 
+                order("name", "asc")
+            }
+            
+            def model = [
+                studyActivityList: studyActivityList, 
+                studyTaskList: studyTaskList,
+                reportedEffortInstance: reportedEffortInstance
+            ]
+                
+            render(view: "create", model: model)
+        }
         
-        def studyActivityIdValue = params?.studyActivityInstance.id.toInteger()
-        println "PRINTLN ReportedEffortController.save.studyActivityIdValue: ${studyActivityIdValue}"        
-        
-        def studyTaskIdValue = params?.studyTaskInstance.id.toInteger()
-        println "PRINTLN ReportedEffortController.save.studyTaskIdValue: ${studyTaskIdValue}"              
-        
+        /*
         def reportedEffortValue = params?.reportedEffort
         if ( reportedEffortValue ) {
             //println "PRINTLN (reportedEffortValue)"        
@@ -79,17 +101,16 @@ class ReportedEffortController {
        
 
         // if user data entered is NOT sufficient, direct user back to controller: reportedEffort, action:create
-        if ( studyActivityIdValue == 0 || studyTaskIdValue == 0 || !reportedEffortValue ) {
+        if ( !reportedEffortValue ) {
             
             if ( studyActivityIdValue == 0 ) {                
                 flash.message = "Must select a Study Activity."                                        
-            }
-            if ( studyTaskIdValue == 0 ) {                
+            } else if ( studyTaskIdValue == 0 ) {                
                 flash.message = "Must select a Task."                                        
-            }
-            if ( !reportedEffortValue ) {                
+            } else if ( !reportedEffortValue ) {                
                 flash.message = "Must enter a valid percent effort."                                        
             }
+            println "PRINTLN ReportedEffortController.save.flash.message: ${flash.message}"        
                         
             render(
                 controller:'main',
@@ -107,11 +128,11 @@ class ReportedEffortController {
             //TODO: SAVE DATA
             redirect(controller:'main', action:'show')                
             
-        }
+        }       
 
-       
+*/
     } //def save
-
+            
     def show = {
         def reportedEffortInstance = ReportedEffort.get(params.id)
         if (!reportedEffortInstance) {
