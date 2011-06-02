@@ -25,18 +25,20 @@
 
       <!-- logic for displaying various messages -->
 
-      <h2><g:formatDate date="${reportingPeriodInstance.periodDate}" format="MMMM yyyy" /> Effort Report</h2>
+      <h2>
+        <g:formatDate date="${reportingPeriodInstance.periodDate}" format="MMMM yyyy" /> Effort Report
+      </h2>
       
-      <!-- if there is NO assigned effort for this period, then user does not need to complete dlr -->
+      <!-- if there is NO assigned effort for this period, let user know -->
       <g:if test="${!assignedEffortInstance}">
-        <p>You do not have to report your effort for <strong>
-        <g:formatDate date="${reportingPeriodInstance.periodDate}" format="MMMM yyyy" /></strong>.</p>              
+        <p>You have not been assigned effort to report for <strong>
+          <g:formatDate date="${reportingPeriodInstance.periodDate}" format="MMMM yyyy" /></strong>.
+        </p>              
       </g:if>
       
       <!-- if this period's assigned effort is already COMMITTED, then user is done with effort reporting -->
       <g:if test="${assignedEffortInstance && committedDateInstance}">
-        <p>
-          You have completed your effort reporting for this <strong>
+        <p>You have completed your effort reporting for this <strong>
           <g:formatDate date="${reportingPeriodInstance.periodDate}" format="MMMM yyyy" /></strong>. Thank you!
         </p>              
       </g:if>
@@ -49,25 +51,29 @@
           </g:form>
           
           <!-- form for EDIT page -->
-          <g:form name="reportedEffort-edit" method="post" controller="reportedEffort" action="edit" />
-          
-                    
+          <g:form name="reportedEffort-edit" method="post" controller="reportedEffort" action="edit" >
+          </g:form>
+                              
           <!-- form for SHOW page -->
           <g:form name="directLaborReporting" method="post" controller="main">
 
-            <!-- include: to display ASSIGNED, REPORTED COMMITED message boxes, and effort reported so far -->
+            <!-- include: to display ASSIGNED, REPORTED COMMITED message boxes, and EFFORT REPORTED so far -->
             <g:include controller="assignedEffort" action="show" id="${assignedEffortInstance.id}" />              
 
-
-            <!-- display ADD, DELETE, EDIT and COMMIT buttons to display on SHOW page only -->
+            <!-- display ADD, DELETE, EDIT and COMMIT buttons -->
             <div id="showControls" class="clearCenterPadding">
+              
               <button id="buttonAdd" class="buttonBasic" >ADD</button>
               &nbsp;&nbsp;&nbsp;&nbsp;
+              
               <g:actionSubmit class="buttonBasic" value="DELETE" action="delete"/>
               &nbsp;&nbsp;&nbsp;&nbsp;
+              
               <button id="buttonEdit" class="buttonBasic">EDIT</button>
               &nbsp;&nbsp;&nbsp;&nbsp;
+              
               <g:actionSubmit class="buttonBasic" value="COMMIT" action="commit"/>
+              
             </div>          
 
           </g:form>      

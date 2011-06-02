@@ -28,12 +28,12 @@ class MainController {
         def reportingPeriodInstance = laborService.getCurrentReportingPeriod()
         println "PRINTLN MainController.show.reportingPeriodInstance: ${reportingPeriodInstance}"
 
-        // ASSIGNED EFFORT FOR PERIOD
+        // ASSIGNED EFFORT FOR PERIOD, if it exists
         def assignedEffortInstance = AssignedEffort.findByPeriodAndReportingStaff(reportingPeriodInstance, reportingStaffInstance)
         println "PRINTLN MainController.show.assignedEffortInstance: ${assignedEffortInstance}"
 
-        // EFFORT COMMITTED DATE FOR PERIOD
-        def committedDateInstance = assignedEffortInstance.dateCommitted
+        // EFFORT COMMITTED DATE FOR PERIOD, if it exists
+        def committedDateInstance = assignedEffortInstance ? assignedEffortInstance.dateCommitted : null
         println "PRINTLN MainController.show.committedDateInstance: ${committedDateInstance}"
         
         [

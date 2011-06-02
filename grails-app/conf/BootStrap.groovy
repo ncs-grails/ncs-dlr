@@ -48,7 +48,7 @@ class BootStrap {
                 def studyActivityUlnarMeasurementFormative = new StudyActivity(name:'WA 03 (Ulnar Measurement Formative)', obsolete:false, userCreated:'sqv').save()
                 def studyActivityStressAndCortisolFormative = new StudyActivity(name:'WA 04 (Stress & Cortisol Formative)', obsolete:false, userCreated:'sqv').save()
                 def studyActivityBirthVisitQuestionnairesFormative = new StudyActivity(name:'WA 05 (Birth Visit Questionnaires Formative)', obsolete:false, userCreated:'sqv').save()
- 
+               
                 // Study Task
                 /* run in ms sql to get list
                     SELECT 'def studyTask' 

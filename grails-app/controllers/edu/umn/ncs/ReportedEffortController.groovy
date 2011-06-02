@@ -14,6 +14,7 @@ class ReportedEffortController {
         
         def reportedEffortInstance = new ReportedEffort()
         reportedEffortInstance.properties = params
+        println "PRINTLN ReportedEffortController.create.reportedEffortInstance.properties: ${reportedEffortInstance.properties}"        
         
         def csa = StudyActivity.createCriteria()        
         def studyActivityList = csa.list{
