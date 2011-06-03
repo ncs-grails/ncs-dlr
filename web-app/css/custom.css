@@ -100,6 +100,17 @@ h2 {
     font-style:normal;
 }
 
+.value {
+    text-align: left;
+    width: 85%;
+}
+div.errors {
+    background: #fff3f3;
+    border: 1px solid red;
+    color: #cc0000;
+    margin: 10px 0 5px 0;
+    padding: 5px 0 5px 0;
+}
 dl {
     width:80%;
     margin-bottom: 18em;
@@ -253,6 +264,7 @@ select.basic{
 }
 
 .buttonBasic:hover {
+    margin: 0 1em;
     border:.15em outset purple;
     -moz-border-radius: 1em; 
     -webkit-border-radius: 1em;
@@ -262,6 +274,7 @@ select.basic{
 }
 
 .buttonBasic {
+    margin: 0 1em;
     border:.15em outset papayawhip;
     -moz-border-radius: 1em; 
     -webkit-border-radius: 1em;

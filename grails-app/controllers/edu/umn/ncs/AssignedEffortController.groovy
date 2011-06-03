@@ -7,25 +7,27 @@ class AssignedEffortController {
     }
     
     def show = {
-                
-        // Get ASSSIGNED EFFORT instance
+
+        println "PRINTLN AssignedEffortController.show.params: ${params}"
+        println "PRINTLN AssignedEffortController.show.params.id: ${params.id}"
+
         def assignedEffortInstance
         def reportingPeriodInstance
         def reportingStaffInstance
         
         if (params?.id) {
+            println "PRINTLN AssignedEffortController.show.(params?.id) = TRUE"            
             assignedEffortInstance = AssignedEffort.read(params?.id)
             reportingPeriodInstance = assignedEffortInstance.period
             reportingStaffInstance = assignedEffortInstance.reportingStaff
         }
-        //println "PRINTLN AssignedEffortController.show.assignedEffortInstance: ${assignedEffortInstance}"
-        //println "PRINTLN AssignedEffortController.show.reportingPeriodInstance: ${reportingPeriodInstance}"
-        //println "PRINTLN AssignedEffortController.show.reportingStaffInstance: ${reportingStaffInstance}"
+        println "PRINTLN AssignedEffortController.show.assignedEffortInstance: ${assignedEffortInstance}"
+        println "PRINTLN AssignedEffortController.show.reportingPeriodInstance: ${reportingPeriodInstance}"
+        println "PRINTLN AssignedEffortController.show.reportingStaffInstance: ${reportingStaffInstance}"
         
         // Get REPORTED EFFORT TOTAL
         def reportedEffortTotal
-        if ( assignedEffortInstance ) {
-            
+        if ( assignedEffortInstance ) {            
             def c = ReportedEffort.createCriteria()
             reportedEffortTotal = c.get {
                 eq("assignedEffort", assignedEffortInstance)
@@ -33,8 +35,7 @@ class AssignedEffortController {
                     sum("percentEffort")
                 }
             }
-            //println "PRINTLN AssignedEffortController.show.reportedEffortTotal: ${reportedEffortTotal}"
-            
+            println "PRINTLN AssignedEffortController.show.reportedEffortTotal: ${reportedEffortTotal}"
         }
         
         // Get list of reported effort 
@@ -44,7 +45,7 @@ class AssignedEffortController {
             order("activity", "asc")
             order("task", "asc")
         }
-        //println "PRINTLN AssignedEffortController.show.reportingEffortInstanceList: ${reportingEffortInstanceList}"
+        println "PRINTLN AssignedEffortController.show.reportingEffortInstanceList: ${reportingEffortInstanceList}"
 
         // Add records to Reported Effort Instance
         def reportedEffortList = []
@@ -82,7 +83,7 @@ class AssignedEffortController {
         def committedDateInstance
         if ( assignedEffortInstance ) {
             committedDateInstance = assignedEffortInstance.dateCommitted
-            //println "PRINTLN AssignedEffortController.show.committedDateInstance: ${committedDateInstance}"            
+            println "PRINTLN AssignedEffortController.show.committedDateInstance: ${committedDateInstance}"            
         }
 
         [

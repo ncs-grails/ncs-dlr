@@ -14,19 +14,21 @@ class ReportedEffortController {
         
         def reportedEffortInstance = new ReportedEffort()
         reportedEffortInstance.properties = params
-        println "PRINTLN ReportedEffortController.create.reportedEffortInstance.properties: ${reportedEffortInstance.properties}"        
+        //println "PRINTLN ReportedEffortController.create.reportedEffortInstance.properties: ${reportedEffortInstance.properties}"        
         
         def csa = StudyActivity.createCriteria()        
         def studyActivityList = csa.list{
             eq("obsolete", false) 
             order("name", "asc")
         }
+        //println "PRINTLN ReportedEffortController.create.studyActivityList: ${studyActivityList}"        
         
         def cst = StudyTask.createCriteria()        
         def studyTaskList = cst.list{
             eq("obsolete", false) 
             order("name", "asc")
         }
+        //println "PRINTLN ReportedEffortController.create.studyTaskList: ${studyTaskList}"        
         
         return [
             studyActivityList: studyActivityList, 
@@ -39,16 +41,28 @@ class ReportedEffortController {
     def save = {
         
         println "start SAVE"
+        println "PRINTLN ReportedEffortController.save.params: ${params}"        
+        
+        //TODO: replace with spring security code
+        def username = 'sqv'
         
         def reportedEffortInstance = new ReportedEffort(params)
+        println "PRINTLN ReportedEffortController.save.reportedEffortInstance: ${reportedEffortInstance}"        
+        
+        if ( reportedEffortInstance.percentEffort ) {
+            reportedEffortInstance.percentEffort = reportedEffortInstance.percentEffort / 100.0            
+        }
+        
+        reportedEffortInstance.userCreated = username
+        
         if (reportedEffortInstance.save(flush: true)) {
+            println "successful save"
             flash.message = "${message(code: 'default.created.message', args: [message(code: 'reportedEffort.label', default: 'ReportedEffort'), reportedEffortInstance.id])}"
-            println "success"
             redirect(action: "create")
         }
         else {
             
-            println "problem saving"
+            println "failed save"
             
             def csa = StudyActivity.createCriteria()        
             def studyActivityList = csa.list{
@@ -71,68 +85,36 @@ class ReportedEffortController {
             render(view: "create", model: model)
         }
         
-        /*
-        def reportedEffortValue = params?.reportedEffort
-        if ( reportedEffortValue ) {
-            //println "PRINTLN (reportedEffortValue)"        
-            if ( reportedEffortValue =~ /[0-9]{1,3}\.?[0-9]{0,2}/ ) {
-                //println "PRINTLN ( reportedEffortValue is BigDecimal )"        
-
-                reportedEffortValue = reportedEffortValue.toBigDecimal()
-                
-                def r = 0.0..100.0
-                    
-                if ( r.containsWithinBounds(reportedEffortValue) ) {
-                    //println "PRINTLN ( within range )"        
-                    reportedEffortValue = reportedEffortValue
-                } else {
-                    //println "PRINTLN ( NOT within range )"        
-                    reportedEffortValue = null
-                } 
-                
-            } else {
-                //println "PRINTLN ( reportedEffortValue is NOT BigDecimal )"        
-                reportedEffortValue = null
-            }
-        } else {
-            //println "PRINTLN (!reportedEffortValue)"        
-            reportedEffortValue = null
-        }
-        println "PRINTLN ReportedEffortController.save.reportedEffortValue: ${reportedEffortValue}"        
-       
-
-        // if user data entered is NOT sufficient, direct user back to controller: reportedEffort, action:create
-        if ( !reportedEffortValue ) {
-            
-            if ( studyActivityIdValue == 0 ) {                
-                flash.message = "Must select a Study Activity."                                        
-            } else if ( studyTaskIdValue == 0 ) {                
-                flash.message = "Must select a Task."                                        
-            } else if ( !reportedEffortValue ) {                
-                flash.message = "Must enter a valid percent effort."                                        
-            }
-            println "PRINTLN ReportedEffortController.save.flash.message: ${flash.message}"        
-                        
-            render(
-                controller:'main',
-                action:'show', 
-                model: [
-                    studyActivityIdValue: studyActivityIdValue, 
-                    studyTaskIdValue: studyTaskIdValue, 
-                    reportedEffortValue: reportedEffortValue
-                ]
-            )
-            
-        // if user data entered IS sufficient, save data, then direct back to controller:main, action:show       
-        } else {
-                        
-            //TODO: SAVE DATA
-            redirect(controller:'main', action:'show')                
-            
-        }       
-
-*/
     } //def save
+    
+    
+    def delete = {
+        
+        println "PRINTLN ReportedEffortController.delete.params.id: ${params.id}"        
+
+        def reportedEffortInstance = ReportedEffort.get(params.id)
+        println "PRINTLN ReportedEffortController.delete.ReportedEffort.get(params.id): ${ReportedEffort.get(params.id)}"        
+        
+        /*
+        if (reportedEffortInstance) {
+            try {
+                reportedEffortInstance.delete(flush: true)
+                flash.message = "${message(code: 'default.deleted.message', args: [message(code: 'reportedEffort.label', default: 'ReportedEffort'), params.id])}"
+                redirect(action: "list")
+            }
+            catch (org.springframework.dao.DataIntegrityViolationException e) {
+                flash.message = "${message(code: 'default.not.deleted.message', args: [message(code: 'reportedEffort.label', default: 'ReportedEffort'), params.id])}"
+                redirect(action: "show", id: params.id)
+            }
+        }
+        else {
+            flash.message = "${message(code: 'default.not.found.message', args: [message(code: 'reportedEffort.label', default: 'ReportedEffort'), params.id])}"
+            redirect(action: "list")
+        }
+        */
+
+    } //def delete
+    
             
     def show = {
         def reportedEffortInstance = ReportedEffort.get(params.id)
@@ -182,23 +164,5 @@ class ReportedEffortController {
             redirect(action: "list")
         }
     }
-
-    def delete = {
-        def reportedEffortInstance = ReportedEffort.get(params.id)
-        if (reportedEffortInstance) {
-            try {
-                reportedEffortInstance.delete(flush: true)
-                flash.message = "${message(code: 'default.deleted.message', args: [message(code: 'reportedEffort.label', default: 'ReportedEffort'), params.id])}"
-                redirect(action: "list")
-            }
-            catch (org.springframework.dao.DataIntegrityViolationException e) {
-                flash.message = "${message(code: 'default.not.deleted.message', args: [message(code: 'reportedEffort.label', default: 'ReportedEffort'), params.id])}"
-                redirect(action: "show", id: params.id)
-            }
-        }
-        else {
-            flash.message = "${message(code: 'default.not.found.message', args: [message(code: 'reportedEffort.label', default: 'ReportedEffort'), params.id])}"
-            redirect(action: "list")
-        }
-    }
+    
 }

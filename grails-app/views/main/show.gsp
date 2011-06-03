@@ -4,8 +4,8 @@
   <head>
     
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-    <title>NCS Direct Labor Reporting</title>
     <meta name="layout" content="ncs" />
+    <title>NCS Direct Labor Reporting</title>
     <link rel="stylesheet" type="text/css" href="${resource(dir:'css', file:'custom.css')}" />
     <g:javascript src="dlr.js" />
     
@@ -23,11 +23,11 @@
       <!-- Greeting -->
       <span class="fontMaroon">Welcome, <strong>${reportingStaffInstance.firstName} ${reportingStaffInstance.lastName}</strong>!</span>
 
-      <!-- logic for displaying various messages -->
-
       <h2>
         <g:formatDate date="${reportingPeriodInstance.periodDate}" format="MMMM yyyy" /> Effort Report
       </h2>
+
+      <!-- logic for displaying various messages -->
       
       <!-- if there is NO assigned effort for this period, let user know -->
       <g:if test="${!assignedEffortInstance}">
@@ -46,44 +46,43 @@
       <!-- if there is assigned effort that has not been committed yet, then user must complete dlr -->
       <g:if test="${assignedEffortInstance && !committedDateInstance}">        
                   
-          <!-- form for ADD (Create) page -->
-          <g:form name="reportedEffort-create" method="post" controller="reportedEffort" action="create">
-          </g:form>
+          <!-- reportedEffort.create (ADD) -->
+          <g:form name="reportedEffort-create" method="post" controller="reportedEffort" action="create" />
           
-          <!-- form for EDIT page -->
-          <g:form name="reportedEffort-edit" method="post" controller="reportedEffort" action="edit" >
-          </g:form>
-                              
-          <!-- form for SHOW page -->
+          <!-- reportedEffort.edit -->
+          <g:form name="reportedEffort-edit" method="post" controller="reportedEffort" action="edit" />
+                                        
+          <!-- main.show -->
           <g:form name="directLaborReporting" method="post" controller="main">
 
-            <!-- include: to display ASSIGNED, REPORTED COMMITED message boxes, and EFFORT REPORTED so far -->
-            <g:include controller="assignedEffort" action="show" id="${assignedEffortInstance.id}" />              
+            <!-- display (assignedEffort.show) 
+                - message boxes: ASSIGNED, REPORTED COMMITED message 
+                - EFFORT REPORTED so far 
+            -->
+            <div id="showAssignedEffortContainer">
+              <g:include controller="assignedEffort" action="show" id="${assignedEffortInstance.id}" />                            
+            </div>
+            
+            <g:hiddenField name="assignedEffort.id" value="${assignedEffortInstance?.id}" />
 
             <!-- display ADD, DELETE, EDIT and COMMIT buttons -->
-            <div id="showControls" class="clearCenterPadding">
-              
+            <div id="addDeleteEditCommitControls" class="clearCenterPadding">
+                            
               <button id="buttonAdd" class="buttonBasic" >ADD</button>
-              &nbsp;&nbsp;&nbsp;&nbsp;
-              
-              <g:actionSubmit class="buttonBasic" value="DELETE" action="delete"/>
-              &nbsp;&nbsp;&nbsp;&nbsp;
-              
+              <g:submitToRemote class="buttonBasic" url="${[controller:'reportedEffort',action:'delete']}" value="DELETE" />
               <button id="buttonEdit" class="buttonBasic">EDIT</button>
-              &nbsp;&nbsp;&nbsp;&nbsp;
-              
               <g:actionSubmit class="buttonBasic" value="COMMIT" action="commit"/>
               
             </div>          
 
           </g:form>      
           
-          <!-- placeholder for ADD or EDIT sections -->
+          <!-- placeholder for ADD/EDIT sections -->
           <div id="addOrEditForm"></div>
         
       </g:if>        
 
-      <!-- display Past COMMITTED -->
+      <!-- Past COMMITTED EFFORT-->
       <g:include controller="assignedEffort" action="showPast" id="${reportingStaffInstance.id}" />              
 
     <div class="pageSpacing"> </div>
