@@ -286,3 +286,8 @@ select.basic{
 button {
     font-size: 1.0em;
 }
+
+.controlBox {
+    margin: 0 .5em;
+    white-space:nowrap; 
+}

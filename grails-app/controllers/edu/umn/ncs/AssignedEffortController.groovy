@@ -3,13 +3,13 @@ package edu.umn.ncs
 class AssignedEffortController {
 
     def index = {
+        println "PRINTLN AssignedEffortController.index.params: ${params}"
         redirect(controller:'main')
     }
     
     def show = {
 
         println "PRINTLN AssignedEffortController.show.params: ${params}"
-        println "PRINTLN AssignedEffortController.show.params.id: ${params.id}"
 
         def assignedEffortInstance
         def reportingPeriodInstance

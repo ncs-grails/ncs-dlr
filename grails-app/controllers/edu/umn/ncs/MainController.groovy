@@ -14,11 +14,14 @@ class MainController {
     def laborService
 
     def index = {
+        println "PRINTLN MainController.index.params: ${params}"        
         redirect(action:'show')        
     }
 
     def show = {
                 
+        println "PRINTLN MainController.show.params: ${params}"        
+
         // REPORTING STAFF
         def principal = authenticateService.principal()                         
         def reportingStaffInstance = laborService.getReportingStaff(principal)
@@ -44,7 +47,5 @@ class MainController {
         ]
        
     } //def show
-    
-    
-    
+            
 } //class MainController

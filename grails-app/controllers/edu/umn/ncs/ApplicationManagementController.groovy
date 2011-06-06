@@ -10,8 +10,9 @@ class ApplicationManagementController {
     def authenticateService
     def laborService
 
-    // display APPLICATION MANAGEMETN page
+    // display APPLICATION MANAGEMENT page
     def index = {     
+        println "PRINTLN ApplicationManagementController.index.params: ${params}"                
     }
     
 

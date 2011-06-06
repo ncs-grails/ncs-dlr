@@ -4,14 +4,18 @@ class ReportedEffortController {
 
     static allowedMethods = [save: "POST", update: "POST", delete: "POST"]
 
+    def authenticateService
+    def laborService
+\
     def index = {
+        println "PRINTLN ReportedEffortController.index.params: ${params}"                
         redirect(action: "create", params: params)
     }
 
     def create = {
         
         println "PRINTLN ReportedEffortController.create.params: ${params}"        
-        
+                        
         def reportedEffortInstance = new ReportedEffort()
         reportedEffortInstance.properties = params
         //println "PRINTLN ReportedEffortController.create.reportedEffortInstance.properties: ${reportedEffortInstance.properties}"        
@@ -30,10 +34,11 @@ class ReportedEffortController {
         }
         //println "PRINTLN ReportedEffortController.create.studyTaskList: ${studyTaskList}"        
         
+
         return [
             studyActivityList: studyActivityList, 
             studyTaskList: studyTaskList,
-            reportedEffortInstance: reportedEffortInstance            
+            reportedEffortInstance: reportedEffortInstance
         ]
         
     } //def create
@@ -43,17 +48,26 @@ class ReportedEffortController {
         println "start SAVE"
         println "PRINTLN ReportedEffortController.save.params: ${params}"        
         
-        //TODO: replace with spring security code
-        def username = 'sqv'
+        //TODO: get Reporting Staff
+        def principal = authenticateService.principal()                         
+        //println "PRINTLN ReportedEffortController.save.principal: ${principal}"
+        
+        def reportingStaffInstance = laborService.getReportingStaff(principal)
+        //println "PRINTLN ReportedEffortController.save.reportingStaffInstance: ${reportingStaffInstance}"
+
+        def username = reportingStaffInstance.username
+        println "PRINTLN ReportedEffortController.save.username: ${username}"
         
         def reportedEffortInstance = new ReportedEffort(params)
         println "PRINTLN ReportedEffortController.save.reportedEffortInstance: ${reportedEffortInstance}"        
         
         if ( reportedEffortInstance.percentEffort ) {
             reportedEffortInstance.percentEffort = reportedEffortInstance.percentEffort / 100.0            
+            println "PRINTLN ReportedEffortController.save.reportedEffortInstance.percentEffort: ${reportedEffortInstance.percentEffort}"        
         }
         
         reportedEffortInstance.userCreated = username
+        println "PRINTLN ReportedEffortController.save.reportedEffortInstance.userCreated: ${reportedEffortInstance.userCreated}"        
         
         if (reportedEffortInstance.save(flush: true)) {
             println "successful save"

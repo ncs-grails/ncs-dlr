@@ -4,8 +4,21 @@
   <p class="fontMaroon">Please report the effort you accrued this month and then commit it.</p>
 
   <div class="clearCenterPadding">
-    <span class="messageBoxOrange">Assigned: <g:formatNumber number="${assignedEffortInstance.assignedEffort}" type="percent" maxFractionDigits="2"/></span>          
-    <span class="messageBoxOrange">Reported: <g:formatNumber number="${reportedEffortTotal}" type="percent" maxFractionDigits="2"/></span>
+    <!-- Assigned Effort -->
+    <span class="messageBoxOrange">
+      Assigned: <g:formatNumber number="${assignedEffortInstance.assignedEffort}" type="percent" maxFractionDigits="2"/>
+    </span>          
+    <!-- Reported Effort -->
+    <span class="messageBoxOrange">
+      Reported: 
+      <g:if test="${!reportedEffortTotal}">
+        0%
+      </g:if>      
+      <g:else>
+        <g:formatNumber number="${reportedEffortTotal}" type="percent" maxFractionDigits="2"/>        
+      </g:else>
+    </span>
+    <!-- Committed Effort -->
     <span class="messageBoxRed">Committed: 
       <g:if test="${!committedDateInstance}">0%</g:if>
     </span>
@@ -13,13 +26,11 @@
   
 </g:if>
 
-<!-- display currently REPORTED EFFORT -->      
+<!-- display currently REPORTED EFFORT for current period -->      
 <g:if test="${assignedEffortInstance && reportedEffortTotal && !committedDateInstance}">                    
   
   <div class="clearCenterPadding">
-    
     <table>
-      
       <thead>
         <tr>
           <th class="basic">Select to <br/>DELETE or EDIT</th>
@@ -29,7 +40,6 @@
           <th class="basic">Date Reported</th>
         </tr>
       </thead>
-      
       <tbody>
         <g:each var="re" in="${reportedEffortList}" >
           <tr>
@@ -47,9 +57,7 @@
           </tr>
         </g:each>
       </tbody>
-      
     </table>
-    
   </div>
   
 </g:if>
