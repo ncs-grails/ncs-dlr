@@ -1,7 +1,9 @@
 $(document).ready(function(){
     
-    // ADD button to add effort is pressed
+    // ADD button to add new effort is pressed
     $("#buttonAdd").click(function(){
+        
+        alert("buttonAdd clicked");
 
         // get url to go to
         var url = $("form[name='reportedEffort-create']").attr('action');       // /ncs-dlr/reportedEffort/create
@@ -25,6 +27,8 @@ $(document).ready(function(){
     // EDIT button to edit effort is pressed
     $("#buttonEdit").click(function(){
         
+        alert("buttonAdd clicked");
+
         var url = $("form[name='reportedEffort-create']").attr('action');
         //alert("(#buttonEdit).click(function().url = " + url)
 
@@ -40,20 +44,20 @@ $(document).ready(function(){
 // reload main.show page
 function loadAssignedEffort() {
 
-    alert("in function loadAssignedEffort");
+    alert("in dlr.js > function loadAssignedEffort");
 
-    //var url = $("form[name='main']").attr('action');
     var url = $("form[name='main']").attr('action');
-    alert("function loadAssignedEffort.url = " + url);
+    alert("in dlr.js > function loadAssignedEffort.url = " + url);
 
     var assignedEffortId = $("form[name='reportedEffort-create']").find("input[name='assignedEffort.id']").val();
-    alert("function loadAssignedEffort.assignedEffortId = " + assignedEffortId);
+    alert("in dlr.js > function loadAssignedEffort.assignedEffortId = " + assignedEffortId);
 
     var data = {'assignedEffort.id': assignedEffortId};
-    alert("function loadAssignedEffort.data = " + data);
-
+    alert("in dlr.js > function loadAssignedEffort.data = " + data);
+    
     //display (assignedEffort.show): 1) message boxes: ASSIGNED, REPORTED COMMITED message and 2) EFFORT REPORTED so far
-    $("#showAssignedEffortContainer").load(url, data);
+    $("#showAssignedEffortInclude").load(url, data);    
+    $("#addOrEditEffortForm").html("");
 
     return false;
     

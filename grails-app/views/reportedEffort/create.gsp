@@ -68,10 +68,9 @@
     
     <g:submitToRemote 
       class="buttonBasic" 
-      url="${[controller:'reportedEffort',action:'save']}" 
-      update="addOrEditForm" 
-      onSuccess="loadAssignedEffort();" 
       value="ADD"
+      url="${[controller:'reportedEffort',action:'save']}" 
+      onSuccess="loadAssignedEffort();" 
     />
     <button 
       class="buttonBasic" 
@@ -80,8 +79,5 @@
     </button>
     
   </div>
-
-
-
         
 </g:form>      

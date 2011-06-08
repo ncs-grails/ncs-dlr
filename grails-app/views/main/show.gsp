@@ -2,13 +2,11 @@
 <html>  
   
   <head>
-    
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <meta name="layout" content="ncs" />
     <title>NCS Direct Labor Reporting</title>
     <link rel="stylesheet" type="text/css" href="${resource(dir:'css', file:'custom.css')}" />
     <g:javascript src="dlr.js" />
-    
   </head>
 
   <body>
@@ -52,15 +50,16 @@
             <g:form name="reportedEffort-create" method="post" controller="reportedEffort" action="create" />
 
             <!-- FORM: reportedEffort.edit -->
-            <g:form name="reportedEffort-edit" method="post" controller="reportedEffort" action="edit" />
+            <g:form name="reportedEffort-edit" method="post" controller="reportedEffort" action="edit"/>
 
             <!-- BEGIN FORM: main.show form-->
             <g:form name="main" method="post" controller="main">
 
+              <!-- hidden fields -->
               <g:hiddenField name="assignedEffort.id" value="${assignedEffortInstance?.id}" />
 
-              <!-- display (assignedEffort.show): 1) message boxes: ASSIGNED, REPORTED COMMITED message and 2) EFFORT REPORTED so far -->
-              <div id="showAssignedEffortContainer">
+              <!-- CONTAINER for (assignedEffort.show): 1) message boxes: ASSIGNED, REPORTED COMMITTED message and 2) EFFORT REPORTED so far (not a form) -->
+              <div id="showAssignedEffortInclude">
                 <g:include controller="assignedEffort" action="show" id="${assignedEffortInstance.id}" />                            
               </div>
 
@@ -75,13 +74,15 @@
             </g:form>      
             <!-- END FORM: main.show form -->
 
-            <!-- placeholder for ADD/EDIT sections -->
+            <!-- CONTAINER for ADD/EDIT (form)-->
             <div id="addOrEditEffortForm"></div>
 
         </g:if>        
 
-      <!-- PREVIOUS COMMITTED EFFORT SECTION -->
-      <g:include controller="assignedEffort" action="showPast" id="${reportingStaffInstance.id}" />              
+      <!-- CONTAINER for PREVIOUS COMMITTED EFFORT SECTION (not a form) -->
+      <div id="showPastAssignedEffortInclude">
+        <g:include controller="assignedEffort" action="showPast" id="${reportingStaffInstance.id}" />                      
+      </div>
 
     <!-- spacing before footer -->  
     <div class="pageSpacing"> </div>
