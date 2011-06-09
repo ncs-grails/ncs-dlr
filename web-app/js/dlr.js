@@ -1,36 +1,36 @@
 $(document).ready(function(){
-    
+
     // ADD button to add new effort is pressed
-    $("#buttonAdd").click(function(){
+    $("#buttonMainAdd").click(function(){
         
-        alert("buttonAdd clicked");
+        alert("buttonMainAdd clicked");
 
         // get url to go to
         var url = $("form[name='reportedEffort-create']").attr('action');       // /ncs-dlr/reportedEffort/create
-        alert("(#buttonAdd).click(function().url = " + url)
+        alert("(#buttonMainAdd).click(function().url = " + url)
         
         // get asignedEffort.id from main.show
         var assignedEffortId = $("form[name='main']").find("input[name='assignedEffort.id']").val();
-        alert("(#buttonAdd).click(function().assignedEffortId = " + assignedEffortId)
+        alert("(#buttonMainAdd).click(function().assignedEffortId = " + assignedEffortId)
                 
         // get data to load
         var data = {'assignedEffort.id': assignedEffortId}                      // [object Object]
-        alert("(#buttonAdd).click(function().data = " + data)
+        alert("(#buttonMainAdd).click(function().data = " + data)
 
         $("#addOrEditEffortForm").load(url, data);
         $("#addDeleteEditCommitControls").hide();
-        
+
         return false;
 
     });
      
     // EDIT button to edit effort is pressed
-    $("#buttonEdit").click(function(){
+    $("#buttonMainEdit").click(function(){
         
-        alert("buttonAdd clicked");
+        alert("buttonMainEdit clicked");
 
         var url = $("form[name='reportedEffort-create']").attr('action');
-        //alert("(#buttonEdit).click(function().url = " + url)
+        alert("(#buttonMainEdit).click(function().url = " + url)
 
         $("#addOrEditEffortForm").load(url);
         $("#addDeleteEditCommitControls").hide();

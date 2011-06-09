@@ -6,19 +6,56 @@ class ReportedEffortController {
 
     def authenticateService
     def laborService
-\
+
     def index = {
+        
         println "PRINTLN ReportedEffortController.index.params: ${params}"                
-        redirect(action: "create", params: params)
+        redirect(action: "main", params: params)
+        
     }
 
+    def main = {
+        
+        println "PRINTLN ReportedEffortController.main.params: ${params}"                
+
+        def principal = authenticateService.principal()                         
+        def reportingStaffInstance = laborService.getReportingStaff(principal)
+
+        // REPORTING PERIOD
+        def reportingPeriodInstance = laborService.getCurrentReportingPeriod()
+
+        // ASSIGNED EFFORT FOR PERIOD, if it exists
+        def assignedEffortInstance = AssignedEffort.findByPeriodAndReportingStaff(reportingPeriodInstance, reportingStaffInstance)
+        
+        [
+            reportingPeriodInstance: reportingPeriodInstance,
+            reportingStaffInstance: reportingStaffInstance,
+            assignedEffortInstance: assignedEffortInstance
+        ]        
+    }
+    
     def create = {
         
-        println "PRINTLN ReportedEffortController.create.params: ${params}"        
-                        
+        println "PRINTLN ReportedEffortController.create.params: ${params}"                
+        
+        // get Reporting Staff instance
+        println "PRINTLN ReportedEffortController.create.params.reportingStaff.id: ${params.reportingStaff.id}"                        
+        def reportingStaffInstance = ReportingStaff.findById(params.reportingStaff.id)
+        println "PRINTLN ReportedEffortController.create.reportingStaffInstance: ${reportingStaffInstance}"        
+        
+        // get Reporting Period instance
+        println "PRINTLN ReportedEffortController.create.params.reportingPeriod.id: ${params.reportingPeriod.id}"                        
+        def reportingPeriodInstance = ReportingPeriod.findById(params.reportingPeriod.id)
+        println "PRINTLN ReportedEffortController.create.reportingPeriodInstance: ${reportingPeriodInstance}"        
+
+        def assignedEffortInstance = AssignedEffort.read(params?.assignedEffort?.id)
+
+        // get Reported Effort instance
+        println "PRINTLN ReportedEffortController.create.params.assignedEffort.id: ${params.assignedEffort.id}"                        
         def reportedEffortInstance = new ReportedEffort()
-        reportedEffortInstance.properties = params
+        reportedEffortInstance.assignedEffort = assignedEffortInstance
         //println "PRINTLN ReportedEffortController.create.reportedEffortInstance.properties: ${reportedEffortInstance.properties}"        
+        
         
         def csa = StudyActivity.createCriteria()        
         def studyActivityList = csa.list{
@@ -33,14 +70,14 @@ class ReportedEffortController {
             order("name", "asc")
         }
         //println "PRINTLN ReportedEffortController.create.studyTaskList: ${studyTaskList}"        
-        
-
-        return [
+                
+        [ reportingStaffInstance: reportingStaffInstance,
+            reportingPeriodInstance:reportingPeriodInstance, 
+            reportedEffortInstance: reportedEffortInstance, 
+            assignedEffortInstance: assignedEffortInstance,
             studyActivityList: studyActivityList, 
-            studyTaskList: studyTaskList,
-            reportedEffortInstance: reportedEffortInstance
-        ]
-        
+            studyTaskList: studyTaskList ]
+
     } //def create
 
     def save = {
@@ -61,6 +98,9 @@ class ReportedEffortController {
         def reportedEffortInstance = new ReportedEffort(params)
         println "PRINTLN ReportedEffortController.save.reportedEffortInstance: ${reportedEffortInstance}"        
         
+        
+        def assignedEffortInstance = AssignedEffort.read(params?.assignedEffort?.id)
+
         if ( reportedEffortInstance.percentEffort ) {
             reportedEffortInstance.percentEffort = reportedEffortInstance.percentEffort / 100.0            
             println "PRINTLN ReportedEffortController.save.reportedEffortInstance.percentEffort: ${reportedEffortInstance.percentEffort}"        
@@ -72,7 +112,7 @@ class ReportedEffortController {
         if (reportedEffortInstance.save(flush: true)) {
             println "successful save"
             flash.message = "${message(code: 'default.created.message', args: [message(code: 'reportedEffort.label', default: 'ReportedEffort'), reportedEffortInstance.id])}"
-            redirect(action: "create")
+            redirect(action: "main")
         }
         else {
             
@@ -93,7 +133,8 @@ class ReportedEffortController {
             def model = [
                 studyActivityList: studyActivityList, 
                 studyTaskList: studyTaskList,
-                reportedEffortInstance: reportedEffortInstance
+                reportedEffortInstance: reportedEffortInstance,
+                assignedEffortInstance: assignedEffortInstance
             ]
                 
             render(view: "create", model: model)

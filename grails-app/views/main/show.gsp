@@ -20,7 +20,9 @@
       <h1>Direct Labor Reporting</h1>
 
       <!-- Greeting -->
-      <span class="fontMaroon">Welcome, <strong>${reportingStaffInstance.firstName} ${reportingStaffInstance.lastName}</strong>!</span>
+      <span class="fontMaroon">
+        Welcome, <strong>${reportingStaffInstance.firstName} ${reportingStaffInstance.lastName}</strong>!
+      </span>
 
       <!-- CURRENT EFFORT REPORTING SECTION -->
       <h2>
@@ -42,49 +44,24 @@
             <g:formatDate date="${reportingPeriodInstance.periodDate}" format="MMMM yyyy" /></strong>. Thank you!
           </p>              
         </g:if>
+        
+        <!-- container for various FORMS -->
+        <div id="remoteFormContainer">
+          <g:include 
+            controller="reportedEffort" 
+            action="main" 
+            params="${['reportingStaff.id': reportingStaff?.id, 'reportingPeriod.id': reportingPeriod?.id, 'assignedEffort.id': assignedEffort?.id]}" 
+          />
+        </div>
 
-        <!-- if there is assigned effort that has not been committed yet, then user must complete dlr -->
-        <g:if test="${assignedEffortInstance && !committedDateInstance}">        
+        <!-- PREVIOUS COMMITTED EFFORT SECTION -->
+        <g:include 
+          id="${reportingStaffInstance.id}" 
+          controller="assignedEffort" 
+          action="showPast" 
+        />
 
-            <!-- FORM: reportedEffort.create (ADD) -->
-            <g:form name="reportedEffort-create" method="post" controller="reportedEffort" action="create" />
-
-            <!-- FORM: reportedEffort.edit -->
-            <g:form name="reportedEffort-edit" method="post" controller="reportedEffort" action="edit"/>
-
-            <!-- BEGIN FORM: main.show form-->
-            <g:form name="main" method="post" controller="main">
-
-              <!-- hidden fields -->
-              <g:hiddenField name="assignedEffort.id" value="${assignedEffortInstance?.id}" />
-
-              <!-- CONTAINER for (assignedEffort.show): 1) message boxes: ASSIGNED, REPORTED COMMITTED message and 2) EFFORT REPORTED so far (not a form) -->
-              <div id="showAssignedEffortInclude">
-                <g:include controller="assignedEffort" action="show" id="${assignedEffortInstance.id}" />                            
-              </div>
-
-              <!-- display ADD, DELETE, EDIT and COMMIT buttons -->
-              <div id="addDeleteEditCommitControls" class="clearCenterPadding">                            
-                <button id="buttonAdd" class="buttonBasic" >ADD</button>
-                <g:submitToRemote class="buttonBasic" url="${[controller:'reportedEffort',action:'delete']}" value="DELETE" />
-                <button id="buttonEdit" class="buttonBasic">EDIT</button>
-                <g:actionSubmit class="buttonBasic" value="COMMIT" action="commit"/>              
-              </div>          
-
-            </g:form>      
-            <!-- END FORM: main.show form -->
-
-            <!-- CONTAINER for ADD/EDIT (form)-->
-            <div id="addOrEditEffortForm"></div>
-
-        </g:if>        
-
-      <!-- CONTAINER for PREVIOUS COMMITTED EFFORT SECTION (not a form) -->
-      <div id="showPastAssignedEffortInclude">
-        <g:include controller="assignedEffort" action="showPast" id="${reportingStaffInstance.id}" />                      
-      </div>
-
-    <!-- spacing before footer -->  
+<!-- spacing before footer -->  
     <div class="pageSpacing"> </div>
  
   </body>

@@ -43,6 +43,13 @@ h2 {
 }
 
 /* sections *******************************************************************/
+.include {
+    border: .15em solid yellowgreen;
+}
+.form {
+    border: .15em dashed navy;
+}
+
 .clearBoth {
     position:relative; 
     clear:both; 

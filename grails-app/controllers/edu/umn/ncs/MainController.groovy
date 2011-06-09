@@ -19,6 +19,8 @@ class MainController {
     }
 
     def show = {
+        
+        println "PRINTLN => MainController.show to get data for MAIN DLR PAGE"        
                 
         println "PRINTLN MainController.show.params: ${params}"        
 
@@ -34,16 +36,11 @@ class MainController {
         // ASSIGNED EFFORT FOR PERIOD, if it exists
         def assignedEffortInstance = AssignedEffort.findByPeriodAndReportingStaff(reportingPeriodInstance, reportingStaffInstance)
         println "PRINTLN MainController.show.assignedEffortInstance: ${assignedEffortInstance}"
-
-        // EFFORT COMMITTED DATE FOR PERIOD, if it exists
-        def committedDateInstance = assignedEffortInstance ? assignedEffortInstance.dateCommitted : null
-        println "PRINTLN MainController.show.committedDateInstance: ${committedDateInstance}"
         
         [
-            reportingPeriodInstance: reportingPeriodInstance,
             reportingStaffInstance: reportingStaffInstance,
-            assignedEffortInstance: assignedEffortInstance,
-            committedDateInstance: committedDateInstance,
+            reportingPeriodInstance: reportingPeriodInstance,
+            assignedEffortInstance: assignedEffortInstance
         ]
        
     } //def show

@@ -33,7 +33,9 @@
     <table>
       <thead>
         <tr>
+          <g:if test="${isForm}">
           <th class="basic">Select to <br/>DELETE or EDIT</th>
+          </g:if>
           <th class="basic">Study Activity</th>
           <th class="basic">Task</th>
           <th class="basic">Percent Effort</th>
@@ -43,9 +45,11 @@
       <tbody>
         <g:each var="re" in="${reportedEffortList}" >
           <tr>
+            <g:if test="${isForm}">
             <td class="basic" style="text-align:center;">
               <input type="checkbox" name="reportedEffortId-${re.reportedEffortId}"/>
             </td>
+            </g:if>
             <td class="basic">${re.studyActivity}</td>
             <td class="basic">${re.studyTask}</td>
             <td class="basic" style="text-align:right;">

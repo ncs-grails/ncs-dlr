@@ -9,6 +9,8 @@ class AssignedEffortController {
     
     def show = {
 
+        println "PRINTLN => AssignedEffortController.show to get data for ASSIGNED/REPORTED/COMMITTED EFFORT & TABLE OF REPORTED EFFORT"
+
         println "PRINTLN AssignedEffortController.show.params: ${params}"
 
         def assignedEffortInstance
@@ -92,7 +94,8 @@ class AssignedEffortController {
             assignedEffortInstance: assignedEffortInstance,
             reportedEffortTotal: reportedEffortTotal,
             committedDateInstance: committedDateInstance,
-            reportedEffortList: reportedEffortList
+            reportedEffortList: reportedEffortList,
+            isForm: params?.isForm
         ]
        
     } //def show 
@@ -100,12 +103,16 @@ class AssignedEffortController {
     
     def showPast = {
         
+        println "PRINTLN => AssignedEffortController.showPast to get data for PREVIOUS EFFORT REPORTED"
+
+        println "PRINTLN AssignedEffortController.showPast.params: ${params}"
+        
         def reportingStaffInstance
         
         if (params?.id) {
             reportingStaffInstance = ReportingStaff.read(params?.id)
         }
-        //println "PRINTLN AssignedEffortController.showPast.reportingStaffInstance: ${reportingStaffInstance}"
+        println "PRINTLN AssignedEffortController.showPast.reportingStaffInstance: ${reportingStaffInstance}"
                 
         def cRE = ReportedEffort.createCriteria()
         def reportedEffortInstance = cRE.list{
@@ -123,11 +130,11 @@ class AssignedEffortController {
             }
             order("percentEffort", "desc")
         }
-        //println "PRINTLN AssignedEffortController.showPast.reportedEffortInstance: ${reportedEffortInstance}"
+        println "PRINTLN AssignedEffortController.showPast.reportedEffortInstance: ${reportedEffortInstance}"
 
         def reportedEffortList = []
         
-        //println "PRINTLN BEGIN LOOP"
+        println "PRINTLN BEGIN LOOP to get table row data"
 
         // Add records to Assigned Effort Instance
         reportedEffortInstance.eachWithIndex{ rs, i ->
@@ -161,7 +168,7 @@ class AssignedEffortController {
             
         }
 
-        //println "PRINTLN END LOOP"
+        println "PRINTLN END LOOP"
         [
             reportedEffortList: reportedEffortList
         ]
