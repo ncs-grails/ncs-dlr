@@ -14,14 +14,16 @@ class MainController {
     def laborService
 
     def index = {
+        
+        println "PRINTLN MAIN CONTROLLER > INDEX -------------------------------"        
         println "PRINTLN MainController.index.params: ${params}"        
         redirect(action:'show')        
+
     }
 
     def show = {
         
-        println "PRINTLN => MainController.show to get data for MAIN DLR PAGE"        
-                
+        println "PRINTLN MAIN CONTROLLER > SHOW --------------------------------"
         println "PRINTLN MainController.show.params: ${params}"        
 
         // REPORTING STAFF

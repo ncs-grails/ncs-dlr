@@ -1,15 +1,40 @@
 <!-- if there is assigned effort that has not been committed yet, then user must complete dlr -->
 <g:if test="${assignedEffortInstance && ! assignedEffortInstance?.dateCommitted }">
 
-  <g:form name="reportedEffort-main" method="post" class="form">
+  <g:form name="reportedEffort-main" method="post">
 
-    <!-- display (assignedEffort.show): 1) message boxes: ASSIGNED, REPORTED COMMITED message and 2) EFFORT REPORTED so far -->
-    <g:include controller="assignedEffort" action="show" id="${assignedEffortInstance.id}" params="${[isForm: true]}" />
+    <g:hiddenField name="reportingStaff.id" value="${reportingStaffInstance?.id}" />
+    <g:hiddenField name="reportingPeriod.id" value="${reportingPeriodInstance?.id}" />
+    <g:hiddenField name="assignedEffort.id" value="${assignedEffortInstance?.id}" />
 
-    <!-- display ADD, DELETE, EDIT and COMMIT buttons -->
+    <!-- REPORTED EFFORT STATUS (assignedEffort.show) -->
+    <g:include 
+      controller="assignedEffort" 
+      action="show" 
+      id="${assignedEffortInstance.id}" 
+      params="${[isForm: true]}" 
+    />
+
     <div class="clearCenterPadding">
-      <g:submitToRemote class="buttonBasic" url="${[controller:'reportedEffort',action:'create' ]}" value="ADD" update="remoteFormContainer" />
+      
+      <!-- ADD button -->
+      <g:submitToRemote 
+        class="buttonBasic" 
+        value="ADD" 
+        url="${[controller:'reportedEffort',action:'create' ]}" 
+        update="remoteFormContainer" 
+      />
+      
+      <!-- DELETE button -->
+      <g:submitToRemote 
+        class="buttonBasic" 
+        value="DELETE" 
+        url="${[controller:'reportedEffort',action:'delete' ]}" 
+        update="remoteFormContainer" 
+      />
+
     </div>
+
 
   </g:form>
 

@@ -9,6 +9,7 @@ class ReportedEffortController {
 
     def index = {
         
+        println "PRINTLN REPORTED EFFORT CONTROLLER > INDEX --------------------"                
         println "PRINTLN ReportedEffortController.index.params: ${params}"                
         redirect(action: "main", params: params)
         
@@ -16,141 +17,228 @@ class ReportedEffortController {
 
     def main = {
         
+        println "PRINTLN REPORTED EFFORT CONTROLLER > MAIN ---------------------"                
         println "PRINTLN ReportedEffortController.main.params: ${params}"                
-
-        def principal = authenticateService.principal()                         
-        def reportingStaffInstance = laborService.getReportingStaff(principal)
-
-        // REPORTING PERIOD
-        def reportingPeriodInstance = laborService.getCurrentReportingPeriod()
-
-        // ASSIGNED EFFORT FOR PERIOD, if it exists
-        def assignedEffortInstance = AssignedEffort.findByPeriodAndReportingStaff(reportingPeriodInstance, reportingStaffInstance)
         
-        [
-            reportingPeriodInstance: reportingPeriodInstance,
+        // get REPORTING STAFF, REPORTING PERIOD, and ASSIGNED EFFORT  instances
+        def reportingStaffId = params?.reportingStaffId
+        def reportingPeriodId = params?.reportingPeriodId
+        def assignedEffortId = params?.assignedEffortId
+
+        println "PRINTLN ReportedEffortController.main.reportingStaffId: ${reportingStaffId}"                        
+        println "PRINTLN ReportedEffortController.main.reportingPeriodId: ${reportingPeriodId}"                
+        println "PRINTLN ReportedEffortController.main.assignedEffortId: ${assignedEffortId}"                
+        
+        def reportingStaffInstance 
+        def reportingPeriodInstance 
+        def assignedEffortInstance 
+        
+        if ( reportingStaffId ) {
+            reportingStaffInstance = ReportingStaff.findById(reportingStaffId)
+        }
+        println "PRINTLN ReportedEffortController.main.reportingStaffInstance: ${reportingStaffInstance}"                    
+        if ( reportingPeriodId ) {
+            reportingPeriodInstance = ReportingPeriod.findById(reportingPeriodId)            
+        }
+        println "PRINTLN ReportedEffortController.main.reportingPeriodInstance: ${reportingPeriodInstance}"        
+        if ( assignedEffortId ) {
+            assignedEffortInstance = AssignedEffort.findById(assignedEffortId)
+        }
+        println "PRINTLN ReportedEffortController.main.assignedEffortInstance: ${assignedEffortInstance}"                    
+              
+        [            
             reportingStaffInstance: reportingStaffInstance,
+            reportingPeriodInstance: reportingPeriodInstance,
             assignedEffortInstance: assignedEffortInstance
         ]        
-    }
+        
+    } // def main
+
     
     def create = {
         
+        println "PRINTLN REPORTED EFFORT CONTROLLER > CREATE -------------------"                
         println "PRINTLN ReportedEffortController.create.params: ${params}"                
         
-        // get Reporting Staff instance
-        println "PRINTLN ReportedEffortController.create.params.reportingStaff.id: ${params.reportingStaff.id}"                        
-        def reportingStaffInstance = ReportingStaff.findById(params.reportingStaff.id)
-        println "PRINTLN ReportedEffortController.create.reportingStaffInstance: ${reportingStaffInstance}"        
+        // get REPORTING STAFF, REPORTING PERIOD, and REPORTED EFFORT parameters                 
+        def reportingStaffId = params?.reportingStaff.id
+        def reportingPeriodId = params?.reportingPeriod.id
+        def assignedEffortId = params?.assignedEffort.id
         
-        // get Reporting Period instance
-        println "PRINTLN ReportedEffortController.create.params.reportingPeriod.id: ${params.reportingPeriod.id}"                        
-        def reportingPeriodInstance = ReportingPeriod.findById(params.reportingPeriod.id)
+        println "PRINTLN ReportedEffortController.create.params.reportingStaffId: ${reportingStaffId}"
+        println "PRINTLN ReportedEffortController.create.params.reportingPeriodId: ${reportingPeriodId}"
+        println "PRINTLN ReportedEffortController.create.params.assignedEffortId: ${assignedEffortId}"
+
+        // get REPORTING STAFF, REPORTING PERIOD, and ASSIGNED EFFORT instances 
+        def reportingStaffInstance
+        if ( reportingStaffId ) {
+            reportingStaffInstance = ReportingStaff.findById(params?.reportingStaff.id)            
+        }
+        def reportingPeriodInstance 
+        if ( reportingPeriodId ) {
+            reportingPeriodInstance = ReportingPeriod.findById(params?.reportingPeriod.id)
+        }
+        def assignedEffortInstance
+        if ( assignedEffortId ) {
+            assignedEffortInstance = AssignedEffort.findById(assignedEffortId)            
+        }
+
+        println "PRINTLN ReportedEffortController.create.reportingStaffInstance: ${reportingStaffInstance}"        
         println "PRINTLN ReportedEffortController.create.reportingPeriodInstance: ${reportingPeriodInstance}"        
+        println "PRINTLN ReportedEffortController.create.assignedEffortInstance: ${assignedEffortInstance}"        
 
-        def assignedEffortInstance = AssignedEffort.read(params?.assignedEffort?.id)
-
-        // get Reported Effort instance
-        println "PRINTLN ReportedEffortController.create.params.assignedEffort.id: ${params.assignedEffort.id}"                        
+        // get REPORTED EFFORT instance
         def reportedEffortInstance = new ReportedEffort()
         reportedEffortInstance.assignedEffort = assignedEffortInstance
-        //println "PRINTLN ReportedEffortController.create.reportedEffortInstance.properties: ${reportedEffortInstance.properties}"        
-        
-        
-        def csa = StudyActivity.createCriteria()        
-        def studyActivityList = csa.list{
-            eq("obsolete", false) 
-            order("name", "asc")
-        }
-        //println "PRINTLN ReportedEffortController.create.studyActivityList: ${studyActivityList}"        
-        
-        def cst = StudyTask.createCriteria()        
-        def studyTaskList = cst.list{
-            eq("obsolete", false) 
-            order("name", "asc")
-        }
-        //println "PRINTLN ReportedEffortController.create.studyTaskList: ${studyTaskList}"        
+        println "PRINTLN ReportedEffortController.create.reportedEffortInstance: ${reportedEffortInstance}"        
+               
+        def studyActivityList = laborService.getActiveStudyActivityList()
+        def studyTaskList =  laborService.getActiveStudyTaskList()
                 
-        [ reportingStaffInstance: reportingStaffInstance,
+        [ 
+            reportingStaffInstance: reportingStaffInstance,
             reportingPeriodInstance:reportingPeriodInstance, 
-            reportedEffortInstance: reportedEffortInstance, 
             assignedEffortInstance: assignedEffortInstance,
+            reportedEffortInstance: reportedEffortInstance, 
             studyActivityList: studyActivityList, 
-            studyTaskList: studyTaskList ]
+            studyTaskList: studyTaskList 
+        ]
 
     } //def create
 
     def save = {
         
-        println "start SAVE"
+        println "PRINTLN REPORTED EFFORT CONTROLLER > SAVE ---------------------"                
         println "PRINTLN ReportedEffortController.save.params: ${params}"        
         
-        //TODO: get Reporting Staff
-        def principal = authenticateService.principal()                         
-        //println "PRINTLN ReportedEffortController.save.principal: ${principal}"
+        // get parameters 
+        def reportingStaffId = params?.reportingStaff.id
+        def reportingPeriodId = params?.reportingPeriod.id
+        def assignedEffortId = params?.assignedEffort.id
         
-        def reportingStaffInstance = laborService.getReportingStaff(principal)
-        //println "PRINTLN ReportedEffortController.save.reportingStaffInstance: ${reportingStaffInstance}"
+        println "PRINTLN ReportedEffortController.save.reportingStaffId: ${reportingStaffId}"
+        println "PRINTLN ReportedEffortController.save.reportingPeriodId: ${reportingPeriodId}"
+        println "PRINTLN ReportedEffortController.save.assignedEffortId: ${assignedEffortId}"
 
-        def username = reportingStaffInstance.username
-        println "PRINTLN ReportedEffortController.save.username: ${username}"
+        // get REPORTING STAFF, REPORTING PERIOD, and ASSIGNED EFFORT instances 
+        def reportingStaffInstance
+        if ( reportingStaffId ) {
+            reportingStaffInstance = ReportingStaff.findById(params?.reportingStaff.id)            
+        }
+        def reportingPeriodInstance 
+        if ( reportingPeriodId ) {
+            reportingPeriodInstance = ReportingPeriod.findById(params?.reportingPeriod.id)
+        }
+        def assignedEffortInstance
+        if ( assignedEffortId ) {
+            assignedEffortInstance = AssignedEffort.findById(assignedEffortId)            
+        }
+
+        println "PRINTLN ReportedEffortController.save.reportingStaffInstance: ${reportingStaffInstance}"        
+        println "PRINTLN ReportedEffortController.save.reportingPeriodInstance: ${reportingPeriodInstance}"        
+        println "PRINTLN ReportedEffortController.save.assignedEffortInstance: ${assignedEffortInstance}"        
         
+        // get REPORTED EFFORT entered
         def reportedEffortInstance = new ReportedEffort(params)
         println "PRINTLN ReportedEffortController.save.reportedEffortInstance: ${reportedEffortInstance}"        
         
-        
-        def assignedEffortInstance = AssignedEffort.read(params?.assignedEffort?.id)
-
+        // convert Reported Effort to decimal number for insert into db
         if ( reportedEffortInstance.percentEffort ) {
             reportedEffortInstance.percentEffort = reportedEffortInstance.percentEffort / 100.0            
             println "PRINTLN ReportedEffortController.save.reportedEffortInstance.percentEffort: ${reportedEffortInstance.percentEffort}"        
         }
         
+        // get USERNAME of person reporting effort
+        def username = reportingStaffInstance.username
+        println "PRINTLN ReportedEffortController.save.username: ${username}"                
+        
         reportedEffortInstance.userCreated = username
         println "PRINTLN ReportedEffortController.save.reportedEffortInstance.userCreated: ${reportedEffortInstance.userCreated}"        
         
         if (reportedEffortInstance.save(flush: true)) {
-            println "successful save"
+            
+            println "SAVE SUCCESSFULLY"            
             flash.message = "${message(code: 'default.created.message', args: [message(code: 'reportedEffort.label', default: 'ReportedEffort'), reportedEffortInstance.id])}"
-            redirect(action: "main")
-        }
-        else {
             
-            println "failed save"
+            redirect(controller: 'main', action: "show")
+            //redirect(uri:"/main/show")
+        
+        } else {
             
-            def csa = StudyActivity.createCriteria()        
-            def studyActivityList = csa.list{
-                eq("obsolete", false) 
-                order("name", "asc")
-            }
-
-            def cst = StudyTask.createCriteria()        
-            def studyTaskList = cst.list{
-                eq("obsolete", false) 
-                order("name", "asc")
-            }
+            println "SAVE FAILED"
+            
+            // get STUDY ACTIVITY & TASK list for form controls
+            def studyActivityList = laborService.getActiveStudyActivityList()
+            def studyTaskList =  laborService.getActiveStudyTaskList()
             
             def model = [
-                studyActivityList: studyActivityList, 
-                studyTaskList: studyTaskList,
+                reportingStaffInstance: reportingStaffInstance, 
+                reportingPeriodInstance: reportingPeriodInstance, 
+                assignedEffortInstance: assignedEffortInstance,
                 reportedEffortInstance: reportedEffortInstance,
-                assignedEffortInstance: assignedEffortInstance
+                studyActivityList: studyActivityList, 
+                studyTaskList: studyTaskList
             ]
                 
+            flash.message = "${message(code: 'default.created.message', args: [message(code: 'reportedEffort.label', default: 'ReportedEffort'), reportedEffortInstance.id])}"
+
             render(view: "create", model: model)
-        }
+            
+        } //if (reportedEffortInstance.save(flush: true))
         
     } //def save
     
     
     def delete = {
         
-        println "PRINTLN ReportedEffortController.delete.params.id: ${params.id}"        
+        println "PRINTLN REPORTED EFFORT CONTROLLER > DELTE --------------------"                
+        println "PRINTLN ReportedEffortController.delete.params: ${params}"        
+        
+        // get parameters 
+        def reportingStaffId = params?.reportingStaff.id
+        def reportingPeriodId = params?.reportingPeriod.id
+        def assignedEffortId = params?.assignedEffort.id
+        
+        params.each{
+            
+            if ( it.key =~ /^reportedEffortId-[0-9]*$/) {
+                
+                def reportedEffortId = Integer.parseInt(it.key.replace('staff-', ''))
+                println "PRINTLN ReportedEffortController.delete.params.each.reportedEffortId: ${reportedEffortId}"
+                
+            }
 
+        }
+
+        println "PRINTLN ReportedEffortController.delete.reportingStaffId: ${reportingStaffId}"
+        println "PRINTLN ReportedEffortController.delete.reportingPeriodId: ${reportingPeriodId}"
+        println "PRINTLN ReportedEffortController.delete.assignedEffortId: ${assignedEffortId}"
+
+        // get REPORTING STAFF, REPORTING PERIOD, and ASSIGNED EFFORT instances 
+        def reportingStaffInstance
+        if ( reportingStaffId ) {
+            reportingStaffInstance = ReportingStaff.findById(params?.reportingStaff.id)            
+        }
+        def reportingPeriodInstance 
+        if ( reportingPeriodId ) {
+            reportingPeriodInstance = ReportingPeriod.findById(params?.reportingPeriod.id)
+        }
+        def assignedEffortInstance
+        if ( assignedEffortId ) {
+            assignedEffortInstance = AssignedEffort.findById(assignedEffortId)            
+        }
+
+        println "PRINTLN ReportedEffortController.delete.reportingStaffInstance: ${reportingStaffInstance}"        
+        println "PRINTLN ReportedEffortController.delete.reportingPeriodInstance: ${reportingPeriodInstance}"        
+        println "PRINTLN ReportedEffortController.delete.assignedEffortInstance: ${assignedEffortInstance}"        
+        
+        
+
+        /*
         def reportedEffortInstance = ReportedEffort.get(params.id)
         println "PRINTLN ReportedEffortController.delete.ReportedEffort.get(params.id): ${ReportedEffort.get(params.id)}"        
         
-        /*
+
         if (reportedEffortInstance) {
             try {
                 reportedEffortInstance.delete(flush: true)

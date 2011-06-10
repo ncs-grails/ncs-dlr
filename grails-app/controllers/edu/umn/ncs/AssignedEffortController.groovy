@@ -3,14 +3,17 @@ package edu.umn.ncs
 class AssignedEffortController {
 
     def index = {
+        
+        println "PRINTLN ASSIGNED EFFORT CONTROLLER > INDEX --------------------"                
         println "PRINTLN AssignedEffortController.index.params: ${params}"
+        
         redirect(controller:'main')
+        
     }
     
     def show = {
 
-        println "PRINTLN => AssignedEffortController.show to get data for ASSIGNED/REPORTED/COMMITTED EFFORT & TABLE OF REPORTED EFFORT"
-
+        println "PRINTLN ASSIGNED EFFORT CONTROLLER > SHOW ---------------------"                
         println "PRINTLN AssignedEffortController.show.params: ${params}"
 
         def assignedEffortInstance
@@ -103,8 +106,7 @@ class AssignedEffortController {
     
     def showPast = {
         
-        println "PRINTLN => AssignedEffortController.showPast to get data for PREVIOUS EFFORT REPORTED"
-
+        println "PRINTLN ASSIGNED EFFORT CONTROLLER > SHOWPAST -----------------"                
         println "PRINTLN AssignedEffortController.showPast.params: ${params}"
         
         def reportingStaffInstance
@@ -134,7 +136,7 @@ class AssignedEffortController {
 
         def reportedEffortList = []
         
-        println "PRINTLN BEGIN LOOP to get table row data"
+        //println "PRINTLN BEGIN LOOP to get table row data"
 
         // Add records to Assigned Effort Instance
         reportedEffortInstance.eachWithIndex{ rs, i ->
@@ -168,7 +170,8 @@ class AssignedEffortController {
             
         }
 
-        println "PRINTLN END LOOP"
+        //println "PRINTLN END LOOP"
+        
         [
             reportedEffortList: reportedEffortList
         ]

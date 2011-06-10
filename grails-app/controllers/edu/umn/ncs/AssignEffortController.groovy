@@ -13,13 +13,17 @@ class AssignEffortController {
     def mailService
    
     def index = {
+        
+        println "PRINTLN ASSIGNED EFFORT CONTROLLER > INDEX --------------------"
         println "PRINTLN AssignEffortController.index.params: ${params}"                        
         redirect(action:'show')        
+
     }
     
     // display page
     def show = {
         
+        println "PRINTLN ASSIGNED EFFORT CONTROLLER > SHOW ---------------------"
         println "PRINTLN AssignEffortController.show.params: ${params}"                        
 
         // GET PERIODS FOR PERIOD CONTROL --------------------------------------
@@ -183,9 +187,9 @@ class AssignEffortController {
 
     } //def show 
 
-    // UPDATE when COMMIT button is clicked
     def update = {
                 
+        println "PRINTLN ASSIGNED EFFORT CONTROLLER > UPDATE -------------------"
         println "PRINTLN AssignedEffortController.update.params: ${params}"
         
         // Get logged in user account

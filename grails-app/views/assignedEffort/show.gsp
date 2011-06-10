@@ -1,4 +1,4 @@
-<!-- display ASSIGNED, REPORTED & COMMITTED effort status -->
+<!-- ASSIGNED, REPORTED & COMMITTED message boxes -->
 <g:if test="${assignedEffortInstance && !committedDateInstance}">
   
   <p class="fontMaroon">Please report the effort you accrued this month and then commit it.</p>
@@ -26,7 +26,7 @@
   
 </g:if>
 
-<!-- display currently REPORTED EFFORT for current period -->      
+<!-- REPORTED EFFORT for current period -->      
 <g:if test="${assignedEffortInstance && reportedEffortTotal && !committedDateInstance}">                    
   
   <div class="clearCenterPadding">

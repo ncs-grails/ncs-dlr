@@ -1,6 +1,13 @@
 root { 
     display: block;
 }
+form {
+    border: .15em dashed navy;
+}
+
+include {
+    border: .15em solid yellowgreen;
+}
 
 /* fonts **********************************************************************/
 .fontMaroon {

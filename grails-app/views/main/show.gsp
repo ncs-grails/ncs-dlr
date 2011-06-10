@@ -45,16 +45,16 @@
           </p>              
         </g:if>
         
-        <!-- container for various FORMS -->
+        <!-- container for various FORMS (reportedEffort.main) -->
         <div id="remoteFormContainer">
           <g:include 
             controller="reportedEffort" 
             action="main" 
-            params="${['reportingStaff.id': reportingStaff?.id, 'reportingPeriod.id': reportingPeriod?.id, 'assignedEffort.id': assignedEffort?.id]}" 
+            params="${[reportingStaffId: reportingStaffInstance?.id, reportingPeriodId: reportingPeriodInstance?.id, assignedEffortId: assignedEffortInstance?.id]}" 
           />
         </div>
 
-        <!-- PREVIOUS COMMITTED EFFORT SECTION -->
+        <!-- PAST COMMITTED EFFORT SECTION -->
         <g:include 
           id="${reportingStaffInstance.id}" 
           controller="assignedEffort" 

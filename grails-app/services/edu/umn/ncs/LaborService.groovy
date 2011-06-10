@@ -182,5 +182,31 @@ class LaborService {
         
         return 'sent email!'
     }
+
+    def getActiveStudyActivityList() {
+        
+        def csa = StudyActivity.createCriteria()        
+        def studyActivityList = csa.list{
+            eq("obsolete", false) 
+            order("name", "asc")
+        }
+        //println "PRINTLN LaborService.getActiveStudyActivityList: ${studyActivityList}"        
+        
+        return studyActivityList
+        
+    }
+
+    def getActiveStudyTaskList() {
+        
+        def cst = StudyTask.createCriteria()        
+        def studyTaskList = cst.list{
+            eq("obsolete", false) 
+            order("name", "asc")
+        }
+        //println "PRINTLN ReportedEffortController.create.studyTaskList: ${studyTaskList}"        
+                        
+        return studyTaskList
+        
+    }
     
 } //class LaborService
