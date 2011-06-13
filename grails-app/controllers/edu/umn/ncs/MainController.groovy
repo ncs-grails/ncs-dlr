@@ -25,20 +25,20 @@ class MainController {
         
         println "PRINTLN MAIN CONTROLLER > SHOW --------------------------------"
         println "PRINTLN MainController.show.params: ${params}"        
-
-        // REPORTING STAFF
+        
+        // create REPORTING STAFF instance
         def principal = authenticateService.principal()                         
         def reportingStaffInstance = laborService.getReportingStaff(principal)
-        println "PRINTLN MainController.show.reportingStaffInstance: ${reportingStaffInstance}"
+        println "PRINTLN MainController.show.reportingStaffInstance: ${reportingStaffInstance}"            
 
-        // REPORTING PERIOD
+        // create REPORTING PERIOD instance
         def reportingPeriodInstance = laborService.getCurrentReportingPeriod()
         println "PRINTLN MainController.show.reportingPeriodInstance: ${reportingPeriodInstance}"
 
-        // ASSIGNED EFFORT FOR PERIOD, if it exists
+        // create ASSIGNED EFFORT instance
         def assignedEffortInstance = AssignedEffort.findByPeriodAndReportingStaff(reportingPeriodInstance, reportingStaffInstance)
-        println "PRINTLN MainController.show.assignedEffortInstance: ${assignedEffortInstance}"
-        
+        println "PRINTLN MainController.show.assignedEffortInstance: ${assignedEffortInstance}"            
+
         [
             reportingStaffInstance: reportingStaffInstance,
             reportingPeriodInstance: reportingPeriodInstance,

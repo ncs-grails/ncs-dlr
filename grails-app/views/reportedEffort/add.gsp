@@ -3,14 +3,20 @@
 <!-- ASSIGNED, REPORTED & COMMITTED message boxes -->
 <!-- REPORTED EFFORT for current period -->      
 <div class="include">
-  <g:include controller="assignedEffort" action="show" id="${assignedEffortInstance?.id}" />
+    <g:include 
+      controller="assignedEffort" 
+      action="showCurrent" 
+      id="${assignedEffortInstance.id}" 
+      params="${[isForm: false]}" 
+/>
+
 </div>
 
 <g:form name="reportedEffort-create" method="post">
 
-  <g:hiddenField name="reportingStaff.id" value="${reportingStaffInstance?.id}" />
-  <g:hiddenField name="reportingPeriod.id" value="${reportingPeriodInstance?.id}" />
-  <g:hiddenField name="assignedEffort.id" value="${assignedEffortInstance?.id}" />
+  <g:hiddenField name="reportingStaffId" value="${reportingStaffInstance?.id}" />
+  <g:hiddenField name="reportingPeriodId" value="${reportingPeriodInstance?.id}" />
+  <g:hiddenField name="assignedEffortId" value="${assignedEffortInstance?.id}" />
 
   <div class="clearCenterPadding">
 
@@ -70,22 +76,23 @@
 
   </div>
 
-  <!-- CONTROLS: ADD & CANCEL -->
   <div class="clearCenterPadding">
 
+    <!-- ADD button -->
     <g:submitToRemote 
       class="buttonBasic" 
-      value="ADD"
+      value="SAVE"
       url="${[controller:'reportedEffort',action:'save']}" 
       update="remoteFormContainer"
     />
 
-     <g:submitToRemote 
-       class="buttonBasic" 
-       value="CANCEL" 
-       url="${[controller:'main',action:'show' ]}" 
-       update="remoteFormContainer" 
-     />
+    <!-- CANCEL button -->
+    <g:submitToRemote 
+      class="buttonBasic" 
+      value="CANCEL" 
+      url="${[controller:'reportedEffort',action:'main' ]}" 
+      update="remoteFormContainer" 
+    />
 
   </div>
 

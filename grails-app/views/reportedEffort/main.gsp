@@ -3,14 +3,14 @@
 
   <g:form name="reportedEffort-main" method="post">
 
-    <g:hiddenField name="reportingStaff.id" value="${reportingStaffInstance?.id}" />
-    <g:hiddenField name="reportingPeriod.id" value="${reportingPeriodInstance?.id}" />
-    <g:hiddenField name="assignedEffort.id" value="${assignedEffortInstance?.id}" />
+    <g:hiddenField name="reportingStaffId" value="${reportingStaffInstance.id}" />
+    <g:hiddenField name="reportingPeriodId" value="${reportingPeriodInstance.id}" />
+    <g:hiddenField name="assignedEffortId" value="${assignedEffortInstance.id}" />
 
-    <!-- REPORTED EFFORT STATUS (assignedEffort.show) -->
+    <!-- CURRENT REPORTED EFFORT STATUS (assignedEffort.showCurrent) -->
     <g:include 
       controller="assignedEffort" 
-      action="show" 
+      action="showCurrent" 
       id="${assignedEffortInstance.id}" 
       params="${[isForm: true]}" 
     />
@@ -21,7 +21,7 @@
       <g:submitToRemote 
         class="buttonBasic" 
         value="ADD" 
-        url="${[controller:'reportedEffort',action:'create' ]}" 
+        url="${[controller:'reportedEffort',action:'add' ]}" 
         update="remoteFormContainer" 
       />
       
@@ -33,8 +33,23 @@
         update="remoteFormContainer" 
       />
 
-    </div>
+      <!-- EDIT button -->
+      <g:submitToRemote 
+        class="buttonBasic" 
+        value="EDIT" 
+        url="${[controller:'reportedEffort',action:'edit' ]}" 
+        update="remoteFormContainer" 
+      />
+      
+      <!-- COMMIT button -->
+      <g:submitToRemote 
+        class="buttonBasic" 
+        value="COMMIT" 
+        url="${[controller:'reportedEffort',action:'commit' ]}" 
+        update="remoteFormContainer" 
+      />
 
+    </div>
 
   </g:form>
 
