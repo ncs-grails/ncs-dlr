@@ -3,9 +3,9 @@
 
   <g:form name="reportedEffort-main" method="post">
 
-    <g:hiddenField name="reportingStaffId" value="${reportingStaffInstance.id}" />
-    <g:hiddenField name="reportingPeriodId" value="${reportingPeriodInstance.id}" />
-    <g:hiddenField name="assignedEffortId" value="${assignedEffortInstance.id}" />
+    <g:hiddenField name="reportingStaff.id" value="${reportingStaffInstance.id}" />
+    <g:hiddenField name="reportingPeriod.id" value="${reportingPeriodInstance.id}" />
+    <g:hiddenField name="assignedEffort.id" value="${assignedEffortInstance.id}" />
 
     <!-- CURRENT REPORTED EFFORT STATUS (assignedEffort.showCurrent) -->
     <g:include 

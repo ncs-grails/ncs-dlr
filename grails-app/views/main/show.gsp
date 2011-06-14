@@ -50,7 +50,7 @@
           <g:include 
             controller="reportedEffort" 
             action="main" 
-            params="${[reportingStaffId: reportingStaffInstance.id, reportingPeriodId: reportingPeriodInstance.id, assignedEffortId: assignedEffortInstance.id]}" 
+            params="${[reportingStaff: reportingStaffInstance, reportingPeriod: reportingPeriodInstance, assignedEffort: assignedEffortInstance]}" 
           />
         </div>
 

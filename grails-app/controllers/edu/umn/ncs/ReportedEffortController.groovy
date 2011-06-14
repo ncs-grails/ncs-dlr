@@ -19,24 +19,27 @@ class ReportedEffortController {
         
         println "PRINTLN REPORTED EFFORT CONTROLLER > MAIN ---------------------"                
         println "PRINTLN ReportedEffortController.main.params: ${params}"                
-        
+                             
         // get parameters
-        def reportingStaffInstance = ReportingStaff.read(params?.reportingStaffId)
-        def reportingPeriodInstance = ReportingPeriod.read(params?.reportingPeriodId)
-        def assignedEffortInstance = AssignedEffort.read(params?.assignedEffortId)
+        def reportingStaffInstance 
+        def reportingPeriodInstance
+        def assignedEffortInstance 
+
+        reportingStaffInstance = ReportingStaff.read(params?.reportingStaff?.id)
+        reportingPeriodInstance = ReportingPeriod.read(params?.reportingPeriod?.id)
+        assignedEffortInstance = AssignedEffort.read(params?.assignedEffort?.id)            
         
         println "PRINTLN MainController.show.reportingStaffInstance: ${reportingStaffInstance}"
         println "PRINTLN MainController.show.reportingPeriodInstance: ${reportingPeriodInstance}"
         println "PRINTLN MainController.show.assignedEffortInstance: ${assignedEffortInstance}"        
-                      
+                              
         [            
             reportingStaffInstance: reportingStaffInstance,
             reportingPeriodInstance: reportingPeriodInstance,
             assignedEffortInstance: assignedEffortInstance
         ]        
-        
-    } // def main
 
+    } // def main
     
     def add = {
         
@@ -44,9 +47,9 @@ class ReportedEffortController {
         println "PRINTLN ReportedEffortController.add.params: ${params}"                
         
         // get REPORTING STAFF, REPORTING PERIOD, and REPORTED EFFORT parameters                 
-        def reportingStaffInstance = ReportingStaff.read(params?.reportingStaffId)
-        def reportingPeriodInstance = ReportingPeriod.read(params?.reportingPeriodId)
-        def assignedEffortInstance = AssignedEffort.read(params?.assignedEffortId)
+        def reportingStaffInstance = ReportingStaff.read(params?.reportingStaff.id)
+        def reportingPeriodInstance = ReportingPeriod.read(params?.reportingPeriod.id)
+        def assignedEffortInstance = AssignedEffort.read(params?.assignedEffort.id)
         
         println "PRINTLN ReportedEffortController.add.params.reportingStaffInstance: ${reportingStaffInstance}"
         println "PRINTLN ReportedEffortController.add.params.reportingPeriodInstance: ${reportingPeriodInstance}"
@@ -77,10 +80,10 @@ class ReportedEffortController {
         println "PRINTLN ReportedEffortController.save.params: ${params}"        
         
         // create REPORTING STAFF, REPORTING PERIOD, & ASSIGNED EFFORT instances from parameters
-        def reportingStaffInstance = ReportingStaff.read(params?.reportingStaffId)
-        def reportingPeriodInstance = ReportingPeriod.read(params?.reportingPeriodId)
-        def assignedEffortInstance = AssignedEffort.read(params?.assignedEffortId)
-        
+        def reportingStaffInstance = ReportingStaff.read(params?.reportingStaff.id)
+        def reportingPeriodInstance = ReportingPeriod.read(params?.reportingPeriod.id)
+        def assignedEffortInstance = AssignedEffort.read(params?.assignedEffort.id)
+                
         println "PRINTLN ReportedEffortController.save.reportingStaffInstance: ${reportingStaffInstance}"        
         println "PRINTLN ReportedEffortController.save.reportingPeriodInstance: ${reportingPeriodInstance}"        
         println "PRINTLN ReportedEffortController.save.assignedEffortInstance: ${assignedEffortInstance}"        
@@ -88,7 +91,7 @@ class ReportedEffortController {
         // get REPORTED EFFORT entered
         def reportedEffortInstance = new ReportedEffort(params)
         println "PRINTLN ReportedEffortController.save.reportedEffortInstance: ${reportedEffortInstance}"        
-        
+                
         // convert Reported Effort to decimal number for insert into db
         if ( reportedEffortInstance.percentEffort ) {
             reportedEffortInstance.percentEffort = reportedEffortInstance.percentEffort / 100.0            
@@ -108,9 +111,9 @@ class ReportedEffortController {
             flash.message = "${message(code: 'default.created.message', args: [message(code: 'reportedEffort.label', default: 'ReportedEffort'), reportedEffortInstance.id])}"
             
             def model = [
-                reportingStaffInstance: reportingStaffInstance, 
-                reportingPeriodInstance: reportingPeriodInstance, 
-                assignedEffortInstance: assignedEffortInstance
+                'reportingStaff.id': reportingStaffInstance.id, 
+                'reportingPeriod.id': reportingPeriodInstance.id, 
+                'assignedEffort.id': assignedEffortInstance.id
             ]
     
             println "PRINTLN ReportedEffortController.save.model: ${model}"        
@@ -120,6 +123,12 @@ class ReportedEffortController {
         } else {
             
             println "SAVE FAILED"
+            
+            // get error message if save failes
+            if ( ! reportedEffortInstance.save()) {
+                reportedEffortInstance.errors.each{ println it }
+            }
+
             
             // get STUDY ACTIVITY & TASK list for form controls
             def studyActivityList = laborService.getActiveStudyActivityList()
@@ -149,43 +158,24 @@ class ReportedEffortController {
         println "PRINTLN ReportedEffortController.delete.params: ${params}"        
         
         // get parameters 
-        def reportingStaffId = params?.reportingStaff.id
-        def reportingPeriodId = params?.reportingPeriod.id
-        def assignedEffortId = params?.assignedEffort.id
+        def reportingStaffInstance = ReportingStaff.read(params?.reportingStaff.id)
+        def reportingPeriodInstance = ReportingPeriod.read(params?.reportingPeriod.id)
+        def assignedEffortInstance = AssignedEffort.read(params?.assignedEffort.id)
         
+        println "PRINTLN ReportedEffortController.delete.reportingStaffInstance: ${reportingStaffInstance}"        
+        println "PRINTLN ReportedEffortController.delete.reportingPeriodInstance: ${reportingPeriodInstance}"        
+        println "PRINTLN ReportedEffortController.delete.assignedEffortInstance: ${assignedEffortInstance}"        
+
         params.each{
             
             if ( it.key =~ /^reportedEffortId-[0-9]*$/) {
                 
-                def reportedEffortId = Integer.parseInt(it.key.replace('staff-', ''))
+                def reportedEffortId = Integer.parseInt(it.key.replace('reportedEffortId-', ''))
                 println "PRINTLN ReportedEffortController.delete.params.each.reportedEffortId: ${reportedEffortId}"
                 
             }
 
         }
-
-        println "PRINTLN ReportedEffortController.delete.reportingStaffId: ${reportingStaffId}"
-        println "PRINTLN ReportedEffortController.delete.reportingPeriodId: ${reportingPeriodId}"
-        println "PRINTLN ReportedEffortController.delete.assignedEffortId: ${assignedEffortId}"
-
-        // get REPORTING STAFF, REPORTING PERIOD, and ASSIGNED EFFORT instances 
-        def reportingStaffInstance
-        if ( reportingStaffId ) {
-            reportingStaffInstance = ReportingStaff.findById(params?.reportingStaff.id)            
-        }
-        def reportingPeriodInstance 
-        if ( reportingPeriodId ) {
-            reportingPeriodInstance = ReportingPeriod.findById(params?.reportingPeriod.id)
-        }
-        def assignedEffortInstance
-        if ( assignedEffortId ) {
-            assignedEffortInstance = AssignedEffort.findById(assignedEffortId)            
-        }
-
-        println "PRINTLN ReportedEffortController.delete.reportingStaffInstance: ${reportingStaffInstance}"        
-        println "PRINTLN ReportedEffortController.delete.reportingPeriodInstance: ${reportingPeriodInstance}"        
-        println "PRINTLN ReportedEffortController.delete.assignedEffortInstance: ${assignedEffortInstance}"        
-        
         
 
         /*
