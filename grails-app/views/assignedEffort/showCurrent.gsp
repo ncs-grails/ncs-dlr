@@ -34,7 +34,7 @@
       <thead>
         <tr>
           <g:if test="${isForm}">
-          <th class="basic">Select to <br/>DELETE or EDIT</th>
+            <th class="basic">Select to <br/>DELETE or EDIT</th>
           </g:if>
           <th class="basic">Study Activity</th>
           <th class="basic">Task</th>
@@ -46,14 +46,14 @@
         <g:each var="re" in="${reportedEffortList}" >
           <tr>
             <g:if test="${isForm}">
-            <td class="basic" style="text-align:center;">
-              <input type="checkbox" name="reportedEffortId-${re.reportedEffortId}"/>
-            </td>
+              <td class="basic" style="text-align:center;">
+                <input type="radio" name="reportedEffort.id" value="${re.reportedEffortId}"/>
+              </td>
             </g:if>
             <td class="basic">${re.studyActivity}</td>
             <td class="basic">${re.studyTask}</td>
             <td class="basic" style="text-align:right;">
-              <g:formatNumber number="${re.percentEffort}" type="percent" maxFractionDigits="2"/>
+              <g:formatNumber number="${re.percentEffort}" type="percent" maxFractionDigits="3"/>
             </td>
             <td class="basic" style="text-align:center;">
               <g:formatDate date="${re.dateCreated}" format="MM-dd-yyyy"/>
@@ -63,5 +63,9 @@
       </tbody>
     </table>
   </div>
+
+  <g:if test="${flash.message}">
+    <div class="flashMessage">${flash.message}</div>
+  </g:if>
   
 </g:if>

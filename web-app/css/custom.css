@@ -50,6 +50,14 @@ h2 {
 }
 
 /* sections *******************************************************************/
+.flashMessage{    
+    margin: 1em, 1em;
+    border: .1em solid lightcoral;
+    padding: 1em, .75em;
+    background-color: mistyrose;
+    text-align: center;
+}
+
 .include {
     border: .15em solid yellowgreen;
 }

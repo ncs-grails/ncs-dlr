@@ -15,7 +15,7 @@ class ReportedEffort {
         assignedEffort()
         activity()
         task()
-        percentEffort(max:1.0, scale:3)
+        percentEffort(max:1.0, scale:5)
         dateCreated()
         userCreated(blank:false)
         appCreated(blank:false)
