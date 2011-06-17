@@ -12,7 +12,7 @@
 
 </div>
 
-<g:form name="reportedEffort-create" method="post">
+<g:form name="reportedEffort-edit" method="post">
 
   <g:hiddenField name="reportingStaff.id" value="${reportingStaffInstance?.id}" />
   <g:hiddenField name="reportingPeriod.id" value="${reportingPeriodInstance?.id}" />

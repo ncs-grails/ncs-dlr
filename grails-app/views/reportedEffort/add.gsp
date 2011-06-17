@@ -12,7 +12,7 @@
 
 </div>
 
-<g:form name="reportedEffort-create" method="post">
+<g:form name="reportedEffort-add" method="post">
 
   <g:hiddenField name="reportingStaff.id" value="${reportingStaffInstance?.id}" />
   <g:hiddenField name="reportingPeriod.id" value="${reportingPeriodInstance?.id}" />
@@ -62,20 +62,21 @@
           </span>
       </span>
 
-      <g:if test="${flash.message}">
-        ${flash.message}
-      </g:if>
-
-      <g:hasErrors bean="${reportedEffortInstance}">
-        <div class="errors">
-          <g:renderErrors bean="${reportedEffortInstance}" as="list" />
-        </div>
-      </g:hasErrors>
-
     </div>
 
   </div>
+  
+    <!-- ERROR MESSAGES -->    
+  <g:if test="${flash.message}">
+    <div class="flashMessage">${flash.message}</div>
+  </g:if>
 
+  <g:hasErrors bean="${reportedEffortInstance}">
+    <div class="errors">
+      <g:renderErrors bean="${reportedEffortInstance}" as="list" />
+    </div>
+  </g:hasErrors>
+  
   <div class="clearCenterPadding">
 
     <!-- ADD button -->

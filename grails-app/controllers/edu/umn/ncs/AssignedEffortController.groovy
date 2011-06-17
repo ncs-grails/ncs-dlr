@@ -16,6 +16,7 @@ class AssignedEffortController {
         println "PRINTLN ASSIGNED EFFORT CONTROLLER > SHOW CURRENT -------------"                
         println "PRINTLN AssignedEffortController.showCurrent.params: ${params}"
 
+        // get perameters
         def assignedEffortInstance
         def reportingPeriodInstance
         def reportingStaffInstance
@@ -42,7 +43,7 @@ class AssignedEffortController {
             }
             println "PRINTLN AssignedEffortController.showCurrent.reportedEffortTotal: ${reportedEffortTotal}"
         }
-        
+                
         // Get list of reported effort 
         def crs = ReportedEffort.createCriteria()        
         def reportingEffortInstanceList = crs.list{
