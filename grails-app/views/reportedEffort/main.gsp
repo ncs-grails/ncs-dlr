@@ -15,6 +15,17 @@
       params="${[isForm: true]}" 
     />
 
+    <!-- ERROR MESSAGES -->    
+    <g:if test="${flash.message}">
+      <div class="flashMessage">${flash.message}</div>
+    </g:if>
+
+    <g:hasErrors bean="${reportedEffortInstance}">
+      <div class="errors">
+        <g:renderErrors bean="${reportedEffortInstance}" as="list" />
+      </div>
+    </g:hasErrors>
+    
     <div class="clearCenterPadding">
       
       <!-- ADD button -->

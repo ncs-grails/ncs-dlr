@@ -121,7 +121,7 @@ class ReportedEffortController {
             flash.message = "Must select a TASK."                        
         } else if ( !percentEffort ) {
             flash.message = "Must enter a PERCENT EFFORT."                        
-        } else if ( ! percentEffort =~ /[0-9]{1,3}\.?[0-9]{0,3}/) {
+        } else if ( !percentEffort =~ /[0-9]{1,3}\.?[0-9]{0,3}/ ) {
             flash.message = "Must enter a valid PERCENT EFFORT."                                    
         } else {
             
@@ -157,6 +157,7 @@ class ReportedEffortController {
 
         } //if ( !studyActivityInstance )        
         
+        // if error occured, direct user to ADD page
         if ( flash.message ) {
 
             println "flash.message = ${flash.message}"
@@ -173,10 +174,11 @@ class ReportedEffortController {
                 studyActivityList: studyActivityList, 
                 studyTaskList: studyTaskList
             ]                
-            //println "PRINTLN ReportedEffortController.addSave.model: ${model}"        
+            println "PRINTLN ReportedEffortController.addSave.model: ${model}"        
             
             render(view: "add", model: model)            
-            
+
+        // if no error occured, direct user to main effort reporting page
         } else {
 
             println "flash.message = ${flash.message}"
@@ -186,7 +188,7 @@ class ReportedEffortController {
                 'reportingPeriod.id': reportingPeriodInstance.id, 
                 'assignedEffort.id': assignedEffortInstance.id
             ]
-            //println "PRINTLN ReportedEffortController.addSave.model: ${model}"        
+            println "PRINTLN ReportedEffortController.addSave.model: ${model}"        
 
             redirect(controller: 'reportedEffort', action: "main", params: model)
             
@@ -208,14 +210,7 @@ class ReportedEffortController {
         println "PRINTLN ReportedEffortController.delete.reportingPeriodInstance: ${reportingPeriodInstance}"        
         println "PRINTLN ReportedEffortController.delete.assignedEffortInstance: ${assignedEffortInstance}"        
 
-        def model = [
-                'reportingStaff.id': reportingStaffInstance.id, 
-                'reportingPeriod.id': reportingPeriodInstance.id, 
-                'assignedEffort.id': assignedEffortInstance.id
-        ]
-        println "PRINTLN ReportedEffortController.delete.model: ${model}"        
-
-        // delete selected REPORTED EFFORT
+        // determine REPORTED EFFORT to delete
         def reportedeffortId
         def reportedEffortInstance 
         
@@ -230,30 +225,31 @@ class ReportedEffortController {
             reportedEffortInstance = ReportedEffort.read(params?.reportedEffort.id)                        
         }                
         println "PRINTLN ReportedEffortController.edit.reportedEffortInstance: ${reportedEffortInstance}"        
-        
-        if (reportedEffortInstance) {
+
+        def model = [
+                'reportingStaff.id': reportingStaffInstance.id, 
+                'reportingPeriod.id': reportingPeriodInstance.id, 
+                'assignedEffort.id': assignedEffortInstance.id
+        ]
+        println "PRINTLN ReportedEffortController.delete.model: ${model}"        
+
+        if ( reportedEffortInstance ) {
             
-            try {
-                reportedEffortInstance.delete(flush: true)
-                println "DELETE SUCCESSFUL"
-                flash.message = "${message(code: 'default.deleted.message', args: [message(code: 'reportedEffort.label', default: 'ReportedEffort'), reportedEffortId])}"
-                redirect(action: "main", params:model)
-            }
-            catch (org.springframework.dao.DataIntegrityViolationException e) {
-                flash.message = "${message(code: 'default.not.deleted.message', args: [message(code: 'reportedEffort.label', default: 'ReportedEffort'), reportedEffortId])}"
-                redirect(action: "main", id: reportedEffortId)
-            }
+            println "if ( reportedEffortInstance ) = TRUE"
+            
+            reportedEffortInstance.delete(flush: true)
+            println "DELETE SUCCESSFUL"
             
         } else {
             
+            println "if ( reportedEffortInstance ) = FALSE"
             println "DELETE FAILED"                    
             flash.message = "Must select a reported effort to DELETE."
             //flash.message = "${message(code: 'default.not.found.message', args: [message(code: 'reportedEffort.label', default: 'ReportedEffort'), reportedEffortId])}"
-            redirect(action: "main", params:model)
             
         } //if (reportedEffortInstance)
 
-        render(view: "main", model: model)
+        redirect(action: "main", params:model)
         
     } //def delete
     
