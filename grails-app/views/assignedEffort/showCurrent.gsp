@@ -47,7 +47,7 @@
           <tr>
             <g:if test="${isForm}">
               <td class="basic" style="text-align:center;">
-                <input type="checkBox" name="reportedEffort.id" value="${re.reportedEffortId}" onClick="check(this.value);"/>
+                <input type="radio" name="reportedEffort.id" value="${re.reportedEffortId}"/>
               </td>
             </g:if>
             <td class="basic">${re.studyActivity}</td>

@@ -56,8 +56,9 @@
             name="percentEffort" 
             class="textfieldBasic" 
             style="text-align:right;"
-            size="2" 
-            value="${g.formatNumber(number:(reportedEffortInstance?.percentEffort ? reportedEffortInstance?.percentEffort*100 : null), maxFractionDigits:4)}"
+            size="4" 
+            maxlength="6"
+            value="${g.formatNumber(number:(reportedEffortInstance?.percentEffort ? reportedEffortInstance?.percentEffort : null), maxFractionDigits:4)}"
           />%
           </span>
       </span>
@@ -91,7 +92,7 @@
     <g:submitToRemote 
       class="buttonBasic" 
       value="CANCEL" 
-      url="${[controller:'reportedEffort',action:'main' ]}" 
+      url="${[controller:'reportedEffort',action:'cancel' ]}" 
       update="remoteFormContainer" 
     />
 

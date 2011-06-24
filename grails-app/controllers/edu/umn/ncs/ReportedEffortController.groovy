@@ -82,6 +82,7 @@ class ReportedEffortController {
         println "PRINTLN ReportedEffortController.addSave.params: ${params}"        
         
         // get REPORTING STAFF, REPORTING PERIOD, & ASSIGNED EFFORT parameters        
+
         def reportingStaffInstance = ReportingStaff.read(params?.reportingStaff.id)
         def reportingPeriodInstance = ReportingPeriod.read(params?.reportingPeriod.id)
         def assignedEffortInstance = AssignedEffort.read(params?.assignedEffort.id)                
@@ -91,8 +92,9 @@ class ReportedEffortController {
         println "PRINTLN ReportedEffortController.addSave.assignedEffortInstance: ${assignedEffortInstance}"        
         
         // get STUDY ACTIVITY, STUDY TASK, & PERCENT EFFORT entered by user
+
         def studyActivityInstance
-        def studyTaskInstance 
+        def studyTaskInstance
         def percentEffort 
         def reportedEffortInstance 
 
@@ -110,19 +112,65 @@ class ReportedEffortController {
             percentEffort = params?.percentEffort            
         }
         println "PRINTLN ReportedEffortController.addSave.percentEffort: ${percentEffort}"
-
+        
         reportedEffortInstance = new ReportedEffort(params)
         println "PRINTLN ReportedEffortController.addSave.reportedEffortInstance: ${reportedEffortInstance}"                    
 
-        // create flash messages if any of the REPORTED EFFORT provided by user is missing.  Otherwise, save reported effort.
+        // create variables for error checking
+
+        def assignedPercentEffort = assignedEffortInstance.assignedEffort * 100
+        println "PRINTLN ReportedEffortController.addSave.assignedPercentEffort: ${assignedPercentEffort}"                    
+                
+        def c = ReportedEffort.createCriteria()
+        def sumReportedPercentEffort_dec = c.get {
+            eq("assignedEffort", assignedEffortInstance)
+            projections {
+                sum("percentEffort")
+            }
+        }
+        println "PRINTLN ReportedEffortController.addSave.sumReportedPercentEffort_dec: ${sumReportedPercentEffort_dec}"
+        
+        def sumReportedPercentEffort 
+        if ( sumReportedPercentEffort_dec ) {
+            sumReportedPercentEffort = sumReportedPercentEffort_dec * 100
+        } else {
+            sumReportedPercentEffort = 0
+        }
+        println "PRINTLN ReportedEffortController.addSave.sumReportedPercentEffort: ${sumReportedPercentEffort}"
+        
+        def combinedReportedEffort = percentEffort.toBigDecimal() + sumReportedPercentEffort
+        println "PRINTLN ReportedEffortController.addSave.combinedReportedEffort: ${combinedReportedEffort}"
+        
+        def pRange = 0.0..100.0
+        //println "PRINTLN ReportedEffortController.addSave.pRange: ${pRange}"                    
+        
+        // create FLASH MESSAGESif any of the REPORTED EFFORT provided by user is missing or invalid.  Otherwise, save reported effort.
         if ( !studyActivityInstance ) {            
+            
             flash.message = "Must select a STUDY ACTIVITY."                        
+            
         } else if ( !studyTaskInstance ) {
+            
             flash.message = "Must select a TASK."                        
+            
         } else if ( !percentEffort ) {
+            
             flash.message = "Must enter a PERCENT EFFORT."                        
-        } else if ( !percentEffort =~ /[0-9]{1,3}\.?[0-9]{0,3}/ ) {
-            flash.message = "Must enter a valid PERCENT EFFORT."                                    
+            
+        } else if ( !(pRange.containsWithinBounds(percentEffort.toBigDecimal())) ) {
+            
+            flash.message = "The effort you entered is not a valid percent for effort reporting."                                    
+            
+        // reported percent effort just entered is greater than what is assigned
+        } else if ( percentEffort.toBigDecimal() >  assignedPercentEffort ) {
+            
+            flash.message = "The effort you entered is greater than what has been assigned to you."
+        
+        // reported percent effort just entered plus what has already been reported is great than what is assigned
+        } else if ( combinedReportedEffort.toBigDecimal() > assignedPercentEffort ) {
+            
+            flash.message = "The combined effort reported thus far is greated than what has been assigned to you."
+            
         } else {
             
             // convert Reported Effort to decimal number for insert into db
@@ -174,7 +222,7 @@ class ReportedEffortController {
                 studyActivityList: studyActivityList, 
                 studyTaskList: studyTaskList
             ]                
-            println "PRINTLN ReportedEffortController.addSave.model: ${model}"        
+            //println "PRINTLN ReportedEffortController.addSave.model: ${model}"        
             
             render(view: "add", model: model)            
 
@@ -188,17 +236,43 @@ class ReportedEffortController {
                 'reportingPeriod.id': reportingPeriodInstance.id, 
                 'assignedEffort.id': assignedEffortInstance.id
             ]
-            println "PRINTLN ReportedEffortController.addSave.model: ${model}"        
+            //println "PRINTLN ReportedEffortController.addSave.model: ${model}"        
 
             redirect(controller: 'reportedEffort', action: "main", params: model)
             
         } //if ( flash.message )
 
     } //def save
+
+    def cancel = {
         
+        println "PRINTLN REPORTED EFFORT CONTROLLER > CANCEL ------------------"                
+        println "PRINTLN ReportedEffortController.cancel.params: ${params}"   
+        
+        // get parameters 
+        def reportingStaffInstance = ReportingStaff.read(params?.reportingStaff.id)
+        def reportingPeriodInstance = ReportingPeriod.read(params?.reportingPeriod.id)
+        def assignedEffortInstance = AssignedEffort.read(params?.assignedEffort.id)
+
+        println "PRINTLN ReportedEffortController.cancel.reportingStaffInstance: ${reportingStaffInstance}"        
+        println "PRINTLN ReportedEffortController.cancel.reportingPeriodInstance: ${reportingPeriodInstance}"        
+        println "PRINTLN ReportedEffortController.cancel.assignedEffortInstance: ${assignedEffortInstance}"        
+
+        flash.message = null                        
+        
+        def model = [
+                'reportingStaff.id': reportingStaffInstance.id, 
+                'reportingPeriod.id': reportingPeriodInstance.id, 
+                'assignedEffort.id': assignedEffortInstance.id
+        ]
+
+        redirect(action: "main", params:model)
+        
+    } //def cancel
+    
     def delete = {
         
-        println "PRINTLN REPORTED EFFORT CONTROLLER > DELETE --------------------"                
+        println "PRINTLN REPORTED EFFORT CONTROLLER > DELETE -------------------"                
         println "PRINTLN ReportedEffortController.delete.params: ${params}"        
         
         // get parameters 
