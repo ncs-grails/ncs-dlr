@@ -109,7 +109,8 @@ class ReportedEffortController {
         println "PRINTLN ReportedEffortController.addSave.studyTaskInstance: ${studyTaskInstance}"
 
         if ( params?.percentEffort ) {
-            percentEffort = params?.percentEffort            
+            def percentEffortVal = params?.percentEffort            
+            percentEffort = percentEffortVal.replaceAll(/\.\./, ".")
         }
         println "PRINTLN ReportedEffortController.addSave.percentEffort: ${percentEffort}"
         
@@ -137,14 +138,10 @@ class ReportedEffortController {
             sumReportedPercentEffort = 0
         }
         println "PRINTLN ReportedEffortController.addSave.sumReportedPercentEffort: ${sumReportedPercentEffort}"
-        
-        def combinedReportedEffort = percentEffort.toBigDecimal() + sumReportedPercentEffort
-        println "PRINTLN ReportedEffortController.addSave.combinedReportedEffort: ${combinedReportedEffort}"
-        
-        def pRange = 0.0..100.0
-        //println "PRINTLN ReportedEffortController.addSave.pRange: ${pRange}"                    
-        
+
         // create FLASH MESSAGESif any of the REPORTED EFFORT provided by user is missing or invalid.  Otherwise, save reported effort.
+        flash.message = ""                        
+
         if ( !studyActivityInstance ) {            
             
             flash.message = "Must select a STUDY ACTIVITY."                        
@@ -157,53 +154,70 @@ class ReportedEffortController {
             
             flash.message = "Must enter a PERCENT EFFORT."                        
             
-        } else if ( !(pRange.containsWithinBounds(percentEffort.toBigDecimal())) ) {
-            
-            flash.message = "The effort you entered is not a valid percent for effort reporting."                                    
-            
-        // reported percent effort just entered is greater than what is assigned
-        } else if ( percentEffort.toBigDecimal() >  assignedPercentEffort ) {
-            
-            flash.message = "The effort you entered is greater than what has been assigned to you."
-        
-        // reported percent effort just entered plus what has already been reported is great than what is assigned
-        } else if ( combinedReportedEffort.toBigDecimal() > assignedPercentEffort ) {
-            
-            flash.message = "The combined effort reported thus far is greated than what has been assigned to you."
+        } else if ( percentEffort.count(".") > 1 ) {
+
+            flash.message = "The effort you entered cannot have more than one decimal."                                    
             
         } else {
-            
-            // convert Reported Effort to decimal number for insert into db
-            if ( reportedEffortInstance ) {
-                reportedEffortInstance.percentEffort = reportedEffortInstance.percentEffort / 100.0            
+
+            def pRange = 0.0..100.0
+            //println "PRINTLN ReportedEffortController.addSave.pRange: ${pRange}"                    
+
+            def combinedReportedEffort
+            if ( pRange.containsWithinBounds(percentEffort.toBigDecimal()) ) {
+                combinedReportedEffort = percentEffort.toBigDecimal() + sumReportedPercentEffort
             }
-            println "PRINTLN ReportedEffortController.addSave.reportedEffortInstance.percentEffort: ${reportedEffortInstance.percentEffort}"        
-
-            // get USER CREATED
-            def username = reportingStaffInstance.username
-            println "PRINTLN ReportedEffortController.addSave.username: ${username}"                
+            println "PRINTLN ReportedEffortController.addSave.combinedReportedEffort: ${combinedReportedEffort}"
             
-            reportedEffortInstance.userCreated = username
-            println "PRINTLN ReportedEffortController.addSave.reportedEffortInstance.userCreated: ${reportedEffortInstance.userCreated}"        
+            if ( !(pRange.containsWithinBounds(percentEffort.toBigDecimal())) ) {
+            
+                flash.message = "The effort you entered is not a valid percent for effort reporting."                                    
+            
+            // reported percent effort just entered is greater than what is assigned
+            } else if ( percentEffort.toBigDecimal() >  assignedPercentEffort ) {
 
-            if (reportedEffortInstance.save(flush: true)) {
-                println "SAVE SUCCESSFULLY"            
-                //flash.message = "${message(code: 'default.created.message', args: [message(code: 'reportedEffort.label', default: 'ReportedEffort'), reportedEffortInstance.id])}"
+                flash.message = "The effort you entered is greater than what has been assigned to you."
+
+            // reported percent effort just entered plus what has already been reported is great than what is assigned
+            } else if ( combinedReportedEffort.toBigDecimal() > assignedPercentEffort ) {
+
+                flash.message = "The combined effort reported thus far is greated than what has been assigned to you."
+
             } else {
-                
-                println "SAVE FAILED"
 
-                flash.message = "Your reported effort did not save."
-                //flash.message = "${message(code: 'default.created.message', args: [message(code: 'reportedEffort.label', default: 'ReportedEffort'), reportedEffortInstance.id])}"
-
-                // print error message to command line if SAVE fails
-                if ( ! reportedEffortInstance.save()) {
-                    reportedEffortInstance.errors.each{ println it }
+                // convert Reported Effort to decimal number for insert into db
+                if ( reportedEffortInstance ) {
+                    reportedEffortInstance.percentEffort = reportedEffortInstance.percentEffort / 100.0            
                 }
-                
-            } //if (reportedEffortInstance.save(flush: true))
+                println "PRINTLN ReportedEffortController.addSave.reportedEffortInstance.percentEffort: ${reportedEffortInstance.percentEffort}"        
 
-        } //if ( !studyActivityInstance )        
+                // get USER CREATED
+                def username = reportingStaffInstance.username
+                println "PRINTLN ReportedEffortController.addSave.username: ${username}"                
+
+                reportedEffortInstance.userCreated = username
+                println "PRINTLN ReportedEffortController.addSave.reportedEffortInstance.userCreated: ${reportedEffortInstance.userCreated}"        
+
+                if (reportedEffortInstance.save(flush: true)) {
+                    println "SAVE SUCCESSFULLY"            
+                    //flash.message = "${message(code: 'default.created.message', args: [message(code: 'reportedEffort.label', default: 'ReportedEffort'), reportedEffortInstance.id])}"
+                } else {
+
+                    println "SAVE FAILED"
+
+                    flash.message = "Your reported effort did not save."
+                    //flash.message = "${message(code: 'default.created.message', args: [message(code: 'reportedEffort.label', default: 'ReportedEffort'), reportedEffortInstance.id])}"
+
+                    // print error message to command line if SAVE fails
+                    if ( ! reportedEffortInstance.save()) {
+                        reportedEffortInstance.errors.each{ println it }
+                    }
+
+                } //if (reportedEffortInstance.save(flush: true))
+
+            } //} else {
+
+        } //if ( !studyActivityInstance )
         
         // if error occured, direct user to ADD page
         if ( flash.message ) {
@@ -332,7 +346,7 @@ class ReportedEffortController {
         println "PRINTLN REPORTED EFFORT CONTROLLER > EDIT --------------------"                
         println "PRINTLN ReportedEffortController.edit.params: ${params}"        
         
-        // get parameters 
+        // get REPORTING STAFF, REPORTING PERIOD, ASSIGNED EFFORT, and REPORTED EFFORT parameters 
         def reportingStaffInstance = ReportingStaff.read(params?.reportingStaff.id)
         println "PRINTLN ReportedEffortController.edit.reportingStaffInstance: ${reportingStaffInstance}"        
 
@@ -342,8 +356,7 @@ class ReportedEffortController {
         def assignedEffortInstance = AssignedEffort.read(params?.assignedEffort.id)
         println "PRINTLN ReportedEffortController.edit.assignedEffortInstance: ${assignedEffortInstance}"     
         
-        def reportedEffortInstance 
-        
+        def reportedEffortInstance         
         params.each{
             if ( it.key =~ /^reportedEffort.id*$/) {
                 reportedEffortInstance = ReportedEffort.read(params?.reportedEffort.id)
@@ -352,20 +365,23 @@ class ReportedEffortController {
         println "PRINTLN ReportedEffortController.edit.reportedEffortInstance: ${reportedEffortInstance}"
         
         // reported effort is selected for edit
-        if ( reportedEffortInstance ) {            
-                        
+        if ( reportedEffortInstance ) {     
+
             def studyActivityList = laborService.getActiveStudyActivityList()
+            //println "PRINTLN ReportedEffortController.edit.studyActivityList: ${studyActivityList}"
+
             def studyTaskList =  laborService.getActiveStudyTaskList()
-                
+            //println "PRINTLN ReportedEffortController.edit.studyTaskList: ${studyTaskList}"
+            
             [
                 reportingStaffInstance: reportingStaffInstance, 
                 reportingPeriodInstance: reportingPeriodInstance, 
                 assignedEffortInstance: assignedEffortInstance,
-                reportedEffortInstance: reportedEffortInstance, 
+                reportedEffortInstance: reportedEffortInstance,
                 studyActivityList: studyActivityList, 
-                studyTaskList: studyTaskList 
+                studyTaskList: studyTaskList
             ]
-            
+                        
         // reported effort is NOT selected for edit
         } else {
             
@@ -384,78 +400,110 @@ class ReportedEffortController {
     
     def editSave = {
         
-        println "PRINTLN REPORTED EFFORT CONTROLLER > SAVE ---------------------"                
-        println "PRINTLN ReportedEffortController.save.params: ${params}"        
+        println "PRINTLN REPORTED EFFORT CONTROLLER > EDIT - SAVE ---------------------"                
+        println "PRINTLN ReportedEffortController.editSave.params: ${params}"        
         
-        // create REPORTING STAFF, REPORTING PERIOD, & ASSIGNED EFFORT instances from parameters
+        // get REPORTING STAFF, REPORTING PERIOD, ASSIGNED EFFORT, & REPORTED EFFORT parameters
         def reportingStaffInstance = ReportingStaff.read(params?.reportingStaff.id)
         def reportingPeriodInstance = ReportingPeriod.read(params?.reportingPeriod.id)
         def assignedEffortInstance = AssignedEffort.read(params?.assignedEffort.id)
+        def oldReportedEffortInstance = ReportedEffort.read(params?.reportedEffort.id)
                 
-        println "PRINTLN ReportedEffortController.save.reportingStaffInstance: ${reportingStaffInstance}"        
-        println "PRINTLN ReportedEffortController.save.reportingPeriodInstance: ${reportingPeriodInstance}"        
-        println "PRINTLN ReportedEffortController.save.assignedEffortInstance: ${assignedEffortInstance}"        
-        
-        /*
-        // get REPORTED EFFORT entered
-        def reportedEffortInstance = new ReportedEffort(params)
-        println "PRINTLN ReportedEffortController.save.reportedEffortInstance: ${reportedEffortInstance}"        
+        println "PRINTLN ReportedEffortController.editSave.reportingStaffInstance: ${reportingStaffInstance}"        
+        println "PRINTLN ReportedEffortController.editSave.reportingPeriodInstance: ${reportingPeriodInstance}"        
+        println "PRINTLN ReportedEffortController.editSave.assignedEffortInstance: ${assignedEffortInstance}"        
+        println "PRINTLN ReportedEffortController.editSave.oldReportedEffortInstance: ${oldReportedEffortInstance}"                        
                 
-        // convert Reported Effort to decimal number for insert into db
-        if ( reportedEffortInstance.percentEffort ) {
-            reportedEffortInstance.percentEffort = reportedEffortInstance.percentEffort / 100.0            
-            println "PRINTLN ReportedEffortController.save.reportedEffortInstance.percentEffort: ${reportedEffortInstance.percentEffort}"        
-        }
+        println "PRINTLN ReportedEffortController.editSave.oldReportedEffortInstance.activity.id: ${oldReportedEffortInstance.activity.id}"
+        println "PRINTLN ReportedEffortController.editSave.oldReportedEffortInstance.task.id: ${oldReportedEffortInstance.task.id}"           
+        println "PRINTLN ReportedEffortController.editSave.oldReportedEffortInstance.percentEffort: ${oldReportedEffortInstance.percentEffort}"        
         
-        // get USERNAME of person reporting effort
-        def username = reportingStaffInstance.username
-        println "PRINTLN ReportedEffortController.save.username: ${username}"                
+        // get values of reported effort ACTIVITY, TASK, & PERCENT EFFORT
+        def activityIdVal = params?.activity.id
+        def taskIdVal = params?.task.id
+        def percentEffortVal = params?.percentEffort
         
-        reportedEffortInstance.userCreated = username
-        println "PRINTLN ReportedEffortController.save.reportedEffortInstance.userCreated: ${reportedEffortInstance.userCreated}"        
+        println "PRINTLN ReportedEffortController.editSave.activityIdVal: ${activityIdVal}"
+        println "PRINTLN ReportedEffortController.editSave.taskIdVal: ${taskIdVal}"
+        println "PRINTLN ReportedEffortController.editSave.percentEffortVal: ${percentEffortVal}"
         
-        if (reportedEffortInstance.save(flush: true)) {
+        // user did not make any edits    
+        if ( oldReportedEffortInstance.activity.id.toInteger() == activityIdVal.toInteger() && oldReportedEffortInstance.task.id.toInteger() == taskIdVal.toInteger() && oldReportedEffortInstance.percentEffort.toBigDecimal() == percentEffortVal.toBigDecimal()/100 ) {
             
-            println "SAVE SUCCESSFULLY"            
-            flash.message = "${message(code: 'default.created.message', args: [message(code: 'reportedEffort.label', default: 'ReportedEffort'), reportedEffortInstance.id])}"
+            println "SAME"
+            flash.message = "You did not make any changes to the selected reported effort."
+            println "PRINTLN ReportedEffortController.editSave.flash.message: ${flash.message}"
             
-            def model = [
+            def params = [
                 'reportingStaff.id': reportingStaffInstance.id, 
                 'reportingPeriod.id': reportingPeriodInstance.id, 
-                'assignedEffort.id': assignedEffortInstance.id
+                'assignedEffort.id': assignedEffortInstance.id,
+                'reportedEffort.id': oldReportedEffortInstance.id
             ]
-    
-            println "PRINTLN ReportedEffortController.save.model: ${model}"        
-
-            redirect(controller: 'reportedEffort', action: "main", params: model)
-        
+            
+            redirect(action: "edit", params:params)
+            
+        // user make any edits
         } else {
             
-            println "SAVE FAILED"
+            println "DIFFERENT"
             
-            // get error message if save failes
-            if ( ! reportedEffortInstance.save()) {
-                reportedEffortInstance.errors.each{ println it }
+            //convert Reported Effort to decimal number for insert into db
+            if ( reportedEffortInstance.percentEffort ) {
+                reportedEffortInstance.percentEffort = reportedEffortInstance.percentEffort / 100.0            
+                println "PRINTLN ReportedEffortController.editSave.reportedEffortInstance.percentEffort: ${reportedEffortInstance.percentEffort}"        
             }
-            
-            // get STUDY ACTIVITY & TASK list for form controls
-            def studyActivityList = laborService.getActiveStudyActivityList()
-            def studyTaskList =  laborService.getActiveStudyTaskList()
-            
-            def model = [
-                reportingStaffInstance: reportingStaffInstance, 
-                reportingPeriodInstance: reportingPeriodInstance, 
-                assignedEffortInstance: assignedEffortInstance,
-                reportedEffortInstance: reportedEffortInstance,
-                studyActivityList: studyActivityList, 
-                studyTaskList: studyTaskList
-            ]                
-            flash.message = "${message(code: 'default.created.message', args: [message(code: 'reportedEffort.label', default: 'ReportedEffort'), reportedEffortInstance.id])}"
 
-            render(view: "create", model: model)
-            
-        } //if (reportedEffortInstance.save(flush: true))
-        */
+            // get USERNAME of person reporting effort
+            def username = reportingStaffInstance.username
+            println "PRINTLN ReportedEffortController.editSave.username: ${username}"                
+
+            reportedEffortInstance.userCreated = username
+            println "PRINTLN ReportedEffortController.editSave.reportedEffortInstance.userCreated: ${reportedEffortInstance.userCreated}"        
+            if (reportedEffortInstance.save(flush: true)) {
+
+                println "SAVE SUCCESSFULLY"            
+                //flash.message = "${message(code: 'default.created.message', args: [message(code: 'reportedEffort.label', default: 'ReportedEffort'), reportedEffortInstance.id])}"
+
+                // delete original Reported Effort instance
+
+                def params = [
+                    'reportingStaff.id': reportingStaffInstance.id, 
+                    'reportingPeriod.id': reportingPeriodInstance.id, 
+                    'assignedEffort.id': assignedEffortInstance.id
+                ]
+                println "PRINTLN ReportedEffortController.editSave.model: ${params}"        
+
+                redirect(controller: 'reportedEffort', action: "main", params: params)
+
+            } else {
+
+                println "SAVE FAILED"
+                flash.message = "${message(code: 'default.created.message', args: [message(code: 'reportedEffort.label', default: 'ReportedEffort'), reportedEffortInstance.id])}"
+
+                // get error message if save failes
+                if ( ! reportedEffortInstance.save()) {
+                    reportedEffortInstance.errors.each{ println it }
+                }
+
+                // get STUDY ACTIVITY & TASK list for form controls
+                def studyActivityList = laborService.getActiveStudyActivityList()
+                def studyTaskList =  laborService.getActiveStudyTaskList()
+
+                def model = [
+                    reportingStaffInstance: reportingStaffInstance, 
+                    reportingPeriodInstance: reportingPeriodInstance, 
+                    assignedEffortInstance: assignedEffortInstance,
+                    reportedEffortInstance: reportedEffortInstance,
+                    studyActivityList: studyActivityList, 
+                    studyTaskList: studyTaskList
+                ]                
+
+                render(view: "edit", model: model)
+
+            } //if (reportedEffortInstance.save(flush: true))            
+                
+        } //if ( oldReportedEffortInstance.activity.id.toInteger() == activityIdVal.toInteger() && oldReportedEffortInstance.task.id.toInteger() == taskIdVal.toInteger() && oldReportedEffortInstance.percentEffort.toBigDecimal() == percentEffortVal.toBigDecimal()/100 )        
 
     } //def editSave
     

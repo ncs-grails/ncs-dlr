@@ -17,7 +17,7 @@
   <g:hiddenField name="reportingStaff.id" value="${reportingStaffInstance?.id}" />
   <g:hiddenField name="reportingPeriod.id" value="${reportingPeriodInstance?.id}" />
   <g:hiddenField name="assignedEffort.id" value="${assignedEffortInstance?.id}" />
-  <g:hiddenField name="reportedEffort.id" value="${assignedEffortInstance?.id}" />    
+  <g:hiddenField name="reportedEffort.id" value="${reportedEffortInstance?.id}" />    
   
   <div class="clearCenterPadding">
 
