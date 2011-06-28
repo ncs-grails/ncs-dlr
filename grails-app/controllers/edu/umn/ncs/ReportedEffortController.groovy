@@ -407,26 +407,45 @@ class ReportedEffortController {
         def reportingStaffInstance = ReportingStaff.read(params?.reportingStaff.id)
         def reportingPeriodInstance = ReportingPeriod.read(params?.reportingPeriod.id)
         def assignedEffortInstance = AssignedEffort.read(params?.assignedEffort.id)
-        def oldReportedEffortInstance = ReportedEffort.read(params?.reportedEffort.id)
+        
+        def ReportedEffortInstance = ReportedEffort.get(params?.reportedEffort.id)
+        
                 
         println "PRINTLN ReportedEffortController.editSave.reportingStaffInstance: ${reportingStaffInstance}"        
         println "PRINTLN ReportedEffortController.editSave.reportingPeriodInstance: ${reportingPeriodInstance}"        
         println "PRINTLN ReportedEffortController.editSave.assignedEffortInstance: ${assignedEffortInstance}"        
-        println "PRINTLN ReportedEffortController.editSave.oldReportedEffortInstance: ${oldReportedEffortInstance}"                        
-                
-        println "PRINTLN ReportedEffortController.editSave.oldReportedEffortInstance.activity.id: ${oldReportedEffortInstance.activity.id}"
-        println "PRINTLN ReportedEffortController.editSave.oldReportedEffortInstance.task.id: ${oldReportedEffortInstance.task.id}"           
-        println "PRINTLN ReportedEffortController.editSave.oldReportedEffortInstance.percentEffort: ${oldReportedEffortInstance.percentEffort}"        
+        //println "PRINTLN ReportedEffortController.editSave.oldReportedEffortInstance: ${ReportedEffortInstance}"
+
+        def reportedEffortInstance = ReportedEffort.get(params.id)
+        if (reportedEffortInstance) {
+            if (params.version) {
+                def version = params.version.toLong()
+                if (reportedEffortInstance.version > version) {
+                    
+                    reportedEffortInstance.errors.rejectValue("version", "default.optimistic.locking.failure", [message(code: 'reportedEffort.label', default: 'ReportedEffort')] as Object[], "Another user has updated this ReportedEffort while you were editing")
+                    render(view: "edit", model: [reportedEffortInstance: reportedEffortInstance])
+                    return
+                }
+            }
+            reportedEffortInstance.properties = params
+            if (!reportedEffortInstance.hasErrors() && reportedEffortInstance.save(flush: true)) {
+                flash.message = "${message(code: 'default.updated.message', args: [message(code: 'reportedEffort.label', default: 'ReportedEffort'), reportedEffortInstance.id])}"
+                redirect(action: "show", id: reportedEffortInstance.id)
+            }
+            else {
+                render(view: "edit", model: [reportedEffortInstance: reportedEffortInstance])
+            }
+        }
+        else {
+            flash.message = "${message(code: 'default.not.found.message', args: [message(code: 'reportedEffort.label', default: 'ReportedEffort'), params.id])}"
+            redirect(action: "list")
+        }
         
-        // get values of reported effort ACTIVITY, TASK, & PERCENT EFFORT
-        def activityIdVal = params?.activity.id
-        def taskIdVal = params?.task.id
-        def percentEffortVal = params?.percentEffort
         
-        println "PRINTLN ReportedEffortController.editSave.activityIdVal: ${activityIdVal}"
-        println "PRINTLN ReportedEffortController.editSave.taskIdVal: ${taskIdVal}"
-        println "PRINTLN ReportedEffortController.editSave.percentEffortVal: ${percentEffortVal}"
         
+        
+
+/*
         // user did not make any edits    
         if ( oldReportedEffortInstance.activity.id.toInteger() == activityIdVal.toInteger() && oldReportedEffortInstance.task.id.toInteger() == taskIdVal.toInteger() && oldReportedEffortInstance.percentEffort.toBigDecimal() == percentEffortVal.toBigDecimal()/100 ) {
             
@@ -504,6 +523,7 @@ class ReportedEffortController {
             } //if (reportedEffortInstance.save(flush: true))            
                 
         } //if ( oldReportedEffortInstance.activity.id.toInteger() == activityIdVal.toInteger() && oldReportedEffortInstance.task.id.toInteger() == taskIdVal.toInteger() && oldReportedEffortInstance.percentEffort.toBigDecimal() == percentEffortVal.toBigDecimal()/100 )        
+*/        
 
     } //def editSave
     
