@@ -14,10 +14,8 @@
 
 <g:form name="reportedEffort-edit" method="post">
 
-  <g:hiddenField name="reportingStaff.id" value="${reportingStaffInstance?.id}" />
-  <g:hiddenField name="reportingPeriod.id" value="${reportingPeriodInstance?.id}" />
-  <g:hiddenField name="assignedEffort.id" value="${assignedEffortInstance?.id}" />
-  <g:hiddenField name="reportedEffort.id" value="${reportedEffortInstance?.id}" />    
+  <g:hiddenField name="id" value="${reportedEffortInstance?.id}" />    
+  <g:hiddenField name="version" value="${reportedEffortInstance?.version}" />    
   
   <div class="clearCenterPadding">
 
@@ -54,11 +52,11 @@
       <span class="controlBox">
         <span class="value ${hasErrors(bean: reportedEffortInstance, field: 'percentEffort', 'errors')}">Effort
           <g:textField 
-            name="percentEffort" 
+            name="percentEffortConverted" 
             class="textfieldBasic" 
             style="text-align:right;"
             size="2" 
-            value="${g.formatNumber(number:(reportedEffortInstance?.percentEffort ? reportedEffortInstance?.percentEffort*100 : null), maxFractionDigits:4)}"
+            value="${g.formatNumber(number:(reportedEffortInstance?.percentEffortConverted ? reportedEffortInstance?.percentEffortConverted : null), maxFractionDigits:3)}"
           />%
           </span>
       </span>
@@ -91,7 +89,8 @@
     <g:submitToRemote 
       class="buttonBasic" 
       value="CANCEL" 
-      url="${[controller:'reportedEffort',action:'main' ]}" 
+      url="${[controller:'reportedEffort',action:'main', params: [ 'assignedEffort.id': reportedEffortInstance.assignedEffort ] ]}" 
+      
       update="remoteFormContainer" 
     />
 

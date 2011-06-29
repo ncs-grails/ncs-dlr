@@ -10,19 +10,26 @@ class AssignedEffort {
     Date dateCommitted
     ReportingStaff commitingStaff
 
-    def transients = ['previousAssignedEffort']
-
     static belongsTo = [reportingStaff: ReportingStaff, period: ReportingPeriod]
 	// reportedEffort SHOULD BE PLURAL!
     static hasMany = [emails: NotificationEmail, reportedEffort: ReportedEffort]
 
-    AssignedEffort getPreviousAssignedEffort() {
-        
-        def assignedEffort = null
+    def transients = ['assignedEffortConverted']
 
-        // TODO: look it up here
+    BigDecimal getAssignedEffortConverted() {        
+        return assignedEffort * 100
+    }
 
-        return assignedEffort
+    void setAssignedEffortConverted(BigDecimal assignedEffortConverted) {        
+        percentEffort = assignedEffortConverted / 100.00
+    }
+
+    void setAssignedEffortConverted(String assignedEffortConvertedString) {
+        try {
+            assignedEffortConverted = assignedEffortConvertedString.toBigDecimal()
+        } finally {
+            assignedEffort = assignedEffortConverted / 100.00
+        }
     }
 
     String toString() {

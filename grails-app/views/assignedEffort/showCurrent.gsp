@@ -1,5 +1,5 @@
 <!-- ASSIGNED, REPORTED & COMMITTED message boxes -->
-<g:if test="${assignedEffortInstance && !committedDateInstance}">
+<g:if test="${assignedEffortInstance && !assignedEffortInstance.dateCommitted}">
   
   <p class="fontMaroon">Please report the effort you accrued this month and then commit it.</p>
 
@@ -11,23 +11,19 @@
     <!-- Reported Effort -->
     <span class="messageBoxOrange">
       Reported: 
-      <g:if test="${!reportedEffortTotal}">
-        0%
-      </g:if>      
-      <g:else>
-        <g:formatNumber number="${reportedEffortTotal}" type="percent" maxFractionDigits="2"/>        
-      </g:else>
+      <g:if test="${!reportedEffortTotal}">0%</g:if>      
+      <g:else><g:formatNumber number="${reportedEffortTotal}" type="percent" maxFractionDigits="3"/></g:else>
     </span>
     <!-- Committed Effort -->
     <span class="messageBoxRed">Committed: 
-      <g:if test="${!committedDateInstance}">0%</g:if>
+      <g:if test="${!assignedEffortInstance.dateCommitted}">0%</g:if>
     </span>
   </div>    
   
 </g:if>
 
 <!-- REPORTED EFFORT for current period -->      
-<g:if test="${assignedEffortInstance && reportedEffortTotal && !committedDateInstance}">                    
+<g:if test="${assignedEffortInstance && reportedEffortTotal && !assignedEffortInstance.dateCommitted}">
   
   <div class="clearCenterPadding">
     <table>
@@ -63,11 +59,5 @@
       </tbody>
     </table>
   </div>
-
-  <!--
-  <g:if test="${flash.message}">
-    <div class="flashMessage">${flash.message}</div>
-  </g:if>
-  -->
   
 </g:if>

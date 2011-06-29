@@ -17,34 +17,24 @@ class MainController {
         
         println "PRINTLN MAIN CONTROLLER > INDEX -------------------------------"        
         println "PRINTLN MainController.index.params: ${params}"        
-        redirect(action:'show')        
-
-    }
-
-    def show = {
         
-        println "PRINTLN MAIN CONTROLLER > SHOW --------------------------------"
-        println "PRINTLN MainController.show.params: ${params}"        
-        
-        // create REPORTING STAFF instance
+        // create REPORTING STAFF, REPORTING PERIOD, & ASSIGNED EFFORT instance
         def principal = authenticateService.principal()                         
         def reportingStaffInstance = laborService.getReportingStaff(principal)
-        println "PRINTLN MainController.show.reportingStaffInstance: ${reportingStaffInstance}"            
-
-        // create REPORTING PERIOD instance
         def reportingPeriodInstance = laborService.getCurrentReportingPeriod()
-        println "PRINTLN MainController.show.reportingPeriodInstance: ${reportingPeriodInstance}"
+        def assignedEffortInstance = AssignedEffort.findByReportingStaffAndPeriod(reportingStaffInstance, reportingPeriodInstance)
 
-        // create ASSIGNED EFFORT instance
-        def assignedEffortInstance = AssignedEffort.findByPeriodAndReportingStaff(reportingPeriodInstance, reportingStaffInstance)
-        println "PRINTLN MainController.show.assignedEffortInstance: ${assignedEffortInstance}"            
-
+        println "PRINTLN MainController.index.reportingStaffInstance: ${reportingStaffInstance}"            
+        println "PRINTLN MainController.index.reportingPeriodInstance: ${reportingPeriodInstance}"
+        println "PRINTLN MainController.index.assignedEffortInstance: ${assignedEffortInstance}"            
+        println "PRINTLN MainController.index.assignedEffortInstance.dateCommitted: ${assignedEffortInstance.dateCommitted}"            
+        
         [
             reportingStaffInstance: reportingStaffInstance,
             reportingPeriodInstance: reportingPeriodInstance,
             assignedEffortInstance: assignedEffortInstance
         ]
-       
-    } //def show
+
+    } 
             
-} //class MainController
+} 

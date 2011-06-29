@@ -7,10 +7,13 @@ class AssignedEffortController {
         println "PRINTLN ASSIGNED EFFORT CONTROLLER > INDEX --------------------"                
         println "PRINTLN AssignedEffortController.index.params: ${params}"
         
-        redirect(controller:'main')
-        
-    }
-    
+        def assignedEffortInstance = AssignedEffort.read(params?.id)
+        println "PRINTLN AssignedEffortController.index.assignedEffortInstance: ${assignedEffortInstance}"
+            
+        [ assignedEffortInstance: assignedEffortInstance ]        
+
+    } // def index
+ 
     def showCurrent = {
 
         println "PRINTLN ASSIGNED EFFORT CONTROLLER > SHOW CURRENT -------------"                
@@ -22,16 +25,15 @@ class AssignedEffortController {
         def reportingStaffInstance
         
         if (params?.id) {
-            println "PRINTLN AssignedEffortController.showCurrent.(params?.id) = TRUE"            
             assignedEffortInstance = AssignedEffort.read(params?.id)
-            reportingPeriodInstance = assignedEffortInstance.period
             reportingStaffInstance = assignedEffortInstance.reportingStaff
+            reportingPeriodInstance = assignedEffortInstance.period
         }
         println "PRINTLN AssignedEffortController.showCurrent.assignedEffortInstance: ${assignedEffortInstance}"
-        println "PRINTLN AssignedEffortController.showCurrent.reportingPeriodInstance: ${reportingPeriodInstance}"
         println "PRINTLN AssignedEffortController.showCurrent.reportingStaffInstance: ${reportingStaffInstance}"
+        println "PRINTLN AssignedEffortController.showCurrent.reportingPeriodInstance: ${reportingPeriodInstance}"
         
-        // Get REPORTED EFFORT TOTAL
+        // Get REPORTED EFFORT total
         def reportedEffortTotal
         if ( assignedEffortInstance ) {            
             def c = ReportedEffort.createCriteria()
@@ -43,10 +45,10 @@ class AssignedEffortController {
             }
             println "PRINTLN AssignedEffortController.showCurrent.reportedEffortTotal: ${reportedEffortTotal}"
         }
-                
-        // Get list of reported effort 
-        def crs = ReportedEffort.createCriteria()        
-        def reportingEffortInstanceList = crs.list{
+        
+        // Get list of REPORTED EFFORT
+        def c2 = ReportedEffort.createCriteria()        
+        def reportingEffortInstanceList = c2.list{
             eq("assignedEffort", assignedEffortInstance) 
             order("activity", "asc")
             order("task", "asc")
@@ -85,19 +87,14 @@ class AssignedEffortController {
             
         } //reportingStaffInstanceList.eachWithIndex{ rs, i ->        
         
-        // Get EFFORT COMMITTED DATE
-        def committedDateInstance
-        if ( assignedEffortInstance ) {
-            committedDateInstance = assignedEffortInstance.dateCommitted
-            println "PRINTLN AssignedEffortController.showCurrent.committedDateInstance: ${committedDateInstance}"            
-        }
+            
+        println "PRINTLN AssignedEffortController.showCurrent.assignedEffortInstance.dateCommitted: ${assignedEffortInstance.dateCommitted}"            
 
         [
             reportingPeriodInstance:reportingPeriodInstance, 
             reportingStaffInstance:reportingStaffInstance,
             assignedEffortInstance: assignedEffortInstance,
             reportedEffortTotal: reportedEffortTotal,
-            committedDateInstance: committedDateInstance,
             reportedEffortList: reportedEffortList,
             isForm: params?.isForm
         ]
@@ -110,15 +107,14 @@ class AssignedEffortController {
         println "PRINTLN ASSIGNED EFFORT CONTROLLER > SHOWPAST -----------------"                
         println "PRINTLN AssignedEffortController.showPast.params: ${params}"
         
-        def reportingStaffInstance
-        
+        def reportingStaffInstance        
         if (params?.id) {
             reportingStaffInstance = ReportingStaff.read(params?.id)
         }
         println "PRINTLN AssignedEffortController.showPast.reportingStaffInstance: ${reportingStaffInstance}"
                 
-        def cRE = ReportedEffort.createCriteria()
-        def reportedEffortInstance = cRE.list{
+        def cre = ReportedEffort.createCriteria()
+        def reportedEffortInstance = cre.list{
             and {
                 assignedEffort{
                     period {
@@ -137,8 +133,6 @@ class AssignedEffortController {
 
         def reportedEffortList = []
         
-        //println "PRINTLN BEGIN LOOP to get table row data"
-
         // Add records to Assigned Effort Instance
         reportedEffortInstance.eachWithIndex{ rs, i ->
             
@@ -164,18 +158,14 @@ class AssignedEffortController {
             //println "PRINTLN AssignedEffortController.showPast.record.task: ${record.task}"
             
             // Get Reported Effort
-            record.reportedEffort = rs.percentEffort            
+            record.reportedEffort = rs.percentEffort
             //println "PRINTLN AssignedEffortController.showPast.record.reportedEffort: ${record.reportedEffort}"
                        
             reportedEffortList.add(record)                        
             
         }
-
-        //println "PRINTLN END LOOP"
         
-        [
-            reportedEffortList: reportedEffortList
-        ]
+        [ reportedEffortList: reportedEffortList ]
                 
     } //def showPast
     

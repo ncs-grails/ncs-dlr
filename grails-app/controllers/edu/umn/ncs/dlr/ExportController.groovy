@@ -8,7 +8,7 @@ import grails.converters.*
 @Secured(['ROLE_NCS_DLR', 'ROLE_NCS_IT'])
 class ExportController {
 	
-	static def debug = true
+	static def debug = false
 
 	static def allowedFormats = [ 'pdf', 'xml', 'csv' ] as Set
 	static def defaultFormat = "csv"
@@ -30,8 +30,6 @@ class ExportController {
 		def reportingPeriodInstance = ReportingPeriod.read(params?.id)
 		// if we could find it in the database...
 		if (reportingPeriodInstance) {
-			// get the record set for the period from the service LaborService
-			def recordSet = laborService.getReportingPeriodData(reportingPeriodInstance)
 			
 			// build a file name
 			def fileName = "reporting-period_${reportingPeriodInstance.year}-${reportingPeriodInstance.month}.${format}"
@@ -50,6 +48,8 @@ class ExportController {
 				}
 			} else if (format == "csv") {
 				// Default to CSV
+                // get the record set for the period from the service LaborService
+                def recordSet = laborService.getReportingPeriodData(reportingPeriodInstance)
 				// render it as CSV using our own CSV renderer
 				renderAsCsv recordSet, fileName, response
 				render ""

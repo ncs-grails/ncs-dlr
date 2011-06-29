@@ -11,88 +11,49 @@ class ReportedEffortController {
         
         println "PRINTLN REPORTED EFFORT CONTROLLER > INDEX --------------------"                
         println "PRINTLN ReportedEffortController.index.params: ${params}"                
-        redirect(action: "main", params: params)
+        redirect(controller: 'main')
         
     }
 
-    def main = {
+    // when ADD button is pressed
+    def create = {
         
-        println "PRINTLN REPORTED EFFORT CONTROLLER > MAIN ---------------------"                
-        println "PRINTLN ReportedEffortController.main.params: ${params}"                
-                             
-        // get REPORTING STAFF, REPORTING PERIOD, and ASSIGNED EFFORT parameters                 
-        def reportingStaffInstance 
-        def reportingPeriodInstance
-        def assignedEffortInstance 
+        println "PRINTLN REPORTED EFFORT CONTROLLER > CREATE -------------------"                
+        println "PRINTLN ReportedEffortController.create.params: ${params}"                
+ 
+        // ASSIGNED EFFORT
+        def assignedEffortInstance = AssignedEffort.read(params?.id)        
+        println "PRINTLN ReportedEffortController.create.assignedEffortInstance: ${assignedEffortInstance}"
 
-        reportingStaffInstance = ReportingStaff.read(params?.reportingStaff?.id)
-        reportingPeriodInstance = ReportingPeriod.read(params?.reportingPeriod?.id)
-        assignedEffortInstance = AssignedEffort.read(params?.assignedEffort?.id)            
-        
-        println "PRINTLN MainController.show.reportingStaffInstance: ${reportingStaffInstance}"
-        println "PRINTLN MainController.show.reportingPeriodInstance: ${reportingPeriodInstance}"
-        println "PRINTLN MainController.show.assignedEffortInstance: ${assignedEffortInstance}"        
-                              
-        [            
-            reportingStaffInstance: reportingStaffInstance,
-            reportingPeriodInstance: reportingPeriodInstance,
-            assignedEffortInstance: assignedEffortInstance
-        ]        
-
-    } // def main
-    
-    def add = {
-        
-        println "PRINTLN REPORTED EFFORT CONTROLLER > ADD -------------------"                
-        println "PRINTLN ReportedEffortController.add.params: ${params}"                
-        
-        // get REPORTING STAFF, REPORTING PERIOD, and REPORTED EFFORT parameters                 
-        def reportingStaffInstance = ReportingStaff.read(params?.reportingStaff.id)
-        println "PRINTLN ReportedEffortController.add.params.reportingStaffInstance: ${reportingStaffInstance}"
-
-        def reportingPeriodInstance = ReportingPeriod.read(params?.reportingPeriod.id)
-        println "PRINTLN ReportedEffortController.add.params.reportingPeriodInstance: ${reportingPeriodInstance}"
-
-        def assignedEffortInstance = AssignedEffort.read(params?.assignedEffort.id)        
-        println "PRINTLN ReportedEffortController.add.params.assignedEffortInstance: ${assignedEffortInstance}"
-       
-        // create REPORTED EFFORT instance
-        def reportedEffortInstance = new ReportedEffort()
-        reportedEffortInstance.assignedEffort = assignedEffortInstance
-        println "PRINTLN ReportedEffortController.add.reportedEffortInstance: ${reportedEffortInstance}"        
+        // REPORTED EFFORT
+        def reportedEffortInstance         
+        if ( assignedEffortInstance ) {            
+            reportedEffortInstance = new ReportedEffort()
+            reportedEffortInstance.assignedEffort = assignedEffortInstance            
+        }               
+        println "PRINTLN ReportedEffortController.create.reportedEffortInstance: ${reportedEffortInstance}"        
                                
         // create STUDY ACTIVITY & TASK list for form controls
         def studyActivityList = laborService.getActiveStudyActivityList()
         def studyTaskList =  laborService.getActiveStudyTaskList()
                 
         [ 
-            reportingStaffInstance: reportingStaffInstance,
-            reportingPeriodInstance:reportingPeriodInstance, 
             assignedEffortInstance: assignedEffortInstance,
             reportedEffortInstance: reportedEffortInstance, 
             studyActivityList: studyActivityList, 
             studyTaskList: studyTaskList 
         ]
+ 
+    } //def create
 
-    } //def add
-
-    def addSave = {
+    def save = {
         
         println "PRINTLN REPORTED EFFORT CONTROLLER > ADD-SAVE ---------------------"                
         println "PRINTLN ReportedEffortController.addSave.params: ${params}"        
         
-        // get REPORTING STAFF, REPORTING PERIOD, & ASSIGNED EFFORT parameters        
-
-        def reportingStaffInstance = ReportingStaff.read(params?.reportingStaff.id)
-        def reportingPeriodInstance = ReportingPeriod.read(params?.reportingPeriod.id)
-        def assignedEffortInstance = AssignedEffort.read(params?.assignedEffort.id)                
-
-        println "PRINTLN ReportedEffortController.addSave.reportingStaffInstance: ${reportingStaffInstance}"        
-        println "PRINTLN ReportedEffortController.addSave.reportingPeriodInstance: ${reportingPeriodInstance}"        
+        def assignedEffortInstance = AssignedEffort.read(params?.id)                
         println "PRINTLN ReportedEffortController.addSave.assignedEffortInstance: ${assignedEffortInstance}"        
         
-        // get STUDY ACTIVITY, STUDY TASK, & PERCENT EFFORT entered by user
-
         def studyActivityInstance
         def studyTaskInstance
         def percentEffort 
@@ -104,7 +65,7 @@ class ReportedEffortController {
         println "PRINTLN ReportedEffortController.addSave.studyActivityInstance: ${studyActivityInstance}"
         
         if ( params?.task.id ) {
-            studyTaskInstance = StudyTask.read(params?.task.id)
+            studyTaskInstance = StudyTask.read(params?.task?.id)
         }
         println "PRINTLN ReportedEffortController.addSave.studyTaskInstance: ${studyTaskInstance}"
 
@@ -138,9 +99,6 @@ class ReportedEffortController {
             sumReportedPercentEffort = 0
         }
         println "PRINTLN ReportedEffortController.addSave.sumReportedPercentEffort: ${sumReportedPercentEffort}"
-
-        // create FLASH MESSAGESif any of the REPORTED EFFORT provided by user is missing or invalid.  Otherwise, save reported effort.
-        flash.message = ""                        
 
         if ( !studyActivityInstance ) {            
             
@@ -245,14 +203,14 @@ class ReportedEffortController {
 
             println "flash.message = ${flash.message}"
 
-            def model = [
+            def params = [
                 'reportingStaff.id': reportingStaffInstance.id, 
                 'reportingPeriod.id': reportingPeriodInstance.id, 
                 'assignedEffort.id': assignedEffortInstance.id
             ]
             //println "PRINTLN ReportedEffortController.addSave.model: ${model}"        
 
-            redirect(controller: 'reportedEffort', action: "main", params: model)
+            redirect(controller: 'reportedEffort', action: "main", params: params)
             
         } //if ( flash.message )
 
@@ -263,25 +221,19 @@ class ReportedEffortController {
         println "PRINTLN REPORTED EFFORT CONTROLLER > CANCEL ------------------"                
         println "PRINTLN ReportedEffortController.cancel.params: ${params}"   
         
-        // get parameters 
-        def reportingStaffInstance = ReportingStaff.read(params?.reportingStaff.id)
-        def reportingPeriodInstance = ReportingPeriod.read(params?.reportingPeriod.id)
         def assignedEffortInstance = AssignedEffort.read(params?.assignedEffort.id)
-
         println "PRINTLN ReportedEffortController.cancel.reportingStaffInstance: ${reportingStaffInstance}"        
         println "PRINTLN ReportedEffortController.cancel.reportingPeriodInstance: ${reportingPeriodInstance}"        
         println "PRINTLN ReportedEffortController.cancel.assignedEffortInstance: ${assignedEffortInstance}"        
 
-        flash.message = null                        
-        
-        def model = [
+        def params = [
                 'reportingStaff.id': reportingStaffInstance.id, 
                 'reportingPeriod.id': reportingPeriodInstance.id, 
                 'assignedEffort.id': assignedEffortInstance.id
         ]
 
-        redirect(action: "main", params:model)
-        
+        redirect(action: "main", params: [ 'assignedEffort.id': params?.assignedEffort.id])
+
     } //def cancel
     
     def delete = {
@@ -314,7 +266,7 @@ class ReportedEffortController {
         }                
         println "PRINTLN ReportedEffortController.edit.reportedEffortInstance: ${reportedEffortInstance}"        
 
-        def model = [
+        def params = [
                 'reportingStaff.id': reportingStaffInstance.id, 
                 'reportingPeriod.id': reportingPeriodInstance.id, 
                 'assignedEffort.id': assignedEffortInstance.id
@@ -337,7 +289,7 @@ class ReportedEffortController {
             
         } //if (reportedEffortInstance)
 
-        redirect(action: "main", params:model)
+        redirect(action: "main", params: params)
         
     } //def delete
     
@@ -348,20 +300,18 @@ class ReportedEffortController {
         
         // get REPORTING STAFF, REPORTING PERIOD, ASSIGNED EFFORT, and REPORTED EFFORT parameters 
         def reportingStaffInstance = ReportingStaff.read(params?.reportingStaff.id)
-        println "PRINTLN ReportedEffortController.edit.reportingStaffInstance: ${reportingStaffInstance}"        
-
         def reportingPeriodInstance = ReportingPeriod.read(params?.reportingPeriod.id)
-        println "PRINTLN ReportedEffortController.edit.reportingPeriodInstance: ${reportingPeriodInstance}"        
-
-        def assignedEffortInstance = AssignedEffort.read(params?.assignedEffort.id)
-        println "PRINTLN ReportedEffortController.edit.assignedEffortInstance: ${assignedEffortInstance}"     
-        
+        def assignedEffortInstance = AssignedEffort.read(params?.assignedEffort.id)        
         def reportedEffortInstance         
         params.each{
             if ( it.key =~ /^reportedEffort.id*$/) {
                 reportedEffortInstance = ReportedEffort.read(params?.reportedEffort.id)
             }
         }
+        
+        println "PRINTLN ReportedEffortController.edit.reportingStaffInstance: ${reportingStaffInstance}"        
+        println "PRINTLN ReportedEffortController.edit.reportingPeriodInstance: ${reportingPeriodInstance}"        
+        println "PRINTLN ReportedEffortController.edit.assignedEffortInstance: ${assignedEffortInstance}"     
         println "PRINTLN ReportedEffortController.edit.reportedEffortInstance: ${reportedEffortInstance}"
         
         // reported effort is selected for edit
@@ -385,14 +335,14 @@ class ReportedEffortController {
         // reported effort is NOT selected for edit
         } else {
             
-            def model = [
+            def params = [
                     'reportingStaff.id': reportingStaffInstance.id, 
                     'reportingPeriod.id': reportingPeriodInstance.id, 
                     'assignedEffort.id': assignedEffortInstance.id
             ]
             flash.message = "Must select a reported effort to EDIT."
             //flash.message = "${message(code: 'default.not.found.message', args: [message(code: 'reportedEffort.label', default: 'ReportedEffort'), reportedeffortId])}"
-            redirect(action: "main", params:model)
+            redirect(action: "main", params: params)
             
         } //if ( reportedEffortInstance ) {
 
@@ -404,127 +354,79 @@ class ReportedEffortController {
         println "PRINTLN ReportedEffortController.editSave.params: ${params}"        
         
         // get REPORTING STAFF, REPORTING PERIOD, ASSIGNED EFFORT, & REPORTED EFFORT parameters
-        def reportingStaffInstance = ReportingStaff.read(params?.reportingStaff.id)
-        def reportingPeriodInstance = ReportingPeriod.read(params?.reportingPeriod.id)
-        def assignedEffortInstance = AssignedEffort.read(params?.assignedEffort.id)
         
-        def ReportedEffortInstance = ReportedEffort.get(params?.reportedEffort.id)
-        
-                
+        def reportedEffortInstance = ReportedEffort.get(params?.id)
+
+        /*
+        def assignedEffortInstance = reportedEffortInstance?.assignedEffort
+        def reportingPeriodInstance = reportedEffortInstance?.assignedEffort?.period
+        def reportingStaffInstance = reportedEffortInstance?.assignedEffort?.reportingStaff
+        */
+       
         println "PRINTLN ReportedEffortController.editSave.reportingStaffInstance: ${reportingStaffInstance}"        
         println "PRINTLN ReportedEffortController.editSave.reportingPeriodInstance: ${reportingPeriodInstance}"        
         println "PRINTLN ReportedEffortController.editSave.assignedEffortInstance: ${assignedEffortInstance}"        
-        //println "PRINTLN ReportedEffortController.editSave.oldReportedEffortInstance: ${ReportedEffortInstance}"
+        println "PRINTLN ReportedEffortController.editSave.reportedEffortInstance: ${reportedEffortInstance}"
 
-        def reportedEffortInstance = ReportedEffort.get(params.id)
+
         if (reportedEffortInstance) {
-            if (params.version) {
-                def version = params.version.toLong()
+            
+            def model = [
+                reportingStaffInstance: reportingStaffInstance, 
+                reportingPeriodInstance: reportingPeriodInstance, 
+                assignedEffortInstance: reportedEffortInstance?.assignedEffort, 
+                reportedEffortInstance: reportedEffortInstance
+            ]
+            
+            reportedEffortInstance.properties = params
+
+            if (params?.version) {
+                
+                println "PRINTLN ReportedEffortController.editSave.params?.reportedEffort.version: ${params?.version}"
+                
+                def version = params?.version.toLong()
+                println "PRINTLN ReportedEffortController.editSave.version: ${version}"
+                
                 if (reportedEffortInstance.version > version) {
                     
                     reportedEffortInstance.errors.rejectValue("version", "default.optimistic.locking.failure", [message(code: 'reportedEffort.label', default: 'ReportedEffort')] as Object[], "Another user has updated this ReportedEffort while you were editing")
-                    render(view: "edit", model: [reportedEffortInstance: reportedEffortInstance])
+                    render(view: "edit", model: model)
                     return
+                    
                 }
-            }
-            reportedEffortInstance.properties = params
-            if (!reportedEffortInstance.hasErrors() && reportedEffortInstance.save(flush: true)) {
-                flash.message = "${message(code: 'default.updated.message', args: [message(code: 'reportedEffort.label', default: 'ReportedEffort'), reportedEffortInstance.id])}"
-                redirect(action: "show", id: reportedEffortInstance.id)
-            }
-            else {
-                render(view: "edit", model: [reportedEffortInstance: reportedEffortInstance])
-            }
-        }
-        else {
-            flash.message = "${message(code: 'default.not.found.message', args: [message(code: 'reportedEffort.label', default: 'ReportedEffort'), params.id])}"
-            redirect(action: "list")
-        }
-        
-        
-        
-        
-
-/*
-        // user did not make any edits    
-        if ( oldReportedEffortInstance.activity.id.toInteger() == activityIdVal.toInteger() && oldReportedEffortInstance.task.id.toInteger() == taskIdVal.toInteger() && oldReportedEffortInstance.percentEffort.toBigDecimal() == percentEffortVal.toBigDecimal()/100 ) {
-            
-            println "SAME"
-            flash.message = "You did not make any changes to the selected reported effort."
-            println "PRINTLN ReportedEffortController.editSave.flash.message: ${flash.message}"
-            
-            def params = [
-                'reportingStaff.id': reportingStaffInstance.id, 
-                'reportingPeriod.id': reportingPeriodInstance.id, 
-                'assignedEffort.id': assignedEffortInstance.id,
-                'reportedEffort.id': oldReportedEffortInstance.id
-            ]
-            
-            redirect(action: "edit", params:params)
-            
-        // user make any edits
-        } else {
-            
-            println "DIFFERENT"
-            
-            //convert Reported Effort to decimal number for insert into db
-            if ( reportedEffortInstance.percentEffort ) {
-                reportedEffortInstance.percentEffort = reportedEffortInstance.percentEffort / 100.0            
-                println "PRINTLN ReportedEffortController.editSave.reportedEffortInstance.percentEffort: ${reportedEffortInstance.percentEffort}"        
-            }
-
-            // get USERNAME of person reporting effort
-            def username = reportingStaffInstance.username
-            println "PRINTLN ReportedEffortController.editSave.username: ${username}"                
-
-            reportedEffortInstance.userCreated = username
-            println "PRINTLN ReportedEffortController.editSave.reportedEffortInstance.userCreated: ${reportedEffortInstance.userCreated}"        
-            if (reportedEffortInstance.save(flush: true)) {
-
-                println "SAVE SUCCESSFULLY"            
-                //flash.message = "${message(code: 'default.created.message', args: [message(code: 'reportedEffort.label', default: 'ReportedEffort'), reportedEffortInstance.id])}"
-
-                // delete original Reported Effort instance
-
-                def params = [
-                    'reportingStaff.id': reportingStaffInstance.id, 
-                    'reportingPeriod.id': reportingPeriodInstance.id, 
-                    'assignedEffort.id': assignedEffortInstance.id
-                ]
-                println "PRINTLN ReportedEffortController.editSave.model: ${params}"        
-
-                redirect(controller: 'reportedEffort', action: "main", params: params)
-
-            } else {
-
-                println "SAVE FAILED"
-                flash.message = "${message(code: 'default.created.message', args: [message(code: 'reportedEffort.label', default: 'ReportedEffort'), reportedEffortInstance.id])}"
-
-                // get error message if save failes
-                if ( ! reportedEffortInstance.save()) {
-                    reportedEffortInstance.errors.each{ println it }
-                }
-
-                // get STUDY ACTIVITY & TASK list for form controls
-                def studyActivityList = laborService.getActiveStudyActivityList()
-                def studyTaskList =  laborService.getActiveStudyTaskList()
-
-                def model = [
-                    reportingStaffInstance: reportingStaffInstance, 
-                    reportingPeriodInstance: reportingPeriodInstance, 
-                    assignedEffortInstance: assignedEffortInstance,
-                    reportedEffortInstance: reportedEffortInstance,
-                    studyActivityList: studyActivityList, 
-                    studyTaskList: studyTaskList
-                ]                
-
-                render(view: "edit", model: model)
-
-            } //if (reportedEffortInstance.save(flush: true))            
                 
-        } //if ( oldReportedEffortInstance.activity.id.toInteger() == activityIdVal.toInteger() && oldReportedEffortInstance.task.id.toInteger() == taskIdVal.toInteger() && oldReportedEffortInstance.percentEffort.toBigDecimal() == percentEffortVal.toBigDecimal()/100 )        
-*/        
+            } //if (params.version)
+                       
+            // if successful save
+            if (!reportedEffortInstance.hasErrors() && reportedEffortInstance.save(flush: true)) {
+                
+                println "PRINTLN SUCCESSFUL SAVE"
+                //flash.message = "${message(code: 'default.updated.message', args: [message(code: 'reportedEffort.label', default: 'ReportedEffort'), reportedEffortInstance.id])}"
+                render(view: "edit", model: model)
+                //redirect(action: "show", id: reportedEffortInstance.id)
+                
+            }   
+            // if saved failed
+            else {
+                
+                println "PRINTLN SAVE FAILED"
+                render(view: "edit", model: model)
+                
+            }
+        
+        } else {
 
+            def model = [            
+                reportingStaffInstance: reportingStaffInstance,
+                reportingPeriodInstance: reportingPeriodInstance,
+                assignedEffortInstance: assignedEffortInstance
+            ]        
+            
+            flash.message = "${message(code: 'default.not.found.message', args: [message(code: 'reportedEffort.label', default: 'ReportedEffort'), params.id])}"
+            render(view: "main", model: model)
+            
+        }
+        
     } //def editSave
     
 

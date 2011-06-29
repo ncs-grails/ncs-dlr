@@ -14,9 +14,7 @@
 
 <g:form name="reportedEffort-add" method="post">
 
-  <g:hiddenField name="reportingStaff.id" value="${reportingStaffInstance?.id}" />
-  <g:hiddenField name="reportingPeriod.id" value="${reportingPeriodInstance?.id}" />
-  <g:hiddenField name="assignedEffort.id" value="${assignedEffortInstance?.id}" />
+  <g:hiddenField name="id" value="${assignedEffortInstance?.id}" />
   
   <div class="clearCenterPadding">
 
@@ -84,7 +82,7 @@
     <g:submitToRemote 
       class="buttonBasic" 
       value="SAVE"
-      url="${[controller:'reportedEffort',action:'addSave']}" 
+      url="${[controller:'reportedEffort',action:'save']}" 
       update="remoteFormContainer"
     />
 

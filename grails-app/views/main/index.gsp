@@ -22,6 +22,7 @@
       <!-- Greeting -->
       <span class="fontMaroon">
         Welcome, <strong>${reportingStaffInstance.firstName} ${reportingStaffInstance.lastName}</strong>!
+        ${assignedEffortInstance.dateCommitted}
       </span>
 
       <!-- CURRENT EFFORT REPORTING SECTION -->
@@ -29,7 +30,7 @@
         <g:formatDate date="${reportingPeriodInstance.periodDate}" format="MMMM yyyy" /> Effort Reporting
       </h2>
 
-        <!-- DISPLAY MESSAGE/SECTIONS BASED ON ASSIGNED AND COMMITTED EFFORT -->
+        <!-- DISPLAY MESSAGE OR SECTIONS BASED ON ASSIGNED AND COMMITTED EFFORT -->
 
         <!-- if there is NO assigned effort for this period, let user know -->
         <g:if test="${!assignedEffortInstance}">
@@ -39,20 +40,22 @@
         </g:if>
 
         <!-- if this period's assigned effort is already COMMITTED, then user is done with effort reporting -->
-        <g:if test="${assignedEffortInstance && committedDateInstance}">
-          <p>You have completed your effort reporting for this <strong>
+        <g:if test="${assignedEffortInstance && assignedEffortInstance.dateCommitted}">
+          <p>You have already completed (committed) your effort reporting for <strong>
             <g:formatDate date="${reportingPeriodInstance.periodDate}" format="MMMM yyyy" /></strong>. Thank you!
           </p>              
         </g:if>
         
-        <!-- include for various FORMS (reportedEffort.main) -->
-        <div id="remoteFormContainer">
-          <g:include 
-            controller="reportedEffort" 
-            action="main" 
-            params="${[reportingStaff: reportingStaffInstance, reportingPeriod: reportingPeriodInstance, assignedEffort: assignedEffortInstance]}" 
-          />
-        </div>
+        <!-- include for various dynamic FORMS -->
+        <g:if test="${assignedEffortInstance && !assignedEffortInstance.dateCommitted}">
+          <div id="remoteFormContainer">
+            <g:include 
+              controller="assignedEffort" 
+              action="index" 
+              params="${['id': assignedEffortInstance.id]}" 
+            />
+          </div>
+        </g:if>
 
         <!-- include PAST COMMITTED EFFORT SECTION -->
         <g:include 
@@ -61,7 +64,7 @@
           action="showPast" 
         />
 
-<!-- spacing before footer -->  
+    <!-- spacing before footer -->  
     <div class="pageSpacing"> </div>
  
   </body>

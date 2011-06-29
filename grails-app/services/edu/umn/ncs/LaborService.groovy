@@ -210,7 +210,9 @@ class LaborService {
     }
     
 	def getReportingPeriodData(ReportingPeriod reportingPeriodInstance) {
+        
 		def dataset = null
+        
 		if (reportingPeriodInstance) {
 			// start the dataset
 			dataset = []
@@ -233,7 +235,9 @@ class LaborService {
 				dataset.add(row)
 			}
 		}
+        
 		return dataset
+        
 	}
 	
 } //class LaborService

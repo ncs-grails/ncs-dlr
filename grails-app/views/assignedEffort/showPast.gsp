@@ -29,7 +29,7 @@
         </td>
         <td class="basic" style="text-align:right;">
           <div class="nowrap">
-            <g:formatNumber number="${re.reportedEffort}" type="percent" maxFractionDigits="2"/>
+            <g:formatNumber number="${re.reportedEffort}" type="percent" maxFractionDigits="3"/>
           </div>
         </td>
       </tr>

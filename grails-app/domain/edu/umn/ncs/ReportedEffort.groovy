@@ -36,10 +36,27 @@ class ReportedEffort {
             }
         }
             
-    } //def onDelete 
+    }
 
     static belongsTo = [assignedEffort: AssignedEffort]
+    static transients = ['percentEffortConverted']
 
+    BigDecimal getPercentEffortConverted() {        
+        return percentEffort * 100.00
+    }
+    
+    void setPercentEffortConverted(BigDecimal percentEffortConverted) {        
+        percentEffort = percentEffortConverted / 100.00
+    }
+
+    void setPercentEffortConverted(String percentEffortConvertedString) {
+        try {
+            percentEffortConverted = percentEffortConvertedString.toBigDecimal()
+        } finally {
+            percentEffort = percentEffortConverted / 100.00
+        }
+    }
+    
     static constraints = {
         assignedEffort()
         activity()
