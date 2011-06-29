@@ -32,7 +32,7 @@
           <g:link controller="assignEffort" action="show">Effort Assignment</g:link> - enter assigned effort for reporting period
         </dt>
         <dt class="basicMenu">
-          Report Generation - generate effort reports for submission
+          <g:link action="reports">Report Generation</g:link> - generate effort reports for submission
         </dt>
         <dt class="basicMenu">
           Report Archive - view past reported effort that have been generated

@@ -18,6 +18,10 @@ class ReportingStaff {
     static hasMany = [assignedEfforts: AssignedEffort]
     static transients = ['fullNameLFM']
 
+	String toString() {
+		fullNameLFM
+	}
+	
     String getFullNameLFM() {
         (lastName + ', ' + firstName + ' ' + middleInit).trim()
     }

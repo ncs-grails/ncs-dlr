@@ -4,7 +4,7 @@ import org.joda.time.*
 class LaborService {
 
     static transactional = true
-    static debug = true
+    static def debug = false
 
     def authenticateService
     def mailService
@@ -209,4 +209,31 @@ class LaborService {
         
     }
     
+	def getReportingPeriodData(ReportingPeriod reportingPeriodInstance) {
+		def dataset = null
+		if (reportingPeriodInstance) {
+			// start the dataset
+			dataset = []
+			
+			// for each row...
+			(1..5).each{
+				// create an empty row
+				def row = [:]
+				
+				row.id = it
+				row.name = "purple"
+				row.color = "rock"
+				row.size = "square"
+				row.shape = "medium"
+				row.status = "confusing"
+				row.when = new Date()
+				
+				if (debug) { println "getReportingPeriodData: adding row ${it}: ${row}" }
+
+				dataset.add(row)
+			}
+		}
+		return dataset
+	}
+	
 } //class LaborService

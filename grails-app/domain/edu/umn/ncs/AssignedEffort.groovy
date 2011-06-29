@@ -13,6 +13,7 @@ class AssignedEffort {
     def transients = ['previousAssignedEffort']
 
     static belongsTo = [reportingStaff: ReportingStaff, period: ReportingPeriod]
+	// reportedEffort SHOULD BE PLURAL!
     static hasMany = [emails: NotificationEmail, reportedEffort: ReportedEffort]
 
     AssignedEffort getPreviousAssignedEffort() {
