@@ -22,7 +22,6 @@
       <!-- Greeting -->
       <span class="fontMaroon">
         Welcome, <strong>${reportingStaffInstance.firstName} ${reportingStaffInstance.lastName}</strong>!
-        ${assignedEffortInstance.dateCommitted}
       </span>
 
       <!-- CURRENT EFFORT REPORTING SECTION -->
@@ -46,12 +45,12 @@
           </p>              
         </g:if>
         
-        <!-- include for various dynamic FORMS -->
+        <!-- Otherwise, include for various dynamic FORMS -->
         <g:if test="${assignedEffortInstance && !assignedEffortInstance.dateCommitted}">
           <div id="remoteFormContainer">
             <g:include 
               controller="assignedEffort" 
-              action="index" 
+              action="show" 
               params="${['id': assignedEffortInstance.id]}" 
             />
           </div>

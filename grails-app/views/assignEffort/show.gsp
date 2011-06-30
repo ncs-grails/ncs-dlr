@@ -13,7 +13,7 @@
       
     <!-- navigation -->
     <p class="breadcrumbs">
-      <g:link controller="main" action="index">DLR Home</g:link>
+      <g:link controller="main" action="show">DLR Home</g:link>
       &nbsp;&nbsp;&gt&nbsp;&nbsp;
       <g:link controller="applicationManagement" action="index">Application Management</g:link>
       &nbsp;&nbsp;&gt&nbsp;&nbsp;

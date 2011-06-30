@@ -10,11 +10,6 @@
     params="${[isForm: true]}" 
   />
 
-  <!-- ERROR MESSAGES -->    
-  <g:if test="${flash.message}">
-    <div class="flashMessage">${flash.message}</div>
-  </g:if>
-
   <!-- BUTTON CONTROLS -->
   <div class="clearCenterPadding">
 

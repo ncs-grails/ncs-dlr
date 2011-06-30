@@ -41,12 +41,20 @@ class ReportedEffort {
     static belongsTo = [assignedEffort: AssignedEffort]
     static transients = ['percentEffortConverted']
 
-    BigDecimal getPercentEffortConverted() {        
-        return percentEffort * 100.00
+    BigDecimal getPercentEffortConverted() {
+        if (percentEffort != null) {
+            return percentEffort * 100.00
+        } else {
+            percentEffort
+        }
     }
     
-    void setPercentEffortConverted(BigDecimal percentEffortConverted) {        
-        percentEffort = percentEffortConverted / 100.00
+    void setPercentEffortConverted(BigDecimal percentEffortConverted) {
+        if (percentEffortConverted != null) {
+            percentEffort = percentEffortConverted / 100.00
+        } else {
+            percentEffort = null
+        }
     }
 
     void setPercentEffortConverted(String percentEffortConvertedString) {

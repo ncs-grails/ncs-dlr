@@ -19,5 +19,7 @@ class StudyTask {
         userCreated(blank:false)
         appCreated(blank:false)
     }
+    
+    static mapping = { sort "name" }
 
 }

@@ -2,17 +2,17 @@ package edu.umn.ncs
 
 class AssignedEffortController {
 
-    def index = {
+    def show = {
         
-        println "PRINTLN ASSIGNED EFFORT CONTROLLER > INDEX --------------------"                
-        println "PRINTLN AssignedEffortController.index.params: ${params}"
+        println "PRINTLN ASSIGNED EFFORT CONTROLLER > SHOW ---------------------"                
+        println "PRINTLN AssignedEffortController.show.params: ${params}"
         
         def assignedEffortInstance = AssignedEffort.read(params?.id)
-        println "PRINTLN AssignedEffortController.index.assignedEffortInstance: ${assignedEffortInstance}"
+        println "PRINTLN AssignedEffortController.show.assignedEffortInstance: ${assignedEffortInstance}"
             
         [ assignedEffortInstance: assignedEffortInstance ]        
 
-    } // def index
+    } 
  
     def showCurrent = {
 
@@ -21,8 +21,8 @@ class AssignedEffortController {
 
         // get perameters
         def assignedEffortInstance
-        def reportingPeriodInstance
         def reportingStaffInstance
+        def reportingPeriodInstance
         
         if (params?.id) {
             assignedEffortInstance = AssignedEffort.read(params?.id)

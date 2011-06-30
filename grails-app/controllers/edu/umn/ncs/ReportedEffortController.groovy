@@ -15,69 +15,65 @@ class ReportedEffortController {
         
     }
 
-    // when ADD button is pressed
+    def cancel = {
+        
+        println "PRINTLN REPORTED EFFORT CONTROLLER > CANCEL -------------------"                
+        println "PRINTLN ReportedEffortController.cancel.params: ${params}"   
+        
+        def assignedEffortInstance = AssignedEffort.read(params?.assignedEffort.id)        
+
+        render(view: "/assignedEffort/show", model:[assignedEffortInstance: assignedEffortInstance] )
+
+    } 
+    
+    // when ADD button is pressed on AssignedEffort > show.gsp
     def create = {
         
         println "PRINTLN REPORTED EFFORT CONTROLLER > CREATE -------------------"                
         println "PRINTLN ReportedEffortController.create.params: ${params}"                
  
-        // ASSIGNED EFFORT
         def assignedEffortInstance = AssignedEffort.read(params?.id)        
         println "PRINTLN ReportedEffortController.create.assignedEffortInstance: ${assignedEffortInstance}"
 
-        // REPORTED EFFORT
-        def reportedEffortInstance         
+        def reportedEffortInstance
         if ( assignedEffortInstance ) {            
             reportedEffortInstance = new ReportedEffort()
             reportedEffortInstance.assignedEffort = assignedEffortInstance            
         }               
         println "PRINTLN ReportedEffortController.create.reportedEffortInstance: ${reportedEffortInstance}"        
-                               
-        // create STUDY ACTIVITY & TASK list for form controls
-        def studyActivityList = laborService.getActiveStudyActivityList()
-        def studyTaskList =  laborService.getActiveStudyTaskList()
                 
-        [ 
-            assignedEffortInstance: assignedEffortInstance,
-            reportedEffortInstance: reportedEffortInstance, 
-            studyActivityList: studyActivityList, 
-            studyTaskList: studyTaskList 
-        ]
+        [ reportedEffortInstance: reportedEffortInstance ]
  
-    } //def create
+    } 
 
     def save = {
         
-        println "PRINTLN REPORTED EFFORT CONTROLLER > ADD-SAVE ---------------------"                
-        println "PRINTLN ReportedEffortController.addSave.params: ${params}"        
+        println "PRINTLN REPORTED EFFORT CONTROLLER > SAVE ---------------------"                
+        println "PRINTLN ReportedEffortController.save.params: ${params}"        
         
-        def assignedEffortInstance = AssignedEffort.read(params?.id)                
-        println "PRINTLN ReportedEffortController.addSave.assignedEffortInstance: ${assignedEffortInstance}"        
-        
-        def studyActivityInstance
-        def studyTaskInstance
-        def percentEffort 
-        def reportedEffortInstance 
+        def reportedEffortInstance = new ReportedEffort(params)
+        println "PRINTLN ReportedEffortController.save.reportedEffortInstance: ${reportedEffortInstance}"                    
 
-        if ( params?.activity.id ) {
-            studyActivityInstance = StudyActivity.read(params?.activity.id)
-        }
-        println "PRINTLN ReportedEffortController.addSave.studyActivityInstance: ${studyActivityInstance}"
+        def principal = authenticateService.principal()                         
+        reportedEffortInstance.userCreated = principal.getUsername()
+        println "PRINTLN ReportedEffortController.save.reportedEffortInstance.userCreated: ${reportedEffortInstance.userCreated}"        
         
-        if ( params?.task.id ) {
-            studyTaskInstance = StudyTask.read(params?.task?.id)
-        }
-        println "PRINTLN ReportedEffortController.addSave.studyTaskInstance: ${studyTaskInstance}"
+        if (reportedEffortInstance.validate() && reportedEffortInstance.save(flush: true)) {
 
-        if ( params?.percentEffort ) {
-            def percentEffortVal = params?.percentEffort            
-            percentEffort = percentEffortVal.replaceAll(/\.\./, ".")
-        }
-        println "PRINTLN ReportedEffortController.addSave.percentEffort: ${percentEffort}"
+            println "SAVE SUCCESSFULLY"
+
+            render(view: "/assignedEffort/show", model: [assignedEffortInstance: reportedEffortInstance.assignedEffort] )
+                        
+        } else {
+
+            println "SAVE FAILED"        
+            // reportedEffortInstance.errors.each{ println it }
+                        
+            render(view: "create", model: [reportedEffortInstance: reportedEffortInstance])
+                       
+        } 
         
-        reportedEffortInstance = new ReportedEffort(params)
-        println "PRINTLN ReportedEffortController.addSave.reportedEffortInstance: ${reportedEffortInstance}"                    
-
+/*
         // create variables for error checking
 
         def assignedPercentEffort = assignedEffortInstance.assignedEffort * 100
@@ -213,29 +209,9 @@ class ReportedEffortController {
             redirect(controller: 'reportedEffort', action: "main", params: params)
             
         } //if ( flash.message )
-
+*/
     } //def save
 
-    def cancel = {
-        
-        println "PRINTLN REPORTED EFFORT CONTROLLER > CANCEL ------------------"                
-        println "PRINTLN ReportedEffortController.cancel.params: ${params}"   
-        
-        def assignedEffortInstance = AssignedEffort.read(params?.assignedEffort.id)
-        println "PRINTLN ReportedEffortController.cancel.reportingStaffInstance: ${reportingStaffInstance}"        
-        println "PRINTLN ReportedEffortController.cancel.reportingPeriodInstance: ${reportingPeriodInstance}"        
-        println "PRINTLN ReportedEffortController.cancel.assignedEffortInstance: ${assignedEffortInstance}"        
-
-        def params = [
-                'reportingStaff.id': reportingStaffInstance.id, 
-                'reportingPeriod.id': reportingPeriodInstance.id, 
-                'assignedEffort.id': assignedEffortInstance.id
-        ]
-
-        redirect(action: "main", params: [ 'assignedEffort.id': params?.assignedEffort.id])
-
-    } //def cancel
-    
     def delete = {
         
         println "PRINTLN REPORTED EFFORT CONTROLLER > DELETE -------------------"                

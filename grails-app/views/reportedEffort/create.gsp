@@ -1,99 +1,86 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
+<%@ page import="edu.umn.ncs.StudyActivity" %>
+<%@ page import="edu.umn.ncs.StudyTask" %>
 
-<!-- ASSIGNED, REPORTED & COMMITTED message boxes -->
-<!-- REPORTED EFFORT for current period -->      
+<!-- include for ASSIGNED, REPORTED & COMMITTED message boxes plus REPORTED EFFORT for current period -->      
 <div class="include">
-    <g:include 
-      controller="assignedEffort" 
-      action="showCurrent" 
-      id="${assignedEffortInstance.id}" 
-      params="${[isForm: false]}" 
-/>
-
+  <g:include 
+    controller="assignedEffort" 
+    action="showCurrent" 
+    id="${reportedEffortInstance?.assignedEffort?.id}" 
+    params="${[isForm: false]}" 
+  />
 </div>
 
 <g:form name="reportedEffort-add" method="post">
 
-  <g:hiddenField name="id" value="${assignedEffortInstance?.id}" />
+  <g:hiddenField name="assignedEffort.id" value="${reportedEffortInstance?.assignedEffort?.id}" />
   
+  <!-- CONTROLS to enter ACTIVITY, TASK, & EFFORT -->    
   <div class="clearCenterPadding">
-
-    <!-- CONTROLS: STUDY ACTIVITY, STUDY TASK, & EFFORT -->    
     <div class="effortSelection">
-
-      <!--Study Activity -->
+      <!-- Activity -->
       <span class="controlBox">Study Activity
         <span class="value ${hasErrors(bean: reportedEffortInstance, field: 'activity', 'errors')}">
           <g:select class="basic"
             name="activity.id"
-            from="${studyActivityList}"
+            from="${StudyActivity.findAllWhere(obsolete: false)}"
             optionKey="id"
             optionValue="name"
             value="${reportedEffortInstance?.activity?.id}" 
-            noSelection="${['0':'Choose ...']}"/>
+            noSelection="${['null':'Choose ...']}"/>
         </span>
       </span>
-
-      <!--Study Task -->
+      <!-- Task -->
       <span class="controlBox">Study Task
         <span class="value ${hasErrors(bean: reportedEffortInstance, field: 'task', 'errors')}">
           <g:select class="basic"
             name="task.id"
-            from="${studyTaskList}"
+            from="${StudyTask.findAllWhere(obsolete: false)}"
             optionKey="id"
             optionValue="name"
             value="${reportedEffortInstance?.task?.id}" 
-            noSelection="${['0':'Choose ...']}"/>
+            noSelection="${['null':'Choose ...']}"/>
         </span>
       </span>
-
       <!-- Effort -->
       <span class="controlBox">
         <span class="value ${hasErrors(bean: reportedEffortInstance, field: 'percentEffort', 'errors')}">Effort
           <g:textField 
-            name="percentEffort" 
+            name="percentEffortConverted" 
             class="textfieldBasic" 
             style="text-align:right;"
             size="4" 
             maxlength="6"
-            value="${g.formatNumber(number:(reportedEffortInstance?.percentEffort ? reportedEffortInstance?.percentEffort : null), maxFractionDigits:4)}"
+            value="${g.formatNumber(number:reportedEffortInstance?.percentEffortConverted, maxFractionDigits:4)}"
           />%
           </span>
       </span>
-
     </div>
-
   </div>
   
-  <!-- ERROR MESSAGES -->    
-  <g:if test="${flash.message}">
-    <div class="flashMessage">${flash.message}</div>
-  </g:if>
-
+  <!-- display ERROR MESSAGES -->     
   <g:hasErrors bean="${reportedEffortInstance}">
     <div class="errors">
       <g:renderErrors bean="${reportedEffortInstance}" as="list" />
     </div>
   </g:hasErrors>
   
+  
+  <!-- SAVE & CANCEL button controls -->
   <div class="clearCenterPadding">
-
-    <!-- ADD button -->
     <g:submitToRemote 
       class="buttonBasic" 
       value="SAVE"
       url="${[controller:'reportedEffort',action:'save']}" 
       update="remoteFormContainer"
     />
-
-    <!-- CANCEL button -->
     <g:submitToRemote 
       class="buttonBasic" 
       value="CANCEL" 
       url="${[controller:'reportedEffort',action:'cancel' ]}" 
       update="remoteFormContainer" 
     />
-
   </div>
 
 </g:form>      
