@@ -19,7 +19,6 @@
   <!-- CONTROLS to enter ACTIVITY, TASK, & EFFORT -->    
   <div class="clearCenterPadding">
     <div class="effortSelection">
-      <!-- Activity -->
       <span class="controlBox">Study Activity
         <span class="value ${hasErrors(bean: reportedEffortInstance, field: 'activity', 'errors')}">
           <g:select class="basic"
@@ -31,7 +30,6 @@
             noSelection="${['null':'Choose ...']}"/>
         </span>
       </span>
-      <!-- Task -->
       <span class="controlBox">Study Task
         <span class="value ${hasErrors(bean: reportedEffortInstance, field: 'task', 'errors')}">
           <g:select class="basic"
@@ -43,7 +41,6 @@
             noSelection="${['null':'Choose ...']}"/>
         </span>
       </span>
-      <!-- Effort -->
       <span class="controlBox">
         <span class="value ${hasErrors(bean: reportedEffortInstance, field: 'percentEffort', 'errors')}">Effort
           <g:textField 
@@ -59,15 +56,19 @@
     </div>
   </div>
   
-  <!-- display ERROR MESSAGES -->     
-  <g:hasErrors bean="${reportedEffortInstance}">
-    <div class="errors">
-      <g:renderErrors bean="${reportedEffortInstance}" as="list" />
-    </div>
-  </g:hasErrors>
-  
-  
-  <!-- SAVE & CANCEL button controls -->
+  <!-- display ERROR MESSAGES, after save attempt-->       
+  <g:if test="${errMessage}">
+    <div class="errors">${errMessage}</div>        
+  </g:if>
+  <g:else>
+    <g:hasErrors bean="${reportedEffortInstance}">
+      <div class="errors">
+        <g:renderErrors bean="${reportedEffortInstance}" as="list" />
+      </div>
+    </g:hasErrors>
+  </g:else>
+    
+  <!-- BUTTON controls -->
   <div class="clearCenterPadding">
     <g:submitToRemote 
       class="buttonBasic" 

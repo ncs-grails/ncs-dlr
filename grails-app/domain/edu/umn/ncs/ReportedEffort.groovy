@@ -73,7 +73,6 @@ class ReportedEffort {
         dateCreated()
         userCreated(blank:false)
         appCreated(blank:false)
-
     }
 
 }

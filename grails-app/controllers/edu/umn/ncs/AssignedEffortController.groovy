@@ -76,8 +76,8 @@ class AssignedEffortController {
             //println "PRINTLN AssignedEffortController.showCurrent.record.studyTask: ${record.studyTask}"
             
             // Get percentEffort
-            record.percentEffort = rs.percentEffort
-            //println "PRINTLN AssignedEffortController.showCurrent.record.percentEffort: ${record.percentEffort}"
+            record.percentEffortConverted = rs.percentEffortConverted
+            //println "PRINTLN AssignedEffortController.showCurrent.record.percentEffortConverted: ${record.percentEffortConverted}"
             
             //Get DateCreated
             record.dateCreated = rs.dateCreated
@@ -104,7 +104,7 @@ class AssignedEffortController {
     
     def showPast = {
         
-        println "PRINTLN ASSIGNED EFFORT CONTROLLER > SHOWPAST -----------------"                
+        println "PRINTLN ASSIGNED EFFORT CONTROLLER > SHOW PAST ----------------"                
         println "PRINTLN AssignedEffortController.showPast.params: ${params}"
         
         def reportingStaffInstance        

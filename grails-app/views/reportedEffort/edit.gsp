@@ -1,4 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
+<%@ page import="edu.umn.ncs.StudyActivity" %>
+<%@ page import="edu.umn.ncs.StudyTask" %>
 
 <!-- ASSIGNED, REPORTED & COMMITTED message boxes -->
 <!-- REPORTED EFFORT for current period -->      
@@ -6,10 +8,9 @@
     <g:include 
       controller="assignedEffort" 
       action="showCurrent" 
-      id="${assignedEffortInstance.id}" 
+      id="${reportedEffortInstance?.assignedEffort?.id}"
       params="${[isForm: false]}" 
 />
-
 </div>
 
 <g:form name="reportedEffort-edit" method="post">
@@ -17,83 +18,67 @@
   <g:hiddenField name="id" value="${reportedEffortInstance?.id}" />    
   <g:hiddenField name="version" value="${reportedEffortInstance?.version}" />    
   
+  <!-- CONTROLS: STUDY ACTIVITY, STUDY TASK, & EFFORT -->    
   <div class="clearCenterPadding">
-
-    <!-- CONTROLS: STUDY ACTIVITY, STUDY TASK, & EFFORT -->    
     <div class="effortSelection">
-
-      <!--Study Activity -->
       <span class="controlBox">Study Activity
         <span class="value ${hasErrors(bean: reportedEffortInstance, field: 'activity', 'errors')}">
           <g:select class="basic"
             name="activity.id"
-            from="${studyActivityList}"
+            from="${StudyActivity.findAllWhere(obsolete: false)}"
             optionKey="id"
             optionValue="name"
             value="${reportedEffortInstance?.activity?.id}" 
-            noSelection="${['0':'Choose ...']}"/>
+            noSelection="${['nul':'Choose ...']}"/>
         </span>
-      </span>
-
-      <!--Study Task -->
+      </span>        
       <span class="controlBox">Study Task
         <span class="value ${hasErrors(bean: reportedEffortInstance, field: 'task', 'errors')}">
           <g:select class="basic"
             name="task.id"
-            from="${studyTaskList}"
+            from="${StudyTask.findAllWhere(obsolete: false)}"
             optionKey="id"
             optionValue="name"
             value="${reportedEffortInstance?.task?.id}" 
-            noSelection="${['0':'Choose ...']}"/>
+            noSelection="${['null':'Choose ...']}"/>
         </span>
       </span>
-
-      <!-- Effort -->
       <span class="controlBox">
         <span class="value ${hasErrors(bean: reportedEffortInstance, field: 'percentEffort', 'errors')}">Effort
           <g:textField 
             name="percentEffortConverted" 
             class="textfieldBasic" 
             style="text-align:right;"
-            size="2" 
-            value="${g.formatNumber(number:(reportedEffortInstance?.percentEffortConverted ? reportedEffortInstance?.percentEffortConverted : null), maxFractionDigits:3)}"
+            size="4" 
+            maxlength="6"
+            value="${g.formatNumber(number:reportedEffortInstance?.percentEffortConverted, maxFractionDigits:4)}"
           />%
           </span>
       </span>
-
-      <g:if test="${flash.message}">
-        ${flash.message}
-      </g:if>
-
-      <g:hasErrors bean="${reportedEffortInstance}">
-        <div class="errors">
-          <g:renderErrors bean="${reportedEffortInstance}" as="list" />
-        </div>
-      </g:hasErrors>
-
     </div>
-
   </div>
+      
+  <!-- display ERROR MESSAGES, after save attempt-->       
+  <g:hasErrors bean="${reportedEffortInstance}">
+    <div class="errors">
+      <g:renderErrors bean="${reportedEffortInstance}" as="list" />
+    </div>
+  </g:hasErrors>
 
+  <!-- BUTTON CONTROLS -->
   <div class="clearCenterPadding">
-
-    <!-- ADD button -->
     <g:submitToRemote 
       class="buttonBasic" 
       value="SAVE"
-      url="${[controller:'reportedEffort',action:'editSave']}" 
+      url="${[controller:'reportedEffort',action:'save']}" 
       update="remoteFormContainer"
     />
-
-    <!-- CANCEL button -->
     <g:submitToRemote 
       class="buttonBasic" 
       value="CANCEL" 
-      url="${[controller:'reportedEffort',action:'main', params: [ 'assignedEffort.id': reportedEffortInstance.assignedEffort ] ]}" 
-      
+      url="${[controller:'reportedEffort',action:'cancel', params: ['assignedEffort.id': reportedEffortInstance?.assignedEffort?.id]]}"       
       update="remoteFormContainer" 
     />
-
   </div>
 
 </g:form>      

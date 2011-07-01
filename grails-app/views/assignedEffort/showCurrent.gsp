@@ -49,7 +49,7 @@
             <td class="basic">${re.studyActivity}</td>
             <td class="basic">${re.studyTask}</td>
             <td class="basic" style="text-align:right;">
-              <g:formatNumber number="${re.percentEffort}" type="percent" maxFractionDigits="3"/>
+              <g:formatNumber number="${re.percentEffortConverted}" type="number" maxFractionDigits="3"/>%
             </td>
             <td class="basic" style="text-align:center;">
               <g:formatDate date="${re.dateCreated}" format="MM-dd-yyyy"/>
