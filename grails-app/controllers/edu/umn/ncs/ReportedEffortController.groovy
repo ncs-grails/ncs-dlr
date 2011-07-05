@@ -214,13 +214,27 @@ class ReportedEffortController {
         }
         
     } //def edit 
-
+    
    def editSave = {
         
-        println "PRINTLN REPORTED EFFORT CONTROLLER > SAVE ---------------------"                
+        println "PRINTLN REPORTED EFFORT CONTROLLER > EDIT-SAVE ---------------------"                
         println "PRINTLN ReportedEffortController.save.params: ${params}"        
         
-/*
+        def reportedEffortInstance = new ReportedEffort(params)
+        println "PRINTLN ReportedEffortController.save.reportedEffortInstance: ${reportedEffortInstance}"
+        
+        
+
+        /*
+
+        if (reportedEffortInstance.save(flush: true)) {
+            flash.message = "${message(code: 'default.created.message', args: [message(code: 'reportedEffort.label', default: 'ReportedEffort'), reportedEffortInstance.id])}"
+            redirect(action: "show", id: reportedEffortInstance.id)
+        }
+        else {
+            render(view: "create", model: [reportedEffortInstance: reportedEffortInstance])
+        }
+
         // REPORTED EFFORT
         def reportedEffortInstance = new ReportedEffort(params)
         def reportedEffortConvertedVal = reportedEffortInstance.percentEffortConverted
@@ -312,7 +326,109 @@ class ReportedEffortController {
 */        
     } //def editSave
     
+    def commit = {
+        
+        println "PRINTLN REPORTED EFFORT CONTROLLER > COMMIT -------------------"                
+        println "PRINTLN ReportedEffortController.commit.params: ${params}"
+        
+        def assignedEffortInstance = AssignedEffort.read(params?.id)        
+        println "PRINTLN ReportedEffortController.commit.assignedEffortInstance: ${assignedEffortInstance}"     
+        
+        if ( assignedEffortInstance ) {
+            
+            def assignedPercentEffort = assignedEffortInstance.assignedEffort
+            println "PRINTLN ReportedEffortController.commit.assignedPercentEffort: ${assignedPercentEffort}"
+            
+            def sumOfReportedPercentEffort = laborService.getSumOfReportedPercentEffort(assignedEffortInstance)
+            println "PRINTLN ReportedEffortController.commit.sumOfReportedPercentEffort: ${sumOfReportedPercentEffort}"     
+            
+            def errMessage
+            
+            if ( sumOfReportedPercentEffort.toBigDecimal() < assignedPercentEffort.toBigDecimal() ) {
+                
+                errMessage = "Cannot COMMIT your reported effort because it is less than what has been assigned to you."
+                
+                def model  = [
+                    assignedEffortInstance: assignedEffortInstance, 
+                    errMessage: errMessage
+                ]
+                
+                render(view: "/assignedEffort/show", model: model)
+                
+                
+            } else if ( sumOfReportedPercentEffort.toBigDecimal() == assignedPercentEffort.toBigDecimal() ) {
+                
+                //Date dateCommitted
+                //ReportingStaff commitingStaff
+
+
+/*
+         def reportedEffortInstance = ReportedEffort.get(params.id)
+        if (reportedEffortInstance) {
+            if (params.version) {
+                def version = params.version.toLong()
+                if (reportedEffortInstance.version > version) {
+                    
+                    reportedEffortInstance.errors.rejectValue("version", "default.optimistic.locking.failure", [message(code: 'reportedEffort.label', default: 'ReportedEffort')] as Object[], "Another user has updated this ReportedEffort while you were editing")
+                    render(view: "edit", model: [reportedEffortInstance: reportedEffortInstance])
+                    return
+                }
+            }
+            reportedEffortInstance.properties = params
+            if (!reportedEffortInstance.hasErrors() && reportedEffortInstance.save(flush: true)) {
+                flash.message = "${message(code: 'default.updated.message', args: [message(code: 'reportedEffort.label', default: 'ReportedEffort'), reportedEffortInstance.id])}"
+                redirect(action: "show", id: reportedEffortInstance.id)
+            }
+            else {
+                render(view: "edit", model: [reportedEffortInstance: reportedEffortInstance])
+            }
+        }
+        else {
+            flash.message = "${message(code: 'default.not.found.message', args: [message(code: 'reportedEffort.label', default: 'ReportedEffort'), params.id])}"
+            redirect(action: "list")
+        }
+ */
+                
+                
+                render(view: "/main/show")
+                
+            }
+    
+        }
+
+    } //def commit 
+    
+    
+    
     /*******************************************************************************
+    static allowedMethods = [save: "POST", update: "POST", delete: "POST"]
+
+    def index = {
+        redirect(action: "list", params: params)
+    }
+
+    def list = {
+        params.max = Math.min(params.max ? params.int('max') : 10, 100)
+        [reportedEffortInstanceList: ReportedEffort.list(params), reportedEffortInstanceTotal: ReportedEffort.count()]
+    }
+
+    def create = {
+        def reportedEffortInstance = new ReportedEffort()
+        reportedEffortInstance.properties = params
+        return [reportedEffortInstance: reportedEffortInstance]
+    }
+
+    def save = {
+        def reportedEffortInstance = new ReportedEffort(params)
+        if (reportedEffortInstance.save(flush: true)) {
+            flash.message = "${message(code: 'default.created.message', args: [message(code: 'reportedEffort.label', default: 'ReportedEffort'), reportedEffortInstance.id])}"
+            redirect(action: "show", id: reportedEffortInstance.id)
+        }
+        else {
+            render(view: "create", model: [reportedEffortInstance: reportedEffortInstance])
+        }
+    }
+
     def show = {
         def reportedEffortInstance = ReportedEffort.get(params.id)
         if (!reportedEffortInstance) {
@@ -361,6 +477,27 @@ class ReportedEffortController {
             redirect(action: "list")
         }
     }
+
+    def delete = {
+        def reportedEffortInstance = ReportedEffort.get(params.id)
+        if (reportedEffortInstance) {
+            try {
+                reportedEffortInstance.delete(flush: true)
+                flash.message = "${message(code: 'default.deleted.message', args: [message(code: 'reportedEffort.label', default: 'ReportedEffort'), params.id])}"
+                redirect(action: "list")
+            }
+            catch (org.springframework.dao.DataIntegrityViolationException e) {
+                flash.message = "${message(code: 'default.not.deleted.message', args: [message(code: 'reportedEffort.label', default: 'ReportedEffort'), params.id])}"
+                redirect(action: "show", id: params.id)
+            }
+        }
+        else {
+            flash.message = "${message(code: 'default.not.found.message', args: [message(code: 'reportedEffort.label', default: 'ReportedEffort'), params.id])}"
+            redirect(action: "list")
+        }
+    }
+}
+
     *******************************************************************************/
 
 } //class ReportedEffortController

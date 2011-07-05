@@ -239,5 +239,20 @@ class LaborService {
 		return dataset
         
 	}
+    
+    def getSumOfReportedPercentEffort(assignedEffortInstance) {
+        
+        def cSum = ReportedEffort.createCriteria()
+        def sumOfReportedPercentEffort = cSum.get {
+            eq("assignedEffort", assignedEffortInstance)
+            projections {
+                sum("percentEffort")
+            }
+        }
+        //println "PRINTLN LaborService.getSumOfReportedPercentEffort: ${sumOfReportedPercentEffort}"        
+        
+    }
+    
+    
 	
 } //class LaborService
