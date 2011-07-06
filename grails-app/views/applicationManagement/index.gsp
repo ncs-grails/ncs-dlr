@@ -16,30 +16,29 @@
 
   <body>
 
+    <!-- NAVIGATION -->
     <p class="breadcrumbs">
-        <g:link controller="main" action="index">DLR Home</g:link>
-        &nbsp;&nbsp;&gt&nbsp;&nbsp;
-        <span class="fontMaroon">Application Management</span>
-      </p>
+      <g:link controller="main" action="index">DLR Home</g:link>
+      &nbsp;&nbsp;&gt&nbsp;&nbsp;
+      <span class="fontMaroon">Application Management</span>
+    </p>
       
-      <h1>DLR Application Management</h1>
+    <h1>DLR Application Management</h1>
 
-      <dl>
-        <dt class="basicMenu">
-          Staff - enter staff information
-        </dt>
-        <dt class="basicMenu">
-          <g:link controller="assignEffort" action="show">Effort Assignment</g:link> - enter assigned effort for reporting period
-        </dt>
-        <dt class="basicMenu">
-          <g:link action="reports">Report Generation</g:link> - generate effort reports for submission
-        </dt>
-        <dt class="basicMenu">
-          Report Archive - view past reported effort that have been generated
-        </dt>
-      </dl>
+    <!-- MENU selection -->
+    <dl>
+      <dt class="basicMenu">
+        <g:link controller="assignEffort" action="show">Effort Assignment</g:link> - enter assigned effort for reporting period
+      </dt>
+      <dt class="basicMenu">
+        <g:link action="report">Report Generation</g:link> - generate effort reports for distribution
+      </dt>
+      <dt class="basicMenu">
+        Staff - enter staff information
+      </dt>
+    </dl>
 
-      <div class="pageSpacing"> </div>
+    <div class="pageSpacing"> </div>
 
   </body>
 

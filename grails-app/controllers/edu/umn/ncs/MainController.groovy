@@ -15,7 +15,7 @@ class MainController {
         println "PRINTLN MAIN CONTROLLER > INDEX -------------------------------"        
         println "PRINTLN MainController.index.params: ${params}"        
         
-        render(view: "show")
+        redirect(action: "show")
 
     }    
     

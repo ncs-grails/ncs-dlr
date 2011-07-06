@@ -29,7 +29,7 @@ class ReportingPeriod {
         }
         
     }
-
+    
     ReportingPeriod getNextPeriod() {
         
         ReportingPeriod.createCriteria().get{

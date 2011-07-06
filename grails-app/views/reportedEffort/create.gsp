@@ -73,7 +73,7 @@
     <g:submitToRemote 
       class="buttonBasic" 
       value="SAVE"
-      url="${[controller:'reportedEffort',action:'save']}" 
+      url="${[controller:'reportedEffort',action:'addSave']}" 
       update="remoteFormContainer"
     />
     <g:submitToRemote 

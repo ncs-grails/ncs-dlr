@@ -13,16 +13,27 @@ class ApplicationManagementController {
 
     // display APPLICATION MANAGEMENT page
     def index = {     
+        println "PRINTLN APPLICATION MANAGEMENT CONTROLLER > INDEX -------------"
         println "PRINTLN ApplicationManagementController.index.params: ${params}"                
     }
     
-	def reports = {
-		def reportingPeriodInstanceList = ReportingPeriod.list()
-		def reportFormats = ExportController.allowedFormats
-		
-		[ reportingPeriodInstanceList: reportingPeriodInstanceList,
-			reportFormats: reportFormats ]
-	}
+	def report = {
+        
+        println "PRINTLN APPLICATION MANAGEMENT CONTROLLER > REPORT -------------"
+        println "PRINTLN ApplicationManagementController.reports.params: ${params}"
 
-}
+		def reportingPeriodInstanceList = ReportingPeriod.list()
+        println "PRINTLN ApplicationManagementController.reports.reportingPeriodInstanceList: ${reportingPeriodInstanceList}"
+
+		def reportFormats = ExportController.allowedFormats
+        println "PRINTLN ApplicationManagementController.reports.reportFormats: ${reportFormats}"
+		
+		[ 
+            reportingPeriodInstanceList: reportingPeriodInstanceList,
+			reportFormats: reportFormats 
+        ]
+        
+	} //def reports
+
+} //class ApplicationManagementController
 

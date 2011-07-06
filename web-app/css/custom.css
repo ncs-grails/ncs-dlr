@@ -162,8 +162,8 @@ div.pageSpacing{
     margin-bottom: 2em;
 }
 
-div.spacing{
-    margin: 1em 0;
+.spacing{
+    margin: 1em .5em;    
 }
 div.prop {
         display: inline-block;

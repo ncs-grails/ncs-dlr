@@ -29,7 +29,7 @@
             optionKey="id"
             optionValue="name"
             value="${reportedEffortInstance?.activity?.id}" 
-            noSelection="${['nul':'Choose ...']}"/>
+            noSelection="${['null':'Choose ...']}"/>
         </span>
       </span>        
       <span class="controlBox">Study Task
@@ -59,11 +59,17 @@
   </div>
       
   <!-- display ERROR MESSAGES, after save attempt-->       
-  <g:hasErrors bean="${reportedEffortInstance}">
-    <div class="errors">
-      <g:renderErrors bean="${reportedEffortInstance}" as="list" />
-    </div>
-  </g:hasErrors>
+  <!-- display ERROR MESSAGES, after save attempt-->       
+  <g:if test="${errMessage}">
+    <div class="errors">${errMessage}</div>        
+  </g:if>
+  <g:else>
+    <g:hasErrors bean="${reportedEffortInstance}">
+      <div class="errors">
+        <g:renderErrors bean="${reportedEffortInstance}" as="list" />
+      </div>
+    </g:hasErrors>
+  </g:else>
 
   <!-- BUTTON CONTROLS -->
   <div class="clearCenterPadding">
