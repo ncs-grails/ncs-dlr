@@ -22,14 +22,14 @@ class ReportingStaff {
 	}
 	
     String getFullNameLFM() {
-        (lastName + ', ' + firstName + ' ' + middleInit).trim()
+        "${lastName} , ${firstName} ${middleInit ?: ''}".trim()
     }
     
     static constraints = {
         username(blank:false, unique:true)
-        lastName(blank:false)
         firstName(blank:false)
-        middleInit()
+        middleInit(nullable:true)
+        lastName(blank:false)
         laborCategory(nullable:true)
         email(blank:false, email:true)
         isTestAccount()
