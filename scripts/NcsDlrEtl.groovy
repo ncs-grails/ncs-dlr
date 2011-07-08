@@ -8,6 +8,27 @@ import org.joda.time.LocalDateTime
  * MySQL NCS database.
  */
 
+/*
+ * Requirements:
+ * You will need joda-time, jtds, and mysql JARs in your groovy classpath.
+ * The easiest way to do this on ubuntu linux is:
+
+	sudo apt-get install libjoda-time-java libjtds-java libmysql-java
+	mkdir -p ~/.groovy/lib
+	cd ~/.groovy/lib
+	ln -s /usr/share/java/joda-time.jar .
+	ln -s /usr/share/java/jtds.jar .
+	ln -s /usr/share/java/mysql.jar .
+	
+ */
+
+/*
+ * Usage:
+ * 
+ *    groovy NcsDlrEtl.groovy
+ *    
+ */
+
 // Export from ASP DLR backed by MS-SQL
 // Import to Grails DLR backed by MySQL
 
@@ -49,6 +70,7 @@ def getMysqlConn() {
     def db = [
         username : 'ncs-dlr',
         password : 'ang1ahXiedohsieng5sheThi',
+        //url : 'jdbc:mysql://localhost/ncs_dlr?noAccessToProcedureBodies=true&autoReconnect=true'    ,
         url : 'jdbc:mysql://sql.ncs.umn.edu/ncs_dlr?useSSL=true&requireSSL=true&verifyServerCertificate=false&noAccessToProcedureBodies=true&autoReconnect=true'    ,
         driver : 'com.mysql.jdbc.Driver'
     ]
