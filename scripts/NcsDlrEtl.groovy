@@ -108,7 +108,7 @@ def importLaborCategories() {
 
 def getLaborCategory(id) {
     def query = """SELECT id, version, app_created, date_created, name, obsolete, user_created
-        FROM ncs_dlr.labor_category
+        FROM labor_category
         WHERE (id = ?);"""
     return myConn.firstRow(query, [id])
 }
@@ -164,13 +164,13 @@ def importReportingPeriods() {
 
 def getReportingPeriod(periodDate) {
     def query = """SELECT id, version, completed_report_date, period_date, prepared_date, reference_invoice_number
-        FROM ncs_dlr.reporting_period
+        FROM reporting_period
         WHERE (period_date = ?);"""
     return myConn.firstRow(query, [periodDate])
 }
 
 def newReportingPeriod(periodId, periodDate, referenceInvoiceNumber, preparedDate, completedReportDate) {
-    def statement = """INSERT INTO ncs_dlr.reporting_period
+    def statement = """INSERT INTO reporting_period
                     (id, version, period_date, reference_invoice_number, prepared_date, completed_report_date)
                     VALUES (?, 0, ?, ?, ?, ?);"""
     def params = [periodId, periodDate, referenceInvoiceNumber, preparedDate, completedReportDate]
@@ -210,13 +210,13 @@ def importStudyActivities() {
 
 def getStudyActivity(id) {
     def query = """SELECT id, version, app_created, date_created, name, obsolete, user_created
-        FROM ncs_dlr.study_activity
+        FROM study_activity
         WHERE (id = ?);"""
     return myConn.firstRow(query, [id])
 }
 
 def newStudyActivity(id, name, obsolete, dateCreated, userCreated, appCreated) {
-    def statement = """INSERT INTO ncs_dlr.study_activity
+    def statement = """INSERT INTO study_activity
                     (id, version, name, obsolete, date_created, user_created, app_created)
                     VALUES (?, ?, ?, ?, ?, ?, ?);"""
     def params = [id, 0, name, obsolete, dateCreated, userCreated, appCreated]
@@ -260,13 +260,13 @@ def importStudyTasks() {
 
 def getStudyTask(id) {
     def query = """SELECT id, version, app_created, date_created, name, obsolete, user_created
-        FROM ncs_dlr.study_task
+        FROM study_task
         WHERE (id = ?);"""
     return myConn.firstRow(query, [id])
 }
 
 def newStudyTask(id, name, obsolete, dateCreated, userCreated, appCreated) {
-    def statement = """INSERT INTO ncs_dlr.study_task
+    def statement = """INSERT INTO study_task
                     (id, version, name, obsolete, date_created, user_created, app_created)
                     VALUES (?, ?, ?, ?, ?, ?, ?);"""
     def params = [id, 0, name, obsolete, dateCreated, userCreated, appCreated]
@@ -338,7 +338,7 @@ def getStaff(Long staffId) {
                 date_created, 
                 user_created, 
                 app_created
-            FROM ncs_dlr.reporting_staff
+            FROM reporting_staff
             WHERE (id = ?);"""
         return myConn.firstRow(query, [staffId])
     } else {
@@ -361,7 +361,7 @@ def getStaff(String username) {
                 date_created, 
                 user_created, 
                 app_created
-            FROM ncs_dlr.reporting_staff
+            FROM reporting_staff
             WHERE (username = ?);"""
         return myConn.firstRow(query, [username])
     } else {
@@ -372,7 +372,7 @@ def getStaff(String username) {
 def newStaff(id, username, email, firstName, middleInit, lastName, 
             laborCategoryId, reportsEffort, isTestAccount, 
             dateCreated, userCreated, appCreated) {
-    def statement = """INSERT INTO ncs_dlr.reporting_staff
+    def statement = """INSERT INTO reporting_staff
                         (id, version, username, 
                         email, first_name, middle_init, 
                         last_name, labor_category_id, reports_effort, 
@@ -459,7 +459,7 @@ def getAssignedEffort(id) {
             labor_category_id,
             period_id,
             reporting_staff_id
-        FROM ncs_dlr.assigned_effort
+        FROM assigned_effort
         WHERE (id = ?);"""
         
     return myConn.firstRow(query, [id])
@@ -479,7 +479,7 @@ def getAssignedEffort(staffId, periodId) {
             labor_category_id,
             period_id,
             reporting_staff_id
-        FROM ncs_dlr.assigned_effort
+        FROM assigned_effort
         WHERE (period_id = ?) AND (reporting_staff_id = ?);"""
         
     return myConn.firstRow(query, [periodId, staffId])
@@ -497,7 +497,7 @@ def newAssignedEffort(id,
             periodId,
             reportingStaffId) {
 
-    def statement = """INSERT INTO ncs_dlr.assigned_effort 
+    def statement = """INSERT INTO assigned_effort 
             (id,
             version,
             app_created,
@@ -574,7 +574,7 @@ def importReportedEfforts() {
 
 def getReportedEffort(id) {
     def query = """SELECT id, version, activity_id, assigned_effort_id, percent_effort, task_id, date_created, user_created, app_created
-        FROM ncs_dlr.reported_effort
+        FROM reported_effort
         WHERE (id = ?);"""
     return myConn.firstRow(query, [id])
 }
@@ -587,7 +587,7 @@ def newReportedEffort(id,
         dateCreated, 
         userCreated, 
         appCreated) {
-    def statement = """INSERT INTO ncs_dlr.reported_effort
+    def statement = """INSERT INTO reported_effort
                     (id, version, activity_id, assigned_effort_id, percent_effort, task_id, date_created, user_created, app_created)
                     VALUES (?, 0, ?, 
                         ?, ?, ?, 
