@@ -7,6 +7,8 @@ class StudyTask {
     Date dateCreated = new Date()
     String userCreated
     String appCreated = 'ncs-dlr'
+    Integer etdlrCode
+    Integer odeCode
 
     String toString() {
         name
@@ -18,6 +20,8 @@ class StudyTask {
         dateCreated()
         userCreated(blank:false)
         appCreated(blank:false)
+        etdlrCode(nullable:true)
+        odeCode(nullable:true)
     }
     
     static mapping = { sort "name" }

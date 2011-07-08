@@ -8,78 +8,100 @@ import grails.converters.*
 @Secured(['ROLE_NCS_DLR', 'ROLE_NCS_IT'])
 class ExportController {
 	
+	static def allowedFormats = [ 'csv', 'pdf', 'xml' ] as Set
+	static def defaultFormat = "csv"
 	static def debug = false
 
-	static def allowedFormats = [ 'pdf', 'xml', 'csv' ] as Set
-	static def defaultFormat = "csv"
-	
 	def laborService
 	
     def reportingPeriod = {
+
+        println "PRINTLN EXPORT CONTROLLER > REPORTING PERIOD ------------------"
+        println "PRINTLN ExportController.reportingPeriod.params: ${params}"
 		
+        // OUTPUT FORMAT
 		def format = params?.format
+        println "PRINTLN ExportController.reportingPeriod.format: ${format}"
+        
 		if ( ! format ) {
 			format = defaultFormat
 		}
 		// check / force format
 
-		if (debug) { println "rendering as : ${format}" }
-				
+		if (debug) { println "rendering as : ${format}" }				
 		if (debug) { println "entering : reportingPeriod" }
-		// use the ID to lookup the period to report on
+        
+		// REPORTING PERIOD
 		def reportingPeriodInstance = ReportingPeriod.read(params?.id)
-		// if we could find it in the database...
-		if (reportingPeriodInstance) {
+        
+		// if Reporting Period exist in database
+        if (reportingPeriodInstance) {
 			
-			// build a file name
+			// create file name
 			def fileName = "reporting-period_${reportingPeriodInstance.year}-${reportingPeriodInstance.month}.${format}"
 
-			// Set the filename
+			// Set the filename ??? AJZ
 
-			// check the format and render appropriately
-			if (format == "pdf") {
-				// use the rendering plugin to generate a PDF
+			// RENDER TO FORMAT ------------------------------------------------
+            
+            // render PDF, using rendering plugin to generate a PDF
+			if (format == "pdf") {                
+				
 				renderPdf(template: "/pdfs/reportingPeriod", model: [reportingPeriodInstance: reportingPeriodInstance], filename: fileName)
 				return
+                
+    		// renderas XML, using the Grails Converter
 			} else if (format == "xml") {
-				// render it as XML using the Grails Converter
+                
 				XML.use("deep") {
 					render reportingPeriodInstance as XML
-				}
+				}                
+                
+            // render CSV (default), using our own CVS renderer
 			} else if (format == "csv") {
-				// Default to CSV
-                // get the record set for the period from the service LaborService
+                
+                // create record set for reporting period from LaborService
                 def recordSet = laborService.getReportingPeriodData(reportingPeriodInstance)
-				// render it as CSV using our own CSV renderer
+                
 				renderAsCsv recordSet, fileName, response
 				render ""
 				return
+                
+            // other?    
 			} else {
-				// WTF?
+                
 				flash.message = "Unknown format: ${fmt}. Please choose from ${allowedFormats}"
-				redirect(controller:'main')
+				redirect(action:'list')
+                
 			}
 			
 		} else {
+            
 			flash.message = "Reporting Period ID: '${params?.id}' not found."
-			redirect(controller:'main')
-		}
-	}
+			redirect(action:'list')
+            
+		} //if (reportingPeriodInstance)
+        
+    } //def reportingPeriod
 	
 	
-	// helper method to convert a list of maps to CSV
+	// method to convert a list of maps to CSV
 	private void renderAsCsv(recordset, fileName, outputStream) {
+        
+        println "PRINTLN EXPORT CONTROLLER > renderAsCsv METHOD ----------------"
+        println "PRINTLN ExportController.renderAsCsv.params: ${params}"
+		
 		if (debug) { println "entering : renderAsCsv" }
 
 		def fmt = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm")
+        println "PRINTLN ExportController.renderAsCsv.fmt: ${fmt}"
 		
 		response.setHeader("Content-disposition", "attachment; filename=\"${fileName}\"");
 		response.contentType = "text/csv"
 
+        // Render outputData as CSV, if there is a recordset
 		if (recordset) {
-			// assume this doesn't work
-			// Render outputData as CSV
-
+            
 			// get a field list
 			def firstRow = recordset[0]
 			def columnNames = firstRow.collect{ it.key }
@@ -88,7 +110,7 @@ class ExportController {
 				println "Dataset columnNames >> ${it}"
 			}*/
 
-			// write the header column
+			// write header column
 			//  "ID","FirstName","MiddleName","LastName","Suffix"
 			columnNames.eachWithIndex{ col, i ->
 				if (i > 0) {
@@ -96,28 +118,35 @@ class ExportController {
 				}
 				outputStream << ("\"" + col.replace("\"", "\"\"") + "\"")
 			}
+            
 			// Using \r\n for MS Windows
 			outputStream << "\r\n"
 
-			// write the data
+			// write data
 			recordset.each{ row ->
+                
 				columnNames.eachWithIndex{ col, i ->
 
 					// default content is empty
 					def columnValue = ""
-					// If there's a non-null value...
+                    
+					// if there's a non-null value
 					if (row[col] != null) {
-						// take the content and escape the double quotes (")
-						
+                        
+						// take the content and escape the double quotes (")						
 						def columnContent = "" 
 
+                        // if it's a date, then format it specifically
 						if (row[col].class == java.util.Date) {
-							// if it's a date, then format it specifically
+                            
 							Date refDate = row[col]
 							columnContent = fmt.print(refDate.time)
-						} else {
-							// Otherwise use the default toString() method
-							columnContent = row[col].toString().replace('"', '""')
+                            
+                        // Otherwise use the default toString() method
+						} else {                            
+                            
+							columnContent = row[col].toString().replace('"', '""')                            
+                            
 						}
 						
 						// then surround it with double quotes
@@ -127,12 +156,19 @@ class ExportController {
 						if (i > 0) {
 							outputStream << ","
 						}
-					}
+                        
+					} //if (row[col] != null)
 
 					outputStream << columnValue
-				}
+                    
+				} //columnNames.eachWithIndex
+                
 				outputStream << "\r\n"
-			}
-		}
-	}
-}
+                
+			} //recordset.each
+            
+		} //if (recordset)
+        
+	} //private void renderAsCsv(recordset, fileName, outputStream)
+    
+} //class ExportController

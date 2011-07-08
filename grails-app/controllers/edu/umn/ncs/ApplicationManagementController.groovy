@@ -11,10 +11,14 @@ class ApplicationManagementController {
     def authenticateService
     def laborService
 
-    // display APPLICATION MANAGEMENT page
-    def index = {     
+    def index = {
+		redirect(action: "list", params: params)
+    }
+
+	// display APPLICATION MANAGEMENT page
+    def list = {     
         println "PRINTLN APPLICATION MANAGEMENT CONTROLLER > INDEX -------------"
-        println "PRINTLN ApplicationManagementController.index.params: ${params}"                
+        println "PRINTLN ApplicationManagementController.list.params: ${params}"                
     }
     
 	def report = {

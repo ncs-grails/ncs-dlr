@@ -16,6 +16,7 @@
           vertical-align: top;
         }
         h1 { text-align: center; }
+        h2 { text-align: center; }
         #periodDetails {
             font-size: 12pt;
         }
@@ -26,10 +27,9 @@
   </head>
   <body>
   
-    <h1>
-      NCS Study Center Technical Direct Labor Form for [MONTH_NAME] [YEAR]<br />
-      University of Minnesota - Ramsey County
-    </h1>
+    <h1>NCS Study Center Technical Direct Labor Form for ${reportingPeriodInstance.periodDate}</h1>
+    <h2>University of Minnesota - Ramsey County</h2>
+    
   
     <hr/>
   
@@ -74,8 +74,8 @@
                     <!-- If this is the second row, let's shift it in. -->
                     ${"</tr><tr>"}
                 </g:if>
-                <td>${re.activity}</td>
-                <td>${re.task}</td>
+                <td>${fieldValue(bean: re, field: "activity")}</td>
+                <td>${fieldValue(bean: re, field: "task")}</td>
                 <td><g:formatNumber number="${re.percentEffort}" type="percent" /></td>
               </g:each>
               <g:if test="${ ! ae.reportedEffort}">

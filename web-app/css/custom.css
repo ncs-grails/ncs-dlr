@@ -1,10 +1,6 @@
 root { 
     display: block;
 }
-form {
-    border: .15em dashed navy;
-}
-
 include {
     border: .15em solid yellowgreen;
 }
@@ -39,6 +35,7 @@ h1 {
     font-size:1.5em;
     color: maroon;
     text-align: center;
+    padding-bottom: .75em;
 }
 h2 {
     margin: 1em 0;
@@ -61,10 +58,11 @@ h2 {
 .include {
     border: .15em solid yellowgreen;
 }
+/*
 .form {
     border: .15em dashed navy;
 }
-
+*/
 .clearBoth {
     position:relative; 
     clear:both; 
@@ -268,6 +266,16 @@ td.basic{
 .textfieldBasic{
     border:.01em solid gray;
     padding:.15em .15em;
+}
+
+.alignRight {
+	text-align: right;
+}
+
+.textfieldBasic:hover, .textfieldBasic:active {
+    border:.01em solid gray;
+    padding:.15em .15em;
+    background-color: gold;
 }
 
 .textfieldBasicRed{

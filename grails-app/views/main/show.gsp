@@ -13,7 +13,7 @@
 
       <!-- navigation -->
       <p class="breadcrumbs">
-        <g:link controller="applicationManagement" action="index">Application Management</g:link>
+        <g:link controller="applicationManagement" action="list">Application Management</g:link>
       </p>
     
       <!-- page title -->

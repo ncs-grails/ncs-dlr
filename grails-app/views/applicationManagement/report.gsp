@@ -6,7 +6,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <meta name="layout" content="ncs" />
     <link rel="stylesheet" type="text/css" href="${resource(dir:'css',file:'custom.css')}" />
-    <title>NCS DLR Application Management</title>
+    <title>Report Generation</title>
   </head>
 
   <body>
@@ -15,7 +15,9 @@
     <p class="breadcrumbs">
       <g:link controller="main" action="index">DLR Home</g:link>
       &nbsp;&nbsp;&gt&nbsp;&nbsp;
-      <g:link controller="applicationManagement" action="index">Application Management</g:link>      
+      <g:link controller="applicationManagement" action="list">Application Management</g:link>      
+      &nbsp;&nbsp;&gt&nbsp;&nbsp;
+      <span class="fontMaroon">Report Generation</span>
     </p>
       
     <h1>Report Generation</h1>
@@ -24,7 +26,7 @@
       
       <g:form controller="export" action="reportingPeriod">
 
-        <div class="clearBoth"
+        <div class="clearCenterPadding">
             
           <span class="controlBackground">              
 

@@ -1,5 +1,4 @@
 package edu.umn.ncs
-
 import org.codehaus.groovy.grails.plugins.orm.auditable.AuditLogEvent
 
 class ReportedEffort {
@@ -18,12 +17,13 @@ class ReportedEffort {
         def now = new Date()
 
         // TODO: expand on items to delete
-        String oldValue = "Deleting Reported Effort for assignedEffort.id ${oldMap.assignedEffort.id}, reportedEffort.id "
+        String oldValue = "Deleting Reported Effort for assignedEffort.id ${oldMap.assignedEffort.id}, reportedEffort.id, activity.id, task.id, percentEffort, dateCreated, userCreated, appCreated "
 
         String className = this.class.toString().replace('class ', '')
         //println "${now}\tAudit:DELETE::\t${oldValue}"
 
-        def auditLogEventInstance = new AuditLogEvent(className: className,
+        def auditLogEventInstance = new AuditLogEvent(
+			className: className,
             dateCreated: now,
             eventName: 'DELETE',
             lastUpdated: now,
@@ -31,12 +31,12 @@ class ReportedEffort {
             persistedObjectId: this.id,
             persistedObjectVersion: this.version)
             if ( ! auditLogEventInstance.save() ) {
-            auditLogEventInstance.errors.each{
+				auditLogEventInstance.errors.each{
                     println "${now}\tError Transacting DELETE:: \t ${it}"
-            }
-        }
-            
-    }
+				}
+			}        
+
+	} //def onDelete
 
     static belongsTo = [assignedEffort: AssignedEffort]
     static transients = ['percentEffortConverted']
