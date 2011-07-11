@@ -4,7 +4,7 @@ class ProjectInfo {
 
     String principalInvestigator
     String contractNumber
-    String sfr
+    String sponsoredFinancialReporting
     Date startDate
 
 	def onDelete = { oldMap ->
@@ -12,7 +12,7 @@ class ProjectInfo {
 		def now = new Date()
 
 		// describe items to delete
-		String oldValue = "Deleting Project Info, projectInfo.id, principalInvestigator, contractNumber, sfr, startDate "
+		String oldValue = "Deleting Project Info, projectInfo.id, principalInvestigator, contractNumber, sponsoredFinancialReporting, startDate "
 
 		String className = this.class.toString().replace('class ', '')
 		//println "${now}\tAudit:DELETE::\t${oldValue}"
@@ -37,7 +37,7 @@ class ProjectInfo {
     static constraints = {
         principalInvestigator(blank:false)
         contractNumber(blank:false)
-        sfr(blank:false)
+        sponsoredFinancialReporting(blank:false)
         startDate()
     }
 

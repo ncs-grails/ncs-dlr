@@ -53,7 +53,7 @@
           <tr>
             <th class="basic" colspan="11">
               <strong>
-                <g:formatDate date="${reportingPeriodInstance.periodDate}" format="MMMM-dd-yyyy" />&nbsp;
+                <g:formatDate date="${reportingPeriodInstance.periodDate}" format="yyyy-MM-dd" />&nbsp;
                   (Period ID: ${reportingPeriodInstance?.id})
               </strong>
             </th>

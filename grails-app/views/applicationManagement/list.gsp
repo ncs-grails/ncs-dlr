@@ -22,10 +22,18 @@
 
     <!-- MENU selection -->
     <dl>
-      <dt class="basicMenu"><g:link controller="assignEffort" action="show">Effort Assignment</g:link> - enter assigned effort for reporting period</dt>
-      <dt class="basicMenu"><g:link controller="reportingPeriod" action="list">Reference Invoice Number</g:link> - enter the RIN for reporting period</dt>
-      <dt class="basicMenu"><g:link action="report">Report Generation</g:link> - generate effort reports for distribution</dt>
-      <dt class="basicMenu"><g:link controller="reportingStaff" action="list">Staff</g:link> - enter staff information</dt>
+      <dt class="basicMenu">
+      	<g:link controller="assignEffort" action="show">Effort Assignment</g:link> - enter assigned effort for reporting period
+      </dt>
+      <dt class="basicMenu">
+      	<g:link controller="reportingPeriod" action="list">Reference Invoice Number</g:link> - enter the RIN for each reporting period
+      </dt>
+      <dt class="basicMenu">
+      	<g:link action="report">Report Generation</g:link> - generate effort reports for dissemination
+      </dt>
+      <dt class="basicMenu">
+      	<g:link controller="reportingStaff" action="list">Staff Information</g:link> - enter staff information
+      </dt>
     </dl>
 
     <div class="pageSpacing"> </div>

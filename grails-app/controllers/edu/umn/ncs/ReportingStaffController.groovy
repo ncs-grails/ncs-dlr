@@ -5,14 +5,29 @@ class ReportingStaffController {
     static allowedMethods = [save: "POST", update: "POST", delete: "POST"]
 
     def index = {
+        
+        println "PRINTLN REPORTING STAFF CONTROLLER > INDEX --------------------"                
+        println "PRINTLN ReportingStaffController.index.params: ${params}"
+		                
         redirect(action: "list", params: params)
+		
     }
 
     def list = {
-        params.max = Math.min(params.max ? params.int('max') : 10, 100)
-        [reportingStaffInstanceList: ReportingStaff.list(params), reportingStaffInstanceTotal: ReportingStaff.count()]
+		
+        println "PRINTLN REPORTING STAFF CONTROLLER > LIST --------------------"                
+        println "PRINTLN ReportingStaffController.list.params: ${params}"
+		                
+        //params.max = Math.min(params.max ? params.int('max') : 10, 100)
+		//println "PRINTLN ReportingStaffController.list.params.max: ${params.max}"
+		
+        [
+			reportingStaffInstanceList: ReportingStaff.list(params), 
+			reportingStaffInstanceTotal: ReportingStaff.count()
+		]
     }
 
+	
     def create = {
         def reportingStaffInstance = new ReportingStaff()
         reportingStaffInstance.properties = params
