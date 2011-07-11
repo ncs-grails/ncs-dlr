@@ -6,9 +6,36 @@ class AssignedEffort {
     BigDecimal assignedEffort
     Date dateAssigned = new Date()
     ReportingStaff assigningStaff
-    String appCreated = 'ncs-dlr'       // application used to assign effort
+    String appCreated = 'ncs-dlr'       
     Date dateCommitted
     ReportingStaff commitingStaff
+
+	def onDelete = { oldMap ->
+		
+		def now = new Date()
+
+		// describe items to delete
+		String oldValue = "Deleting Assigned Effort for reportingStaff.id ${oldMap.reportingStaff.id} and period.id ${oldMap.period.id}, assignedEffort.id, laborCategory.id, assignedEffort, dateAssigned, assigningStaff.id, appCreated, dateCommitted, commitingStaff.id "
+		
+		String className = this.class.toString().replace('class ', '')
+		//println "${now}\tAudit:DELETE::\t${oldValue}"
+
+		// transaction auditing
+		def auditLogEventInstance = new AuditLogEvent(
+			className: className,
+			dateCreated: now,
+			eventName: 'DELETE',
+			lastUpdated: now,
+			oldValue: oldValue,
+			persistedObjectId: this.id,
+			persistedObjectVersion: this.version)
+			if ( ! auditLogEventInstance.save() ) {
+				auditLogEventInstance.errors.each{
+					println "${now}\tError Transacting DELETE:: \t ${it}"
+				}
+			}
+
+	} //def onDelete
 
     static belongsTo = [reportingStaff: ReportingStaff, period: ReportingPeriod]
 	// reportedEffort SHOULD BE PLURAL!

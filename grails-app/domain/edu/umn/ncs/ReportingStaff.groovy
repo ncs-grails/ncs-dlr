@@ -14,6 +14,33 @@ class ReportingStaff {
     String userCreated
     String appCreated = 'ncs-dlr'
 
+	def onDelete = { oldMap ->
+		
+		def now = new Date()
+
+		// describe items to delete
+		String oldValue = "Deleting Reporting Staff, reportingStaff.idusername, lastName, firstName, middleInit, laborCategory.id, email, isTestAccount, reportsEffort, dateCreated, userCreated, appCreated "
+
+		String className = this.class.toString().replace('class ', '')
+		//println "${now}\tAudit:DELETE::\t${oldValue}"
+
+		// transaction auditing
+		def auditLogEventInstance = new AuditLogEvent(
+			className: className,
+			dateCreated: now,
+			eventName: 'DELETE',
+			lastUpdated: now,
+			oldValue: oldValue,
+			persistedObjectId: this.id,
+			persistedObjectVersion: this.version)
+			if ( ! auditLogEventInstance.save() ) {
+				auditLogEventInstance.errors.each{
+					println "${now}\tError Transacting DELETE:: \t ${it}"
+				}
+			}
+
+	} //def onDelete
+
     static hasMany = [assignedEfforts: AssignedEffort]
     static transients = ['fullNameLFM']
 

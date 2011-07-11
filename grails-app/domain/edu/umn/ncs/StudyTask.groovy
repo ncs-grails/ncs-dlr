@@ -10,6 +10,59 @@ class StudyTask {
     Integer etdlrCode
     Integer odeCode
 
+	def onDelete = { oldMap ->
+		
+		def now = new Date()
+
+		// describe items to delete
+		    def onDelete = { oldMap ->
+        
+        def now = new Date()
+
+        // describe items to delete
+        String oldValue = "Deleting Study Task, studyTask.id, name, obsolete, dateCreated, userCreated, appCreated, etdlrCode, odeCode "
+
+        String className = this.class.toString().replace('class ', '')
+        //println "${now}\tAudit:DELETE::\t${oldValue}"
+
+		// transaction auditing
+        def auditLogEventInstance = new AuditLogEvent(
+			className: className,
+            dateCreated: now,
+            eventName: 'DELETE',
+            lastUpdated: now,
+            oldValue: oldValue,
+            persistedObjectId: this.id,
+            persistedObjectVersion: this.version)
+            if ( ! auditLogEventInstance.save() ) {
+				auditLogEventInstance.errors.each{
+                    println "${now}\tError Transacting DELETE:: \t ${it}"
+				}
+			}        
+
+	} //def onDelete
+ "
+
+		String className = this.class.toString().replace('class ', '')
+		//println "${now}\tAudit:DELETE::\t${oldValue}"
+
+		// transaction auditing
+		def auditLogEventInstance = new AuditLogEvent(
+			className: className,
+			dateCreated: now,
+			eventName: 'DELETE',
+			lastUpdated: now,
+			oldValue: oldValue,
+			persistedObjectId: this.id,
+			persistedObjectVersion: this.version)
+			if ( ! auditLogEventInstance.save() ) {
+				auditLogEventInstance.errors.each{
+					println "${now}\tError Transacting DELETE:: \t ${it}"
+				}
+			}
+
+	} //def onDelete
+
     String toString() {
         name
     }

@@ -8,7 +8,34 @@ class StudyActivity {
     String userCreated
     String appCreated= 'ncs-dlr'
 
-    String toString() {
+    def onDelete = { oldMap ->
+        
+        def now = new Date()
+
+        // describe items to delete
+        String oldValue = "Deleting Study Activity, studyActivity.id, name, obsolete, dateCreated, userCreated, appCreated "
+
+        String className = this.class.toString().replace('class ', '')
+        //println "${now}\tAudit:DELETE::\t${oldValue}"
+
+		// transaction auditing
+        def auditLogEventInstance = new AuditLogEvent(
+			className: className,
+            dateCreated: now,
+            eventName: 'DELETE',
+            lastUpdated: now,
+            oldValue: oldValue,
+            persistedObjectId: this.id,
+            persistedObjectVersion: this.version)
+            if ( ! auditLogEventInstance.save() ) {
+				auditLogEventInstance.errors.each{
+                    println "${now}\tError Transacting DELETE:: \t ${it}"
+				}
+			}        
+
+	} //def onDelete
+
+	String toString() {
         name
     }
 

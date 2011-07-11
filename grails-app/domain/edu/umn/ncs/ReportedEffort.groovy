@@ -16,12 +16,13 @@ class ReportedEffort {
         
         def now = new Date()
 
-        // TODO: expand on items to delete
+        // describe items to delete
         String oldValue = "Deleting Reported Effort for assignedEffort.id ${oldMap.assignedEffort.id}, reportedEffort.id, activity.id, task.id, percentEffort, dateCreated, userCreated, appCreated "
 
         String className = this.class.toString().replace('class ', '')
         //println "${now}\tAudit:DELETE::\t${oldValue}"
 
+		// transaction auditing
         def auditLogEventInstance = new AuditLogEvent(
 			className: className,
             dateCreated: now,

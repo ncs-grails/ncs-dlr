@@ -9,9 +9,8 @@ class TransactionLog {
     Date dateTransacted = new Date()
     String username
     String appName = 'ncs-dlr'
-
+	
     static constraints = {
-
         className()
         attributeName()
         oldValue()
@@ -19,7 +18,6 @@ class TransactionLog {
         dateTransacted()
         username(nullable:true)
         appName()
-
     }
 
 }
