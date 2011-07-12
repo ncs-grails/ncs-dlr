@@ -45,7 +45,9 @@
 	        <tbody>
 		        <g:each in="${reportingStaffInstanceList}" status="i" var="reportingStaffInstance">
 		            <tr>
-		                <td class="basic" style="text-align:right;"><g:link action="edit" id="${reportingStaffInstance.id}">${fieldValue(bean: reportingStaffInstance, field: "id")}</g:link></td>
+		                <td class="basic" style="text-align:right;">
+		                	<g:link action="edit" id="${reportingStaffInstance.id}">${fieldValue(bean: reportingStaffInstance, field: "id")}</g:link>
+		                </td>
 		                <td class="basic">${fieldValue(bean: reportingStaffInstance, field: "lastName")}</td>
 		                <td class="basic">${fieldValue(bean: reportingStaffInstance, field: "firstName")}</td>
 		                <td class="basic">${fieldValue(bean: reportingStaffInstance, field: "middleInit")}</td>
@@ -53,7 +55,8 @@
 		                <td class="basic">${fieldValue(bean: reportingStaffInstance, field: "email")}</td>
 		                <td class="basic">${fieldValue(bean: reportingStaffInstance, field: "reportsEffort")}</td>
 		                <td class="basic">${fieldValue(bean: reportingStaffInstance, field: "isTestAccount")}</td>
-		                <td class="basic"><g:formatDate date="${fieldValue(bean: reportingStaffInstance, field: "dateCreated")}" format="MM-dd-yyyy" />&nbsp;(${fieldValue(bean: reportingStaffInstance, field: "userCreated")})
+		                <td class="basic">
+		                	<g:formatDate date="${fieldValue(bean: reportingStaffInstance, field: "dateCreated")}" format="MM-dd-yyyy" />&nbsp;(${fieldValue(bean: reportingStaffInstance, field: "userCreated")})
 		                </td>
 		            </tr>
 		        </g:each>		        

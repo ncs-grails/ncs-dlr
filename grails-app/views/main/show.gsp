@@ -12,9 +12,11 @@
   <body>
 
       <!-- navigation -->
-      <p class="breadcrumbs">
-        <g:link controller="applicationManagement" action="list">Application Management</g:link>
-      </p>
+      <g:ifAnyGranted role="ROLE_NCS_DLR_MANAGE">
+	      <p class="breadcrumbs">
+	        <g:link controller="applicationManagement" action="list">Application Management</g:link>
+	      </p>
+      </g:ifAnyGranted>
     
       <!-- page title -->
       <h1>Direct Labor Reporting</h1>

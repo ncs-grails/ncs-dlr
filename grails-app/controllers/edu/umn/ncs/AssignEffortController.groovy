@@ -5,7 +5,7 @@ import java.math.BigDecimal
 // security annotation
 import org.codehaus.groovy.grails.plugins.springsecurity.Secured
 
-@Secured(['ROLE_NCS_DLR', 'ROLE_NCS_IT'])
+@Secured(['ROLE_NCS_IT', 'ROLE_NCS_DLR_MANAGE'])
 class AssignEffortController {
 
     def authenticateService
