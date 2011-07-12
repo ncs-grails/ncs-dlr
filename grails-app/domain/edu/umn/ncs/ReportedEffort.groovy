@@ -14,15 +14,22 @@ class ReportedEffort {
 
     def onDelete = { oldMap ->
         
-        def now = new Date()
-
-        // describe items to delete
-        String oldValue = "Deleting Reported Effort for assignedEffort.id ${oldMap.assignedEffort.id}, reportedEffort.id, activity.id, task.id, percentEffort, dateCreated, userCreated, appCreated "
-
+		def now = new Date()		
+		def oldItems = oldMap.collect{it}.join(',')
+		
+        String oldValue = "Deleting Reported Effort associated with assignedEffort.id ${oldMap.assignedEffort.id}"
+			oldValue += " for Items: ${oldItems}"
+			oldValue += ", activity.id: ${oldMap.activity.id}"
+			oldValue += ", task.id: ${oldMap.task.id}"
+			oldValue += ", percentEffort: ${oldMap.percentEffort}"
+			oldValue += ", dateCreated: ${oldMap.dateCreated}"
+			oldValue += ", userCreated: ${oldMap.userCreated}"
+			oldValue += ", appCreated: ${oldMap.appCreated} "
+		println "PRINTLN ReportedEffortDomain.onDelete.oldValue: ${oldValue}"
+			
         String className = this.class.toString().replace('class ', '')
         //println "${now}\tAudit:DELETE::\t${oldValue}"
-
-		// transaction auditing
+		
         def auditLogEventInstance = new AuditLogEvent(
 			className: className,
             dateCreated: now,
@@ -30,12 +37,13 @@ class ReportedEffort {
             lastUpdated: now,
             oldValue: oldValue,
             persistedObjectId: this.id,
-            persistedObjectVersion: this.version)
-            if ( ! auditLogEventInstance.save() ) {
-				auditLogEventInstance.errors.each{
-                    println "${now}\tError Transacting DELETE:: \t ${it}"
-				}
-			}        
+            persistedObjectVersion: this.version
+		)
+        if ( ! auditLogEventInstance.save() ) {
+			auditLogEventInstance.errors.each{
+                println "${now}\tError Transacting DELETE:: \t ${it}"
+			}
+		}        
 
 	} //def onDelete
 

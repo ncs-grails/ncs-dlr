@@ -1,7 +1,10 @@
 package edu.umn.ncs
+import org.codehaus.groovy.grails.plugins.orm.auditable.AuditLogEvent
 
 class LaborCategory {
 
+	static auditable = true
+	
     String name
     Boolean obsolete = true
     Date dateCreated = new Date()
@@ -11,27 +14,33 @@ class LaborCategory {
 	def onDelete = { oldMap ->
 		
 		def now = new Date()
-
-		// describe items to delete
-		String oldValu = "Deleting Labor Category, laborCategory.id, name, obsolete, dateCreated, userCreated, appCreated "
-
+		def oldItemsIds = oldMap.items?.collect{it.id}.join(',')
+		
+		String oldValue = "Deleting Labor Category for Items: ${oldItemsIds}"
+			oldValue += ", laborCategory.id: ${oldMap.id}"
+			oldValue += ", name: ${oldMap.name}"
+			oldValue += ", obsolete: ${oldMap.obsolete}"
+			oldValue += ", dateCreated: ${oldMap.dateCreated}"
+			oldValue += ", userCreated: ${oldMap.userCreated}"
+			oldValue += ", appCreated: ${oldMap.appCreated} "
+		
 		String className = this.class.toString().replace('class ', '')
 		//println "${now}\tAudit:DELETE::\t${oldValue}"
 
-		// transaction auditing
-		def auditLogEventInstance = new AuditLogEvent(
+        def auditLogEventInstance = new AuditLogEvent(
 			className: className,
-			dateCreated: now,
-			eventName: 'DELETE',
-			lastUpdated: now,
-			oldValue: oldValue,
-			persistedObjectId: this.id,
-			persistedObjectVersion: this.version)
-			if ( ! auditLogEventInstance.save() ) {
-				auditLogEventInstance.errors.each{
-					println "${now}\tError Transacting DELETE:: \t ${it}"
-				}
+            dateCreated: now,
+            eventName: 'DELETE',
+            lastUpdated: now,
+            oldValue: oldValue,
+            persistedObjectId: this.id,
+            persistedObjectVersion: this.version
+		)
+        if ( ! auditLogEventInstance.save() ) {
+			auditLogEventInstance.errors.each{
+                println "${now}\tError Transacting DELETE:: \t ${it}"
 			}
+		}        
 
 	} //def onDelete
 

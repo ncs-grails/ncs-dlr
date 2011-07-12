@@ -1,7 +1,10 @@
 package edu.umn.ncs
+import org.codehaus.groovy.grails.plugins.orm.auditable.AuditLogEvent
 
 class ReportingStaff {
 
+	static auditable = true
+	
     String username
     String lastName
     String firstName
@@ -17,27 +20,39 @@ class ReportingStaff {
 	def onDelete = { oldMap ->
 		
 		def now = new Date()
-
-		// describe items to delete
-		String oldValue = "Deleting Reporting Staff, reportingStaff.idusername, lastName, firstName, middleInit, laborCategory.id, email, isTestAccount, reportsEffort, dateCreated, userCreated, appCreated "
+		def oldItemsIds = oldMap.items?.collect{it.id}.join(',')
+		
+		String oldValue = "Deleting Reporting Staff for Items: ${oldItemsIds}"
+			oldValue += ", reportingStaff.id: ${oldMap.id}"
+			oldValue += ", username: ${oldMap.username}"
+			oldValue += ", lastName: ${oldMap.lastName}"
+			oldValue += ", firstName: ${oldMap.firstName}"
+			oldValue += ", middleInit: ${oldMap.middleInit}"
+			oldValue += ", laborCategory.id: ${oldMap.laborCategory.id}"
+			oldValue += ", email, isTestAccount: ${oldMap.email}"			
+			oldValue += ", isTestAccount: ${oldMap.isTestAccount}"			
+			oldValue += ", reportsEffort: ${oldMap.reportsEffort}"
+			oldValue += ", dateCreated: ${oldMap.dateCreated}"
+			oldValue += ", userCreated: ${oldMap.userCreated}"
+			oldValue += ", appCreated: ${oldMap.appCreated} "
 
 		String className = this.class.toString().replace('class ', '')
 		//println "${now}\tAudit:DELETE::\t${oldValue}"
 
-		// transaction auditing
-		def auditLogEventInstance = new AuditLogEvent(
+        def auditLogEventInstance = new AuditLogEvent(
 			className: className,
-			dateCreated: now,
-			eventName: 'DELETE',
-			lastUpdated: now,
-			oldValue: oldValue,
-			persistedObjectId: this.id,
-			persistedObjectVersion: this.version)
-			if ( ! auditLogEventInstance.save() ) {
-				auditLogEventInstance.errors.each{
-					println "${now}\tError Transacting DELETE:: \t ${it}"
-				}
+            dateCreated: now,
+            eventName: 'DELETE',
+            lastUpdated: now,
+            oldValue: oldValue,
+            persistedObjectId: this.id,
+            persistedObjectVersion: this.version
+		)
+        if ( ! auditLogEventInstance.save() ) {
+			auditLogEventInstance.errors.each{
+                println "${now}\tError Transacting DELETE:: \t ${it}"
 			}
+		}        
 
 	} //def onDelete
 

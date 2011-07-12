@@ -1,8 +1,11 @@
 package edu.umn.ncs
 import org.joda.time.*
+import org.codehaus.groovy.grails.plugins.orm.auditable.AuditLogEvent
 
 class ReportingPeriod {
 
+	static auditable = true
+	
     Integer referenceInvoiceNumber
     Date periodDate
     Date preparedDate
@@ -11,27 +14,32 @@ class ReportingPeriod {
 	def onDelete = { oldMap ->
 		
 		def now = new Date()
-
-		// describe items to delete
-		String oldValue = "Deleting ReportingPeriod, reportingPeriod.id, referenceInvoiceNumber, periodDate, preparedDate, completedReportDate "
+		def oldItemsIds = oldMap.items?.collect{it.id}.join(',')
+		
+		String oldValue = "Deleting ReportingPeriod for Items: ${oldItemsIds}"
+			oldValue += ", reportingPeriod.id: ${oldMap.id}"
+			oldValue += ", referenceInvoiceNumber: ${oldMap.referenceInvoiceNumber}"
+			oldValue += ", periodDate: ${oldMap.periodDate}"
+			oldValue += ", preparedDate: ${oldMap.preparedDate}"
+			oldValue += ", completedReportDate: ${oldMap.completedReportDate} "
 
 		String className = this.class.toString().replace('class ', '')
 		//println "${now}\tAudit:DELETE::\t${oldValue}"
 
-		// transaction auditing
-		def auditLogEventInstance = new AuditLogEvent(
+        def auditLogEventInstance = new AuditLogEvent(
 			className: className,
-			dateCreated: now,
-			eventName: 'DELETE',
-			lastUpdated: now,
-			oldValue: oldValue,
-			persistedObjectId: this.id,
-			persistedObjectVersion: this.version)
-			if ( ! auditLogEventInstance.save() ) {
-				auditLogEventInstance.errors.each{
-					println "${now}\tError Transacting DELETE:: \t ${it}"
-				}
+            dateCreated: now,
+            eventName: 'DELETE',
+            lastUpdated: now,
+            oldValue: oldValue,
+            persistedObjectId: this.id,
+            persistedObjectVersion: this.version
+		)
+        if ( ! auditLogEventInstance.save() ) {
+			auditLogEventInstance.errors.each{
+                println "${now}\tError Transacting DELETE:: \t ${it}"
 			}
+		}        
 
 	} //def onDelete
 	

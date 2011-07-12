@@ -149,33 +149,37 @@ class ReportedEffortController {
         
         // ASSIGNED & REPORTED EFFORT
         def reportedEffortInstance = ReportedEffort.read(params?.reportedEffort?.id)
-
+		println "PRINTLN ReportedEffortController.delete.reportedEffortInstance: ${reportedEffortInstance}"
+		
         def assignedEffortInstance 
         if ( reportedEffortInstance ) {
             assignedEffortInstance = reportedEffortInstance.assignedEffort            
         }
-
-        println "PRINTLN ReportedEffortController.delete.reportedEffortInstance: ${reportedEffortInstance}"        
         println "PRINTLN ReportedEffortController.delete.assignedEffortInstance: ${assignedEffortInstance}"        
  
         // DELETE
         def errMessage
 
         if ( reportedEffortInstance ) {
+			println "PRINTLN ReportedEffortController.delete.if(reportedEffortInstance)=true"        
             try {
                 reportedEffortInstance.delete(flush: true)
+				println "PRINTLN DELETE SUCCESSFUL"        
                 //flash.message = "${message(code: 'default.deleted.message', args: [message(code: 'reportedEffort.label', default: 'ReportedEffort'), params.id])}"
             }
             catch (org.springframework.dao.DataIntegrityViolationException e) {
+				println "PRINTLN DELETE FAILED"        
                 errMessage = "Reported Effort could not be deleted"
                 //flash.message = "${message(code: 'default.not.deleted.message', args: [message(code: 'reportedEffort.label', default: 'ReportedEffort'), params.id])}"
             }
         } else {
             
+			println "PRINTLN ReportedEffortController.delete.if(reportedEffortInstance)=false"        
             errMessage = "Must select a Reported Effort to delete."
             //flash.message = "${message(code: 'default.not.found.message', args: [message(code: 'reportedEffort.label', default: 'ReportedEffort'), params.id])}"
         }        
-        
+        println "PRINTLN ReportedEffortController.delete.errMessage: ${errMessage}"        
+		
         render(view: "/assignedEffort/show", model: [assignedEffortInstance: assignedEffortInstance, errMessage: errMessage] )
        
     } //def delete
