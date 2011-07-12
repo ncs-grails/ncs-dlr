@@ -16,19 +16,19 @@ class AssignedEffort {
 	def onDelete = { oldMap ->
 		
 		def now = new Date()
-		def oldItemsIds = oldMap.items?.collect{it.id}.join(',')
 				
-		String oldValue = "Deleting Assigned Effort associated with reportingStaff.id ${oldMap.reportingStaff.id} and period.id ${oldMap.period.id}"
-			oldValue += " for Items: ${oldItemsIds}"
-			oldValue += ", assignedEffort.id: ${oldMap.id}"
+		String oldValue = "Assigned Effort associated with"
+			oldValue += " reportingStaff.id ${oldMap.reportingStaff.id}"
+			oldValue += " & period.id ${oldMap.period.id}"
 			oldValue += ", laborCategory.id: ${oldMap.laborCategory.id}"
 			oldValue += ", assignedEffort: ${oldMap.assignedEffort}"
 			oldValue += ", dateAssigned: ${oldMap.dateAssigned}"
-			oldValue += ", assigningStaff.id: ${oldMap.assigningStaff}"
+			oldValue += ", assigningStaff.id: ${oldMap.assigningStaff.id}"
 			oldValue += ", appCreated: ${oldMap.appCreated}"
 			oldValue += ", dateCommitted: ${oldMap.dateCommitted}"
 			oldValue += ", commitingStaff.id: ${oldMap.commitingStaff.id} "
-		
+		//println "PRINTLN AssignedEffortDomain.onDelete.oldValue: ${oldValue}"
+			
 		String className = this.class.toString().replace('class ', '')
 		//println "${now}\tAudit:DELETE::\t${oldValue}"
 
@@ -50,7 +50,6 @@ class AssignedEffort {
 	} //def onDelete
 
     static belongsTo = [reportingStaff: ReportingStaff, period: ReportingPeriod]
-	// reportedEffort SHOULD BE PLURAL!
     static hasMany = [emails: NotificationEmail, reportedEffort: ReportedEffort]
 
     def transients = ['assignedEffortConverted']

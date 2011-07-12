@@ -14,16 +14,15 @@ class ApplicationLog {
 	def onDelete = { oldMap ->
 		
 		def now = new Date()
-		def oldItemsIds = oldMap.items?.collect{it.id}.join(',')
 
-        String oldValue = "Deleting Application Log for Items: ${oldItemsIds}"
-			oldValue += ", applicationLog.id: ${oldMap.id}"
+        String oldValue = "Application Log"
 			oldValue += ", logDate: ${oldMap.logDate}"
 			oldValue += ", sourceIpAddress: ${oldMap.sourceIpAddress}"
 			oldValue += ", username: ${oldMap.username}"
 			oldValue += ", event: ${oldMap.event}"
 			oldValue += ", appCreated: ${oldMap.appCreated} "
-		
+		//println "PRINTLN ApplicationLogDomain.onDelete.oldValue: ${oldValue}"
+			
 		String className = this.class.toString().replace('class ', '')
 		//println "${now}\tAudit:DELETE::\t${oldValue}"
 

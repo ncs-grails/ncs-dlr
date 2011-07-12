@@ -16,10 +16,8 @@ class StudyTask {
 	def onDelete = { oldMap ->
 		
 		def now = new Date()
-		def oldItemsIds = oldMap.items?.collect{it.id}.join(',')
 		
-        String oldValue = "Deleting Study Task for Items: ${oldItemsIds}"
-			oldValue += ", studyTask.id: ${oldMap.id}"
+        String oldValue = "Study Task"
 			oldValue += ", name: ${oldMap.name}"
 			oldValue += ", obsolete: ${oldMap.obsolete}"
 			oldValue += ", dateCreated: ${oldMap.dateCreated}"
@@ -27,7 +25,8 @@ class StudyTask {
 			oldValue += ", appCreated: ${oldMap.appCreated}"
 			oldValue += ", etdlrCode: ${oldMap.etdlrCode}"
 			oldValue += ", odeCode: ${oldMap.odeCode} "
-		
+		//println "PRINTLN StudyTaskDomain.onDelete.oldValue: ${oldValue}"
+			
 		String className = this.class.toString().replace('class ', '')
 		//println "${now}\tAudit:DELETE::\t${oldValue}"
 

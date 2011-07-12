@@ -14,16 +14,15 @@ class LaborCategory {
 	def onDelete = { oldMap ->
 		
 		def now = new Date()
-		def oldItemsIds = oldMap.items?.collect{it.id}.join(',')
 		
-		String oldValue = "Deleting Labor Category for Items: ${oldItemsIds}"
-			oldValue += ", laborCategory.id: ${oldMap.id}"
+		String oldValue = "Labor Category"
 			oldValue += ", name: ${oldMap.name}"
 			oldValue += ", obsolete: ${oldMap.obsolete}"
 			oldValue += ", dateCreated: ${oldMap.dateCreated}"
 			oldValue += ", userCreated: ${oldMap.userCreated}"
 			oldValue += ", appCreated: ${oldMap.appCreated} "
-		
+		//println "PRINTLN LaborCategoryDomain.onDelete.oldValue: ${oldValue}"
+			
 		String className = this.class.toString().replace('class ', '')
 		//println "${now}\tAudit:DELETE::\t${oldValue}"
 

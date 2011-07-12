@@ -12,14 +12,13 @@ class NotificationEmail {
 	def onDelete = { oldMap ->
 		
 		def now = new Date()
-		def oldItemsIds = oldMap.items?.collect{it.id}.join(',')
 				
-		String oldValue = "Deleting Notification Email associted with assignedEffort.id ${oldMap.assignedEffort.id}"
-			oldValue += " for Items: ${oldItemsIds}"
-			oldValue += ", notificationEmail.id: ${oldMap.id}"
+		String oldValue = "Notification Email associated with"
+			oldValue += " assignedEffort.id ${oldMap.assignedEffort.id}"
 			oldValue += ", dateSent: ${oldMap.dateSent}"
 			oldValue += ", userSent: ${oldMap.userSent} "
-		
+		//println "PRINTLN NotificationEmailDomain.onDelete.oldValue: ${oldValue}"
+			
 		String className = this.class.toString().replace('class ', '')
 		//println "${now}\tAudit:DELETE::\t${oldValue}"
 

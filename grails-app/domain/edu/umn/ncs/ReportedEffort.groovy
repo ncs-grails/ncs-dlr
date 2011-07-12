@@ -15,17 +15,16 @@ class ReportedEffort {
     def onDelete = { oldMap ->
         
 		def now = new Date()		
-		def oldItems = oldMap.collect{it}.join(',')
 		
-        String oldValue = "Deleting Reported Effort associated with assignedEffort.id ${oldMap.assignedEffort.id}"
-			oldValue += " for Items: ${oldItems}"
+        String oldValue = "Reported Effort associated with"
+			oldValue += " assignedEffort.id ${oldMap.assignedEffort.id}"
 			oldValue += ", activity.id: ${oldMap.activity.id}"
 			oldValue += ", task.id: ${oldMap.task.id}"
 			oldValue += ", percentEffort: ${oldMap.percentEffort}"
 			oldValue += ", dateCreated: ${oldMap.dateCreated}"
 			oldValue += ", userCreated: ${oldMap.userCreated}"
 			oldValue += ", appCreated: ${oldMap.appCreated} "
-		println "PRINTLN ReportedEffortDomain.onDelete.oldValue: ${oldValue}"
+		//println "PRINTLN ReportedEffortDomain.onDelete.oldValue: ${oldValue}"
 			
         String className = this.class.toString().replace('class ', '')
         //println "${now}\tAudit:DELETE::\t${oldValue}"
