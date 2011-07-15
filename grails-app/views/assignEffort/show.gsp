@@ -29,12 +29,14 @@
         <div class="floatLeft">
           <div class="spacing">
             <span class="controlBackground">Reporting Month
-              <g:select class="basic"
+              <g:select 
+              	class="basic"
                 name="reportingPeriodInstance.id"
                 from="${periodSelectiontList}"
                 optionKey="id"
                 optionValue="name"
-                value="${reportingPeriodInstance.id}" />&nbsp;
+                value="${reportingPeriodInstance.id}" 
+              />&nbsp;
               <g:actionSubmit class="buttonBasic" value="GO" constructor="" action="show" />          
             </span>
           </div>

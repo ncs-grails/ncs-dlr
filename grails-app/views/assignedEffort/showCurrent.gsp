@@ -11,19 +11,28 @@
     <!-- Reported Effort -->
     <span class="messageBoxOrange">
       Reported: 
-      <g:if test="${!reportedEffortTotal}">0%</g:if>      
-      <g:else><g:formatNumber number="${reportedEffortTotal}" type="percent" maxFractionDigits="3"/></g:else>
+      <g:if test="${reportedEffortTotalConverted}">
+      	<g:formatNumber number="${reportedEffortTotalConverted}" type="number" maxFractionDigits="3"/>%
+      </g:if>      
+      <g:else>
+      	0%
+      </g:else>
     </span>
-    <!-- Committed Effort -->
-    <span class="messageBoxRed">Committed: 
-      <g:if test="${!assignedEffortInstance.dateCommitted}">0%</g:if>
+    <!-- Not Reported Effort -->
+    <span class="messageBoxRed">Remaining: 
+      <g:if test="${notReportedEffortConverted}">
+      	<g:formatNumber number="${notReportedEffortConverted}" type="number" maxFractionDigits="3"/>%
+      </g:if>
+      <g:else>
+      	0%
+      </g:else>      
     </span>
   </div>    
   
 </g:if>
 
 <!-- REPORTED EFFORT for current period -->      
-<g:if test="${assignedEffortInstance && reportedEffortTotal && !assignedEffortInstance.dateCommitted}">
+<g:if test="${assignedEffortInstance && reportedEffortTotalConverted && !assignedEffortInstance.dateCommitted}">
   
   <div class="clearCenterPadding">
     <table>

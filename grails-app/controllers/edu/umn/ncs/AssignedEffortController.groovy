@@ -37,18 +37,23 @@ class AssignedEffortController {
         println "PRINTLN AssignedEffortController.showCurrent.reportingPeriodInstance: ${reportingPeriodInstance}"
         
         // Get REPORTED EFFORT total
-        def reportedEffortTotal
-        if ( assignedEffortInstance ) {            
-            def c = ReportedEffort.createCriteria()
-            reportedEffortTotal = c.get {
-                eq("assignedEffort", assignedEffortInstance)
-                projections {
-                    sum("percentEffort")
-                }
-            }
-            println "PRINTLN AssignedEffortController.showCurrent.reportedEffortTotal: ${reportedEffortTotal}"
-        }
+		
+		def reportedEffortTotal = laborService.getSumOfReportedPercentEffort(assignedEffortInstance)
+		println "PRINTLN ReportedEffortController.addSave.reportedEffortTotal: ${reportedEffortTotal}"
+
+		def reportedEffortTotalConverted
+		if ( reportedEffortTotal ) {
+			reportedEffortTotalConverted = reportedEffortTotal * 100
+		}
+		println "PRINTLN ReportedEffortController.addSave.reportedEffortTotalConverted: ${reportedEffortTotalConverted}"
         
+		def notReportedEffortConverted
+		if ( assignedEffortInstance.assignedEffortConverted && reportedEffortTotalConverted ) {
+			notReportedEffortConverted = assignedEffortInstance.assignedEffortConverted - reportedEffortTotalConverted
+		} 
+			
+		println "PRINTLN ReportedEffortController.addSave.notReportedEffortConverted: ${notReportedEffortConverted}"
+		
         // Get list of REPORTED EFFORT
         def c2 = ReportedEffort.createCriteria()        
         def reportingEffortInstanceList = c2.list{
@@ -97,7 +102,8 @@ class AssignedEffortController {
             reportingPeriodInstance:reportingPeriodInstance, 
             reportingStaffInstance:reportingStaffInstance,
             assignedEffortInstance: assignedEffortInstance,
-            reportedEffortTotal: reportedEffortTotal,
+            reportedEffortTotalConverted: reportedEffortTotalConverted,
+			notReportedEffortConverted: notReportedEffortConverted,
             reportedEffortList: reportedEffortList,
             isForm: params?.isForm
         ]
@@ -110,12 +116,14 @@ class AssignedEffortController {
         println "PRINTLN ASSIGNED EFFORT CONTROLLER > SHOW PAST ----------------"                
         println "PRINTLN AssignedEffortController.showPast.params: ${params}"
         
+		// REPORTING STAFF
         def reportingStaffInstance        
         if (params?.id) {
             reportingStaffInstance = ReportingStaff.read(params?.id)
         }
         println "PRINTLN AssignedEffortController.showPast.reportingStaffInstance: ${reportingStaffInstance}"
                 
+		// REPORTED EFFORT
         def cre = ReportedEffort.createCriteria()
         def reportedEffortInstance = cre.list{
             and {
@@ -134,7 +142,8 @@ class AssignedEffortController {
         }
         println "PRINTLN AssignedEffortController.showPast.reportedEffortInstance: ${reportedEffortInstance}"
 
-        def reportedEffortList = []
+        // REPORTED EFFORT LIST
+		def reportedEffortList = []
         
         // Add records to Assigned Effort Instance
         reportedEffortInstance.eachWithIndex{ rs, i ->
@@ -182,14 +191,17 @@ class AssignedEffortController {
         
         if ( assignedEffortInstance ) {
             
+			// ASSIGNED EFFORT
             def assignedPercentEffort = assignedEffortInstance.assignedEffort
             println "PRINTLN AssignedEffortController.commit.assignedPercentEffort: ${assignedPercentEffort}"
             
+			// REPORTED EFFORT
             def sumOfReportedPercentEffort = laborService.getSumOfReportedPercentEffort(assignedEffortInstance)
             println "PRINTLN AssignedEffortController.commit.sumOfReportedPercentEffort: ${sumOfReportedPercentEffort}"
                         
             def errMessage
 
+			// total reported effort equals what is assigned, ready to commit 
             if ( sumOfReportedPercentEffort.toBigDecimal() == assignedPercentEffort.toBigDecimal() ) {
                 
                 def principal = authenticateService.principal()                         
@@ -202,21 +214,28 @@ class AssignedEffortController {
                 println "PRINTLN AssignedEffortController.commit.assignedEffortInstance.commitingStaff: ${assignedEffortInstance.commitingStaff}"                
                 
                 if ( !assignedEffortInstance.hasErrors() && assignedEffortInstance.save(flush: true)) {                                    
-                    
+
+					println "COMMIT SUCCESSFULLY"                    
                     redirect(controller: 'main', action: "show")
-                    
+					//redirect(uri:"/main/show")
+					//render(view: "/assignedEffort/show", model: [ assignedEffortInstance: assignedEffortInstance ])					
+					//render(view: "/main/show")
+					
                 } else {
                     
-                    errMessage = "Failed to COMMIT."
+					println "COMMIT FAILED"                    
+                    errMessage = "Failed to COMMIT."                   
                     render(view: "/assignedEffort/show", model: [ assignedEffortInstance: assignedEffortInstance, errMessage: errMessage ])
                     
                 }
                
+			// total reported effort equals assigned is less than what is assigned
             } else if ( sumOfReportedPercentEffort.toBigDecimal() < assignedPercentEffort.toBigDecimal() ) {
                 
                 errMessage = "Cannot COMMIT your reported effort because it is less than what has been assigned to you."                                
                 render(view: "/assignedEffort/show", model: [ assignedEffortInstance: assignedEffortInstance, errMessage: errMessage ])
-                                
+
+			// total reported effort is greater than what is assigned
             } else if ( sumOfReportedPercentEffort.toBigDecimal() > assignedPercentEffort.toBigDecimal() ) {
                 
                 errMessage = "Cannot COMMIT your reported effort because it is greater than what has been assigned to you."                                

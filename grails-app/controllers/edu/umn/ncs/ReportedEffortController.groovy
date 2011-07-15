@@ -57,7 +57,10 @@ class ReportedEffortController {
 
         println "PRINTLN ReportedEffortController.addSave.reportedEffortInstance: ${reportedEffortInstance}"                    
         println "PRINTLN ReportedEffortController.addSave.reportedEffortConvertedVal: ${reportedEffortConvertedVal}"
-
+		
+		def dataTypeIs = reportedEffortConvertedVal.getClass()
+		println "PRINTLN ReportedEffortController.addSave.reportedEffortConvertedVal.dataTypeIs: ${dataTypeIs}"
+		
         // ASSIGNED EFFORT
         def assignedEffortInstance = AssignedEffort.read(params?.assignedEffort?.id)
         def assignedEffortConverted = assignedEffortInstance.assignedEffortConverted
@@ -66,13 +69,7 @@ class ReportedEffortController {
         println "PRINTLN ReportedEffortController.addSave.assignedEffortConverted}: ${assignedEffortConverted}"
 
         // COMBINED REPORTED EFFORT
-        def c = ReportedEffort.createCriteria()
-        def sumReportedPercentEffort = c.get {
-            eq("assignedEffort", assignedEffortInstance)
-            projections {
-                sum("percentEffort")
-            }
-        }
+		def sumReportedPercentEffort = laborService.getSumOfReportedPercentEffort(assignedEffortInstance)		
         println "PRINTLN ReportedEffortController.addSave.sumReportedPercentEffort: ${sumReportedPercentEffort}"        
 
         def sumReportedPercentEffortConverted 
@@ -81,65 +78,79 @@ class ReportedEffortController {
         }
         println "PRINTLN ReportedEffortController.addSave.sumReportedPercentEffortConverted: ${sumReportedPercentEffortConverted}"
         
-        def combineReportedEffortConverted 
-        if ( sumReportedPercentEffortConverted && reportedEffortConvertedVal ) {
-            combineReportedEffortConverted = sumReportedPercentEffortConverted + reportedEffortConvertedVal
-        }
+        def combineReportedEffortConverted = laborService.getCombineReportedEffortConverted(sumReportedPercentEffortConverted, reportedEffortConvertedVal)
         println "PRINTLN ReportedEffortController.addSave.combineReportedEffortConverted: ${combineReportedEffortConverted}"
 
         // REPORTED EFFORT ENTRY VALIDATION
         def err = false 
         def errMessage
-                
-        if ( reportedEffortConvertedVal ) {
+		def hideAddButton = false
+		
+        if ( reportedEffortConvertedVal || reportedEffortConvertedVal.toBigDecimal() == 0 ) {
             
             // EFFORT ENTRY VALIDATION
             def pRange = 0.0..100.0
 
+			// entry equals zero
+            if ( reportedEffortConvertedVal.toBigDecimal() == 0 ) {
+			
+                err = true
+                errMessage = "Cannot enter zero percent effort."                                    
+			 			
             // entry is not a valid percent effort
-            if ( !(pRange.containsWithinBounds(reportedEffortConvertedVal.toBigDecimal())) ) {
+			} else if ( !(pRange.containsWithinBounds(reportedEffortConvertedVal.toBigDecimal())) ) {
             
                 err = true
-                errMessage = "The effort you entered is not a valid percent for effort reporting."                                    
-            
-            // entry is is greater than what is assigned
+                errMessage = "Please enter a valid percent effort."                                    
+            				
+            // entry is greater than what is assigned
             } else if ( reportedEffortConvertedVal.toBigDecimal() >  assignedEffortConverted.toBigDecimal() ) {
 
                 err = true
-                errMessage = "The effort you entered is greater than what has been assigned to you."
-
+                errMessage = "The percent effort you entered is greater than what has been assigned to you."
+				
+			// combined reported effort (entry + what has already been reported) is greater than what is assigned	
             } else if ( combineReportedEffortConverted && combineReportedEffortConverted.toBigDecimal() > assignedEffortConverted.toBigDecimal() ) {                
                 
                 err = true
-                errMessage = "The effort you entered, plus what has already been reported, is greater than what is assigned to you."
-                
-            }
+                errMessage = "The percent effort you entered, plus what has already been reported, is greater than what is assigned to you."
+				hideAddButton = true
+								
+            // combined reported effort equals what is assigned
+            } else if (combineReportedEffortConverted && combineReportedEffortConverted.toBigDecimal() == assignedEffortConverted.toBigDecimal()) {
+			
+				hideAddButton = true
+				
+			}			
 
             println "PRINTLN ReportedEffortController.addSave.errMessage: ${errMessage}"
             
         }
-        
+
         // USER who entered effort
         def principal = authenticateService.principal()                         
         reportedEffortInstance.userCreated = principal.getUsername()
         println "PRINTLN ReportedEffortController.addSave.reportedEffortInstance.userCreated: ${reportedEffortInstance.userCreated}"        
 
-        // SAVE
+        // save successfully
         if ( err == false && reportedEffortInstance.validate() && reportedEffortInstance.save(flush: true)) {
 
             println "SAVE SUCCESSFULLY"
 
-            render(view: "/assignedEffort/show", model: [assignedEffortInstance: assignedEffortInstance] )
+            render(view: "/assignedEffort/show", model: [assignedEffortInstance: assignedEffortInstance, hideAddButton: hideAddButton] )
                         
+        // save fails
         } else {
 
             println "SAVE FAILED"        
-            // reportedEffortInstance.errors.each{ println it }
+            reportedEffortInstance.errors.each{ 
+				println it 
+			}
                         
             render(view: "create", model: [reportedEffortInstance: reportedEffortInstance, errMessage: errMessage])
                        
         } 
-        
+
     } //def save
 
     def delete = {
@@ -199,9 +210,9 @@ class ReportedEffortController {
             reportedEffortInstance = ReportedEffort.get(params?.reportedEffort?.id)            
         }
         println "PRINTLN ReportedEffortController.edit.reportedEffortInstance: ${reportedEffortInstance}"
-        
+		
         if ( reportedEffortInstance ) {
-            
+            			
             return [reportedEffortInstance: reportedEffortInstance]
             
         } else {
@@ -250,7 +261,7 @@ class ReportedEffortController {
             def assignedEffortInstance = reportedEffortInstance.assignedEffort
             println "PRINTLN ReportedEffortController.editSave.assignedEffortInstance: ${assignedEffortInstance}"
             
-            // REPORTED EFFORT totals
+            // REPORTED EFFORT totals, excluding what is currently being edited
             def cSum = ReportedEffort.createCriteria()
             def sumOfReportedPercentEffort = cSum.get {
                 eq("assignedEffort", assignedEffortInstance)
@@ -270,20 +281,37 @@ class ReportedEffortController {
             } 
             println "PRINTLN ReportedEffortController.editSave.sumReportedPercentEffortConverted: ${sumReportedPercentEffortConverted}"
 
-            def combineReportedEffortConverted 
-            if ( (sumReportedPercentEffortConverted || sumReportedPercentEffortConverted == 0) && reportedEffortInstance.percentEffortConverted ) {
-                combineReportedEffortConverted = sumReportedPercentEffortConverted + reportedEffortInstance.percentEffortConverted
-            }
+			def combineReportedEffortConverted = laborService.getCombineReportedEffortConverted(sumReportedPercentEffortConverted, reportedEffortInstance.percentEffortConverted)			
             println "PRINTLN ReportedEffortController.editSave.combineReportedEffortConverted: ${combineReportedEffortConverted}"
 
             // REPORTED EFFORT ENTRY VALIDATION
-            def errMessage
             def err = false
+            def errMessage
+			def pRange = 0.0..100.0
+			def hideAddButton = false
+			
+			if ( reportedEffortInstance.percentEffortConverted.toBigDecimal() == 0 ) { println "reportedEffortInstance.percentEffortConverted.toBigDecimal() == 0" }
+			if ( combineReportedEffortConverted && combineReportedEffortConverted.toBigDecimal() == assignedEffortInstance.assignedEffortConverted.toBigDecimal() ) {
+				println "combineReportedEffortConverted && combineReportedEffortConverted.toBigDecimal() == assignedEffortInstance.assignedEffortConverted.toBigDecimal()"
+			}
+			 
+            println "PRINTLN ReportedEffortController.editSave.reportedEffortInstance.percentEffortConverted: ${reportedEffortInstance.percentEffortConverted}"			
+            if ( reportedEffortInstance.percentEffortConverted.toBigDecimal() || reportedEffortInstance.percentEffortConverted.toBigDecimal() == 0 ) {
 
-            if ( reportedEffortInstance.percentEffortConverted ) {
+				// entry is zero
+				if ( reportedEffortInstance.percentEffortConverted.toBigDecimal() == 0 ) {
+					
+					err = true
+					errMessage = "Cannot enter zero percent effort."
 
+				// entry is not a valid percent effort
+				} else if ( !(pRange.containsWithinBounds(reportedEffortInstance.percentEffortConverted.toBigDecimal())) ) {
+				
+					err = true
+					errMessage = "Please enter a valid percent effort."
+								
                 // entry is is greater than what is assigned
-                if ( reportedEffortInstance.percentEffortConverted.toBigDecimal() >  assignedEffortInstance.assignedEffortConverted.toBigDecimal() ) {
+            	} else if ( reportedEffortInstance.percentEffortConverted.toBigDecimal() >  assignedEffortInstance.assignedEffortConverted.toBigDecimal() ) {
 
                     err = true
                     errMessage = "The effort you just entered is greater than what has been assigned to you."
@@ -293,6 +321,11 @@ class ReportedEffortController {
 
                     err = true
                     errMessage = "The effort you just entered, plus what has already been reported, is greater than what is assigned to you."
+
+				// combined reported effort equals what is assigned
+				} else if ( combineReportedEffortConverted && combineReportedEffortConverted.toBigDecimal() == assignedEffortInstance.assignedEffortConverted.toBigDecimal() ) {
+				
+					hideAddButton = true
 
                 }
 
@@ -308,7 +341,7 @@ class ReportedEffortController {
             if ( err == false &&  !reportedEffortInstance.hasErrors() && reportedEffortInstance.save(flush: true) ) {
                 
                 println "SAVE SUCCESSFULLY"
-                render(view: "/assignedEffort/show", model:[assignedEffortInstance: assignedEffortInstance] )
+                render(view: "/assignedEffort/show", model:[assignedEffortInstance: assignedEffortInstance, hideAddButton: hideAddButton] )
                 
             }
             else {

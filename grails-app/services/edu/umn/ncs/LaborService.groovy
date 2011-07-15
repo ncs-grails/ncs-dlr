@@ -249,10 +249,31 @@ class LaborService {
                 sum("percentEffort")
             }
         }
-        //println "PRINTLN LaborService.getSumOfReportedPercentEffort: ${sumOfReportedPercentEffort}"        
+		
+		return sumOfReportedPercentEffort
         
     }
-    
-    
 	
+	def getCombineReportedEffortConverted(sumConverted, entryConverted) {
+		
+		def combineConverted
+		
+		if ( sumConverted && entryConverted ) {
+			
+			combineConverted = sumConverted + entryConverted
+			
+		} else if ( sumConverted && !entryConverted ) {
+		
+			combineConverted = sumConverted
+			
+		} else if ( !sumConverted && entryConverted ) {
+		
+			combineConverted = entryConverted
+			
+		}
+		
+		return combineConverted
+		
+	}
+	 
 } //class LaborService

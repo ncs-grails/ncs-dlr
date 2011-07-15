@@ -26,8 +26,8 @@
 			<div class="message">${flash.message}</div>
 		</g:if>
 		
-		<table>
-	    
+		<h2>Reports Effort</h2>
+		<table>	    
 			<thead>
 			    <tr>
 					<g:sortableColumn class="basic" property="id" title="${message(code: 'reportingStaff.id.label', default: 'Id')}" />						
@@ -36,34 +36,31 @@
 					<g:sortableColumn class="basic" property="middleInit" title="${message(code: 'reportingStaff.middleInit.label', default: 'Middle Init')}" />					
 					<g:sortableColumn class="basic" property="laborCategory" title="${message(code: 'reportingStaff.laborCategory.label', default: 'Labor Category')}" />
 					<g:sortableColumn class="basic" property="email" title="${message(code: 'reportingStaff.email.label', default: 'Email')}" />
-					<g:sortableColumn class="basic" property="reportsEffort" title="${message(code: 'reportingStaff.reportsEffort.label', default: 'Reports Effort')}" />
 					<g:sortableColumn class="basic" property="isTestAccount" title="${message(code: 'reportingStaff.reportsEffort.label', default: 'Test Account')}" />
 					<g:sortableColumn class="basic" property="dateCreated" title="${message(code: 'reportingStaff.dateCreated.label', default: 'Created')}" />			    
 			    </tr>
-			</thead>
-			
+			</thead>			
 	        <tbody>
-		        <g:each in="${reportingStaffInstanceList}" status="i" var="reportingStaffInstance">
+		        <g:each in="${reportsEffortStaffInstanceList}" status="i" var="reportsEffortStaffInstanceList">
+		        	<g:if test="${reportsEffortStaffInstanceList.isTestAccount}">
+		        	</g:if>
 		            <tr>
 		                <td class="basic" style="text-align:right;">
-		                	<g:link action="edit" id="${reportingStaffInstance.id}">${fieldValue(bean: reportingStaffInstance, field: "id")}</g:link>
+		                	<g:link action="edit" id="${reportsEffortStaffInstanceList.id}">${fieldValue(bean: reportsEffortStaffInstanceList, field: "id")}</g:link>
 		                </td>
-		                <td class="basic">${fieldValue(bean: reportingStaffInstance, field: "lastName")}</td>
-		                <td class="basic">${fieldValue(bean: reportingStaffInstance, field: "firstName")}</td>
-		                <td class="basic">${fieldValue(bean: reportingStaffInstance, field: "middleInit")}</td>
-		                <td class="basic">${fieldValue(bean: reportingStaffInstance, field: "laborCategory")}</td>
-		                <td class="basic">${fieldValue(bean: reportingStaffInstance, field: "email")}</td>
-		                <td class="basic">${fieldValue(bean: reportingStaffInstance, field: "reportsEffort")}</td>
-		                <td class="basic">${fieldValue(bean: reportingStaffInstance, field: "isTestAccount")}</td>
+		                <td class="basic"><span class="nowrap">${fieldValue(bean: reportsEffortStaffInstanceList, field: "lastName")}</span></td>
+		                <td class="basic"><span class="nowrap">${fieldValue(bean: reportsEffortStaffInstanceList, field: "firstName")}</span></td>
+		                <td class="basic">${fieldValue(bean: reportsEffortStaffInstanceList, field: "middleInit")}</td>
+		                <td class="basic">${fieldValue(bean: reportsEffortStaffInstanceList, field: "laborCategory")}</td>
+		                <td class="basic">${fieldValue(bean: reportsEffortStaffInstanceList, field: "email")}</td>
+		                <td class="basic" style="text-align:center;">${fieldValue(bean: reportsEffortStaffInstanceList, field: "isTestAccount") == "true" ? "y" : ""}</td>
 		                <td class="basic">
-		                	<g:formatDate date="${fieldValue(bean: reportingStaffInstance, field: "dateCreated")}" format="MM-dd-yyyy" />&nbsp;(${fieldValue(bean: reportingStaffInstance, field: "userCreated")})
+		                	<g:formatDate date="${fieldValue(bean: reportsEffortStaffInstanceList, field: "dateCreated")}" format="MM-dd-yyyy" />&nbsp;(${fieldValue(bean: reportingStaffInstance, field: "userCreated")})
 		                </td>
 		            </tr>
 		        </g:each>		        
 	        </tbody>
-
 	    </table>
-	    <span class="tableFooterNote">Total Reporting Staff: ${reportingStaffInstanceTotal}</span>
 	    
 	    <div class="pageSpacing"> </div>
 

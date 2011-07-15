@@ -24,12 +24,14 @@
   
   <!-- BUTTON CONTROLS -->
   <div class="clearCenterPadding">
-    <g:submitToRemote 
-      class="buttonBasic" 
-      value="ADD" 
-      url="${[controller:'reportedEffort',action:'create' ]}" 
-      update="remoteFormContainer" 
-    />
+  	<g:if test="${!hideAddButton}">
+	    <g:submitToRemote 
+	      class="buttonBasic" 
+	      value="ADD" 
+	      url="${[controller:'reportedEffort',action:'create' ]}" 
+	      update="remoteFormContainer" 
+	    />
+	</g:if>
     <g:submitToRemote 
       class="buttonBasic" 
       value="DELETE" 

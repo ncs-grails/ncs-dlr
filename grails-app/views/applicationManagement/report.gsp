@@ -30,23 +30,27 @@
             
           <span class="controlBackground">              
 
+			<!--  REPORTING PERIOD -->
             <span class="spacing">
               <label for="id">Reporting Period</label>          
-              <g:select class="basic" 
+              <g:select 
+              	class="basic" 
                 name="id" 
                 from="${reportingPeriodInstanceList}" 
-                optionKey="id" 
               />                
-            </span>              
-
+            </span>
+                         
+			<!--  OUTPUT FORMAT -->
             <span class="spacing">
               <label for="format">Output Format</label>
-              <g:select class="basic" 
+              <g:select 
+              	class="basic" 
                 name="format" 
                 from="${reportFormats }" 
               />
             </span>              
 
+			<!-- GENERATE BUTTON -->
             <span class="spacing">
               <g:submitButton class="buttonBasic" name="submit" value="GENERATE" />
             </span>              
