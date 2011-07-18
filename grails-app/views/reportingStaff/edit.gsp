@@ -19,7 +19,7 @@
 				&nbsp;&nbsp;&gt&nbsp;&nbsp;
 			<g:link controller="reportingStaff" action="list">Reporting Staff</g:link>
 				&nbsp;&nbsp;&gt&nbsp;&nbsp;
-			<span class="fontMaroon">edit</span>
+			<span class="fontMaroon">Edit</span>
 		</p>
 
 		<!-- PAGE TITLE -->
@@ -50,7 +50,7 @@
 					    	<label for="lastName"><g:message code="reportingStaff.lastName.label" default="Last Name" /></label>
 					    </td>
 						<td valign="top" class="value ${hasErrors(bean: reportingStaffInstance, field: 'lastName', 'errors')}">
-							<g:textField name="lastName" value="${reportingStaffInstance?.lastName}" />
+							<g:textField class="textfieldBasic" name="lastName" value="${reportingStaffInstance?.lastName}" />
 						</td>
 					</tr>
 					<!-- first name -->
@@ -59,7 +59,7 @@
 	                        <label for="firstName"><g:message code="reportingStaff.firstName.label" default="First Name" /></label>
                         </td>
                         <td valign="top" class="value ${hasErrors(bean: reportingStaffInstance, field: 'firstName', 'errors')}">
-	                        <g:textField name="firstName" value="${reportingStaffInstance?.firstName}" />
+	                        <g:textField class="textfieldBasic" name="firstName" value="${reportingStaffInstance?.firstName}" />
                         </td>
                     </tr>                        
 					<!-- middle init -->
@@ -68,7 +68,7 @@
 							<label for="middleInit"><g:message code="reportingStaff.middleInit.label" default="Middle Init" /></label>
 						</td>
 						<td valign="top" class="value ${hasErrors(bean: reportingStaffInstance, field: 'middleInit', 'errors')}">
-							<g:textField name="middleInit" value="${reportingStaffInstance?.middleInit}" />
+							<g:textField class="textfieldBasic" name="middleInit" value="${reportingStaffInstance?.middleInit}" />
 						</td>
 					</tr>                        
 					<!-- username -->
@@ -77,14 +77,16 @@
 					    	<label for="username"><g:message code="reportingStaff.username.label" default="Username" /></label>
 					    	</td>
 						<td valign="top" class="value ${hasErrors(bean: reportingStaffInstance, field: 'username', 'errors')}">
-							<g:textField name="username" value="${reportingStaffInstance?.username}" />
+							<g:textField class="textfieldBasic" name="username" value="${reportingStaffInstance?.username}" />
 						</td>
 					</tr>                        					
 					<!-- labor category -->
                     <tr class="prop">
 						<td valign="top" class="name">
 						  <label for="laborCategory"><g:message code="reportingStaff.laborCategory.label" default="Labor Category" /></label></td>
-						<td valign="top" class="value ${hasErrors(bean: reportingStaffInstance, field: 'laborCategory', 'errors')}"><g:select name="laborCategory.id" from="${edu.umn.ncs.LaborCategory.list()}" optionKey="id" value="${reportingStaffInstance?.laborCategory?.id}" noSelection="['null': '']" /></td>
+						<td valign="top" class="value ${hasErrors(bean: reportingStaffInstance, field: 'laborCategory', 'errors')}">
+							<g:select class="basic" name="laborCategory.id" from="${edu.umn.ncs.LaborCategory.list()}" optionKey="id" value="${reportingStaffInstance?.laborCategory?.id}" noSelection="['null': '']" />
+						</td>
                     </tr>
 					<!-- email -->
 					<tr class="prop">
@@ -92,7 +94,7 @@
 							<label for="email"><g:message code="reportingStaff.email.label" default="Email" /></label>
 						</td>
 						<td valign="top" class="value ${hasErrors(bean: reportingStaffInstance, field: 'email', 'errors')}">
-							<g:textField name="email" value="${reportingStaffInstance?.email}" />
+							<g:textField class="textfieldBasic" name="email" value="${reportingStaffInstance?.email}" />
 						</td>
 					</tr>
 					<!-- reports effort -->					
@@ -120,9 +122,6 @@
 			    <span class="button">
 			    	<g:actionSubmit class="save" action="update" value="${message(code: 'default.button.update.label', default: 'Update')}" />
 			    </span>
-				<span class="button">
-					<g:actionSubmit class="delete" action="delete" value="${message(code: 'default.button.delete.label', default: 'Delete')}" onclick="return confirm('${message(code: 'default.button.delete.confirm.message', default: 'Are you sure?')}');" />
-				</span>
 			</div>
                 
 		</g:form>

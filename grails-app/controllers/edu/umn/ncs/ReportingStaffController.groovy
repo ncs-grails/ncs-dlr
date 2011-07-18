@@ -21,38 +21,101 @@ class ReportingStaffController {
         //params.max = Math.min(params.max ? params.int('max') : 10, 100)
 		//println "PRINTLN ReportingStaffController.list.params.max: ${params.max}"
 		
-		def reportsEffortStaffInstanceList = ReportingStaff.list(params)
+		//def reportsEffortStaffInstanceList = ReportingStaff.list(params)		
+		//println "reportsEffortStaffInstanceList:  ${reportsEffortStaffInstanceList}"
 		
-		
-		/*
 		def c = ReportingStaff.createCriteria()
 		def reportsEffortStaffInstanceList = c.list{
 			eq("reportsEffort", true)
-            //order("lastName", "asc")
-            //order("firstName", "asc")
-            //order("middleInit", "asc")			
-		}
-		*/
-		//def reportsEffortStaffInstanceList = ReportingStaff.findAllWhere(reportsEffort:true) 
-		//def reportsEffortStaffInstanceList = ReportingStaff.list()
-		
-		/*
+			order("lastName", "asc")
+			order("firstName", "asc")
+			order("middleInit", "asc")
+        }
+			
 		def c2 = ReportingStaff.createCriteria()
-		def notReportsEffortStaffInstanceList = c2.list{
+		def reportsEffortStaffInstanceCount = c2.list{
+			eq("reportsEffort", true)
+			projections {
+				rowCount()
+			}
+        }
+		println "reportsEffortStaffInstanceCount:  ${reportsEffortStaffInstanceCount}"
+		
+		def c3 = ReportingStaff.createCriteria()
+		def doesNotReportEffortStaffInstanceList = c3.list{
 			eq("reportsEffort", false)
 			order("lastName", "asc")
 			order("firstName", "asc")
 			order("middleInit", "asc")
-		}
-		*/
-		//def notReportsEffortStaffInstanceList = ReportingStaff.findAllWhere(reportsEffort:false) 
+        }
+		//println "doesNotReportEffortStaffInstanceList:  ${doesNotReportEffortStaffInstanceList}"
 		
-        [
-			reportsEffortStaffInstanceList: reportsEffortStaffInstanceList
+		def c4 = ReportingStaff.createCriteria()
+		def doesNotReportEffortStaffInstanceCount = c4.list{
+			eq("reportsEffort", false)
+			projections {
+				rowCount()
+			}
+        }
+		println "doesNotReportEffortStaffInstanceCount:  ${doesNotReportEffortStaffInstanceCount}"
+
+		[
+			reportsEffortStaffInstanceList: reportsEffortStaffInstanceList,
+			reportsEffortStaffInstanceCount: reportsEffortStaffInstanceCount, 
+			doesNotReportEffortStaffInstanceList: doesNotReportEffortStaffInstanceList, 
+			doesNotReportEffortStaffInstanceCount: doesNotReportEffortStaffInstanceCount
 		]
 		
-    } //def list 
-	
+    } //def list
+
+	def edit = {
+		
+		def reportingStaffInstance = ReportingStaff.get(params.id)
+		if (!reportingStaffInstance) {
+			flash.message = "${message(code: 'default.not.found.message', args: [message(code: 'reportingStaff.label', default: 'ReportingStaff'), params.id])}"
+			redirect(action: "list")
+		}
+		else {
+			return [reportingStaffInstance: reportingStaffInstance]
+		}
+		
+	} //def edit
+
+	def update = {
+		
+		def reportingStaffInstance = ReportingStaff.get(params.id)
+		
+		if (reportingStaffInstance) {
+			
+			if (params.version) {
+				def version = params.version.toLong()
+				if (reportingStaffInstance.version > version) {
+					
+					reportingStaffInstance.errors.rejectValue("version", "default.optimistic.locking.failure", [message(code: 'reportingStaff.label', default: 'ReportingStaff')] as Object[], "Another user has updated this ReportingStaff while you were editing")
+					render(view: "edit", model: [reportingStaffInstance: reportingStaffInstance])
+					return
+				}
+			}
+			
+			reportingStaffInstance.properties = params
+			
+			if (!reportingStaffInstance.hasErrors() && reportingStaffInstance.save(flush: true)) {
+				//flash.message = "${message(code: 'default.updated.message', args: [message(code: 'reportingStaff.label', default: 'ReportingStaff'), reportingStaffInstance.id])}"
+				redirect(action: "list", id: reportingStaffInstance.id)
+			} else {
+				render(view: "edit", model: [reportingStaffInstance: reportingStaffInstance])
+			}
+			
+		} else {
+			
+			flash.message = "${message(code: 'default.not.found.message', args: [message(code: 'reportingStaff.label', default: 'ReportingStaff'), params.id])}"
+			redirect(action: "list")
+			
+		}
+		
+	} //def update
+
+/*
     def create = {
         def reportingStaffInstance = new ReportingStaff()
         reportingStaffInstance.properties = params
@@ -80,19 +143,6 @@ class ReportingStaffController {
             [reportingStaffInstance: reportingStaffInstance]
         }
     }
-
-    def edit = {
-		
-        def reportingStaffInstance = ReportingStaff.get(params.id)
-        if (!reportingStaffInstance) {
-            flash.message = "${message(code: 'default.not.found.message', args: [message(code: 'reportingStaff.label', default: 'ReportingStaff'), params.id])}"
-            redirect(action: "list")
-        }
-        else {
-            return [reportingStaffInstance: reportingStaffInstance]
-        }
-		
-    } //def edit
 
     def update = {
 		
@@ -143,4 +193,6 @@ class ReportingStaffController {
         }
 		
     } //def delete
+*/
+	    
 }

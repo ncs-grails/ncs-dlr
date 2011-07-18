@@ -14,8 +14,9 @@
 	<link rel="shortcut icon" href="${resource(dir:'images',plugin:'ncs-web-template',file:'favicon.ico')}" type="image/x-icon" />
 <g:javascript plugin="ncs-web-template" src="umn_searchfield.js" />
 <g:javascript library="jquery" plugin="jquery" />
-<g:javascript src="jquery/jquery.ui.js" />
-    
+<jqui:resources/>
+ 
+
 <style type="text/css">
 #main_wrapper{width:95%; max-width:1280px; min-width:720px}
 </style>

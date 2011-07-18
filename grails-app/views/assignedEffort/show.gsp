@@ -1,4 +1,4 @@
-<g:form name="assignedEffort" method="post">
+<g:form name="assignedEffort" method="post" controller:"assignedEffort" action="commit">
   
   <g:hiddenField name="id" value="${assignedEffortInstance.id}" />
 
@@ -44,11 +44,10 @@
       url="${[controller:'reportedEffort',action:'edit' ]}" 
       update="remoteFormContainer" 
     />
-    <g:submitToRemote 
-      class="buttonBasic" 
+    <g:submitButton 
+      class="buttonBasic"
+      name="commit" 
       value="COMMIT" 
-      url="${[controller:'assignedEffort',action:'commit' ]}" 
-      update="remoteFormContainer" 
     />
   </div>
 

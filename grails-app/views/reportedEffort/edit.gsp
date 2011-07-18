@@ -59,7 +59,6 @@
   </div>
       
   <!-- display ERROR MESSAGES, after save attempt-->       
-  <!-- display ERROR MESSAGES, after save attempt-->       
   <g:if test="${errMessage}">
     <div class="errors">${errMessage}</div>        
   </g:if>
