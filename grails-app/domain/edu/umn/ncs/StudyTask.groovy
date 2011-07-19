@@ -6,12 +6,12 @@ class StudyTask {
 	static auditable = true
 	
     String name
+    Integer etdlrCode
+    Integer odeCode
     Boolean obsolete = true
     Date dateCreated = new Date()
     String userCreated
     String appCreated = 'ncs-dlr'
-    Integer etdlrCode
-    Integer odeCode
 
 	def onDelete = { oldMap ->
 		
@@ -19,12 +19,12 @@ class StudyTask {
 		
         String oldValue = "Study Task"
 			oldValue += ", name: ${oldMap.name}"
+			oldValue += ", etdlrCode: ${oldMap.etdlrCode}"
+			oldValue += ", odeCode: ${oldMap.odeCode} "
 			oldValue += ", obsolete: ${oldMap.obsolete}"
 			oldValue += ", dateCreated: ${oldMap.dateCreated}"
 			oldValue += ", userCreated: ${oldMap.userCreated}"
 			oldValue += ", appCreated: ${oldMap.appCreated}"
-			oldValue += ", etdlrCode: ${oldMap.etdlrCode}"
-			oldValue += ", odeCode: ${oldMap.odeCode} "
 		//println "PRINTLN StudyTaskDomain.onDelete.oldValue: ${oldValue}"
 			
 		String className = this.class.toString().replace('class ', '')
@@ -53,12 +53,12 @@ class StudyTask {
 
     static constraints = {
         name(maxSize:1024)
+        etdlrCode(nullable:true)
+        odeCode(nullable:true)
         obsolete()
         dateCreated()
         userCreated(blank:false)
         appCreated(blank:false)
-        etdlrCode(nullable:true)
-        odeCode(nullable:true)
     }
     
     static mapping = { sort "name" }
