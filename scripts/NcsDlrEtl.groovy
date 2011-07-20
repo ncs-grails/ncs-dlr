@@ -147,14 +147,8 @@ class NcsDlrEtl {
 	
 	def importLaborCategories() {
 		
-	    def queryMs = """SELECT 
-	    	LaborID
-		    ,Description
-		    ,Obsolete
-		    ,EnteredWhen
-		    ,EnteredByWhom
-		    ,EnteredByWhat
-		FROM WebLookup.dbo.ncs_labor_category"""
+	    def queryMs = """SELECT LaborID, Description, Obsolete, EnteredWhen, EnteredByWhom, EnteredByWhat
+			FROM WebLookup.dbo.ncs_labor_category"""
 	          
 	    msConn.eachRow(queryMs) { row ->
 	        
@@ -165,8 +159,7 @@ class NcsDlrEtl {
 	        def userCreated = row.EnteredByWhom
 	        def appCreated = row.EnteredByWhat
 	        
-	        def laborCategory = getLaborCategoryFrom(laborId)
-			
+	        def laborCategory = getLaborCategoryFrom(laborId)			
 	        if ( laborCategory ) {
 	            println "Found Labor Category: ${name}"
 	        } else {
@@ -178,25 +171,19 @@ class NcsDlrEtl {
 		
 	} 
 	
-	def getLaborCategory(id) {
-		
+	def getLaborCategory(id) {		
 	    def queryMy = """SELECT id, version, app_created, date_created, name, obsolete, user_created
 	        FROM labor_category
-	        WHERE (id = ?);"""
-		
-	    return myConn.firstRow(queryMy, [id])
-		
+	        WHERE (id = ?);"""		
+	    return myConn.firstRow(queryMy, [id])		
 	}
 	
-	def newLaborCategory(id, name, obsolete, dateCreated, userCreated, appCreated) {
-		
+	def newLaborCategory(id, name, obsolete, dateCreated, userCreated, appCreated) {		
 	    def statement = """INSERT INTO `ncs_dlr`.`labor_category`
-	                    (id, version, name, obsolete, date_created, user_created, app_created)
-	                    VALUES (?, ?, ?, ?, ?, ?, ?);"""
-	    def params = [id, 0, name, obsolete, dateCreated, userCreated, appCreated]
-	    
-	    myConn.execute(statement, params) 
-	   
+			(id, version, name, obsolete, date_created, user_created, app_created)
+	        VALUES (?, ?, ?, ?, ?, ?, ?);"""
+	    def params = [id, 0, name, obsolete, dateCreated, userCreated, appCreated]	    
+	    myConn.execute(statement, params) 	   
 	}
 	
 	/* REPORTING PERIOD ********************************************************/
@@ -204,21 +191,10 @@ class NcsDlrEtl {
 	def importReportingPeriods() {
 
 		// TODO: no need to pull ncs_dlr_report.CreatedDate (sqv)
-	    def query = """SELECT 
-	    	p.PeriodID, 
-	        p.RIN, 
-	        p.AssignedMonth, 
-	        p.AssignedYear, 
-	        r.DatePrepared, 
-	        r.CreatedDate AS ReportDate
+	    def query = """SELECT p.PeriodID, p.RIN, p.AssignedMonth, p.AssignedYear, r.DatePrepared, r.CreatedDate AS ReportDate
 		FROM ncs_period p LEFT OUTER JOIN
 	    	ncs_dlr_report r ON 'SFR 2706 - ' + CONVERT(varchar(16), p.RIN) = r.ReferenceInvoiceNumber
-		GROUP BY p.PeriodID, 
-	    	p.RIN, 
-	        p.AssignedMonth, 
-	        p.AssignedYear, 
-	        r.DatePrepared, 
-	        r.CreatedDate
+		GROUP BY p.PeriodID, p.RIN, p.AssignedMonth, p.AssignedYear, r.DatePrepared, r.CreatedDate
 		ORDER BY p.AssignedYear, p.AssignedMonth"""
 		
 	    msConn.eachRow(query) { row ->
@@ -236,7 +212,6 @@ class NcsDlrEtl {
 	        def completedReportDate = row.ReportDate		// TODO: no need to pull ReportDate (sqv)
 	        
 	        def reportingPeriod = getReportingPeriod(periodDate)
-			
 	        if (reportingPeriod) {
 	            println "Found Period for ${periodDate} (${month}/${year}), RIN: ${reportingPeriod.reference_invoice_number}"
 	        } else {
@@ -250,25 +225,19 @@ class NcsDlrEtl {
 	}
 	
 	def getReportingPeriod(periodDate) {
-		
 	    def query = """SELECT id, version, completed_report_date, period_date, prepared_date, reference_invoice_number
 	        FROM reporting_period
 	        WHERE (period_date = ?);"""
-		
 	    return myConn.firstRow(query, [periodDate])
-		
 	}
 	
 	def newReportingPeriod(periodId, periodDate, referenceInvoiceNumber, preparedDate, completedReportDate) {
 		
-	    def statement = """INSERT INTO reporting_period
-	                    (id, version, period_date, reference_invoice_number, prepared_date, completed_report_date)
-	                    VALUES (?, 0, ?, ?, ?, ?);"""
+	    def statement = """INSERT INTO reporting_period (id, version, period_date, reference_invoice_number, prepared_date, completed_report_date)
+			VALUES (?, 0, ?, ?, ?, ?);"""
 		// TODO: no need to pull completedReportDate (sqv)
 	    def params = [periodId, 0, periodDate, referenceInvoiceNumber, preparedDate, completedReportDate]
-	    
 	    myConn.execute(statement, params) 
-	   
 	}
 	
 	/* STUDY ACTIVIY SECTION ***************************************************/
@@ -276,14 +245,8 @@ class NcsDlrEtl {
 	def importStudyActivities() {
 		
 		// do not get "status" column
-		def query = """SELECT 
-			ActivityID
-	        ,Description
-	        ,Obsolete,
-	        ,EnteredWhen
-	        ,EnteredByWhom
-	        ,EnteredByWhat
-		FROM WebLookup.dbo.ncs_study_activity"""
+		def query = """SELECT ActivityID, Description, Obsolete, EnteredWhen, EnteredByWhom, EnteredByWhat
+			FROM WebLookup.dbo.ncs_study_activity"""
 		
 	    msConn.eachRow(query) { row ->
 	        
@@ -294,8 +257,7 @@ class NcsDlrEtl {
 	        def userCreated = row.EnteredByWhom
 	        def appCreated = row.EnteredByWhat
 	        
-	        def studyActivity = getStudyActivity(activityId)
-			
+	        def studyActivity = getStudyActivity(activityId)			
 	        if ( studyActivity) {
 	            println "Found Activity: ${name}"
 	        } else {
@@ -307,26 +269,19 @@ class NcsDlrEtl {
 		
 	}
 		
-	def getStudyActivity(id) {
-		
+	def getStudyActivity(id) {		
 	    def query = """SELECT id, version, app_created, date_created, name, obsolete, user_created
 	        FROM study_activity
-	        WHERE (id = ?);"""
-		
-	    return myConn.firstRow(query, [id])
-		
+	        WHERE (id = ?);"""		
+	    return myConn.firstRow(query, [id])		
 	}
 	
 	def newStudyActivity(id, name, obsolete, dateCreated, userCreated, appCreated) {
 		
-	    def statement = """INSERT INTO study_activity
-	                    (id, version, name, obsolete, date_created, user_created, app_created)
-	                    VALUES (?, ?, ?, ?, ?, ?, ?);"""
-		
+	    def statement = """INSERT INTO study_activity (id, version, name, obsolete, date_created, user_created, app_created)
+			VALUES (?, ?, ?, ?, ?, ?, ?);"""		
 	    def params = [id, 0, name, obsolete, dateCreated, userCreated, appCreated]
-	    
 	    myConn.execute(statement, params) 
-	   
 	}
 	
 	/* TASK SECTION ************************************************************/
@@ -334,16 +289,8 @@ class NcsDlrEtl {
 	def importStudyTasks() {
 		
 		// do not get "status" column
-	    def query = """SELECT 
-	    	TaskID
-	        ,Description
-	        ,Obsolete
-	        ,EnteredWhen
-	        ,EnteredByWhom
-	        ,EnteredByWhat
-	        ,etdlrCode
-	        ,odeCode
-		FROM WebLookup.dbo.ncs_task"""
+	    def query = """SELECT TaskID, Description, Obsolete, EnteredWhen, EnteredByWhom, EnteredByWhat, etdlrCode, odeCode
+			FROM WebLookup.dbo.ncs_task"""
 		
 	    msConn.eachRow(query) { row ->
 	        
@@ -356,8 +303,7 @@ class NcsDlrEtl {
 	        def etDlrCode = row.etdlrCode
 	        def odeCode = row.odeCode
 	        
-	        def studyTask = getStudyTask(taskId)
-			
+	        def studyTask = getStudyTask(taskId)			
 	        if ( studyTask) {
 	            println "Found Activity: ${name}"
 	        } else {
@@ -370,152 +316,94 @@ class NcsDlrEtl {
 	}
 	
 	def getStudyTask(id) {
-		
 	    def query = """SELECT id, version, app_created, date_created, etdlr_code, name, obsolete, ode_code, user_created
 	        FROM study_task
 	        WHERE (id = ?);"""
-		
 	    return myConn.firstRow(query, [id])
-		
 	}
 	
 	def newStudyTask(id, name, etDlrCode, odeCode, obsolete, dateCreated, userCreated, appCreated) {
-		
-	    def statement = """INSERT INTO study_task
-	                    (id, version, name, etdlr_code, ode_code, obsolete, date_created, user_created, app_created)
+	    def statement = """INSERT INTO study_task (id, version, name, etdlr_code, ode_code, obsolete, date_created, user_created, app_created)
 	                    VALUES (?, ?, ?, ?, ?, ?, ?);"""
-		
 	    def params = [id, 0, name, etDlrCode, odeCode, obsolete, dateCreated, userCreated, appCreated]
-	    
 	    myConn.execute(statement, params)
-		    
 	}
 	
 	/* STAFF SECTION ***********************************************************/
 	
 	def importStaff() {
 		
-		//TODO: may not need to pull IsActive, IsHealthStudyStaff, IsAdministrator  
-	    def query = """SELECT 
-	    	StaffID
-	        ,FirstName
-	        ,MiddleInit
-	        ,LastName
-	        ,LaborCategoryID
-	        ,Email
-	        ,UmnInternetId
-	        ,IsActive
-	        ,IsHealthStudyStaff
-	        ,IsAdministrator
-	        ,IsTestAccount
-	        ,ReportsEffort
-	        ,EnteredWhen
-	        ,EnteredByWhom
-	        ,EnteredByWhat
-	        ,ModifiedWhen
-	        ,ModifiedByWhom
-		FROM WebLookup.dbo.ncs_staff
-		WHERE (UmnInternetId IS NOT NULL)"""
+		//TODO: may not need to pull IsActive, IsHealthStudyStaff, IsAdministrator, ModifiedWhen, ModifiedByWhom
+		//(mysql) reporting_staff: id, version, username, last_name, first_name, middle_init, labor_category_id, email, reports_effort, is_test_account, date_created, user_created, app_created
+		
+	    def query = """SELECT StaffID, UmnInternetId, LastName, FirstName, MiddleInit, LaborCategoryID, Email, ReportsEffort, IsTestAccount, EnteredWhen, EnteredByWhom, EnteredByWhat
+			FROM WebLookup.dbo.ncs_staff
+			WHERE (UmnInternetId IS NOT NULL)"""
 	          
 	    msConn.eachRow(query) { row ->
 	        
 	        def id = row.StaffID
 	        def username = row.UmnInternetId
-	        def email = row.Email
-	        def firstName = row.FirstName
-	        def middleInit = row.MiddleInit
-	        def lastName = row.LastName
-	        def laborCategoryId = row.LaborCategoryID
+			def lastName = row.LastName
+			def firstName = row.FirstName
+			def middleInit = row.MiddleInit
+			def laborCategoryId = row.LaborCategoryID
+			def email = row.Email
 	        def reportsEffort = row.IsActive
 	        def isTestAccount = row.IsTestAccount
 	        def dateCreated = row.EnteredWhen
 	        def userCreated = row.EnteredByWhom
 	        def appCreated = row.EnteredByWhat
 	        
-	        def staff = getStaff(username)
+	        def staff = getStaff(username)			
 	        if ( staff) {
 	            println "Found Staff: ${username}"
 	        } else {
 	            println "Creating Staff: ${username}"
-	            staff = newStaff(id, username, email, firstName, middleInit, lastName, 
-	            laborCategoryId, reportsEffort, isTestAccount, 
-	            dateCreated, userCreated, appCreated)
+	            staff = newStaff(id, username, lastName, firstName, middleInit, laborCategoryId, email, reportsEffort, isTestAccount, dateCreated, userCreated, appCreated)
 	        }
 			
 	    }
 		
 	}
+
+	def getStaff(String username)
+		if (username) {
+			def query = """SELECT id, version, username, last_name, first_name, middle_init, labor_category_id, email, reports_effort, is_test_account, date_created, user_created, app_created
+				FROM reporting_staff
+				WHERE (username = ?);"""
+			return myConn.firstRow(query, [username])
+		} else {
+			return null
+		}
+	}
 	
+
 	def getStaff(Long staffId) {
-	
 	    if (staffId) {
-	        def query = """SELECT id, version, 
-	                username, 
-	                email, 
-	                first_name, 
-	                middle_init, 
-	                last_name, 
-	                labor_category_id, 
-	                reports_effort, 
-	                is_test_account, 
-	                date_created, 
-	                user_created, 
-	                app_created
+	        def query = """SELECT id, version, username, last_name, first_name, middle_init, labor_category_id, email, reports_effort, is_test_account, date_created, user_created, app_created
 	            FROM reporting_staff
 	            WHERE (id = ?);"""
 	        return myConn.firstRow(query, [staffId])
+			
 	    } else {
 	        return null
-	    }
+	    }		
 	}
-	
-	
-	def getStaff(String username) {
-	    if (username) {
-	        def query = """SELECT id, version, 
-	                username, 
-	                email, 
-	                first_name, 
-	                middle_init, 
-	                last_name, 
-	                labor_category_id, 
-	                reports_effort, 
-	                is_test_account, 
-	                date_created, 
-	                user_created, 
-	                app_created
-	            FROM reporting_staff
-	            WHERE (username = ?);"""
-	        return myConn.firstRow(query, [username])
-	    } else {
-	        return null
-	    }
-	}
-	
-	def newStaff(id, username, email, firstName, middleInit, lastName, 
-	            laborCategoryId, reportsEffort, isTestAccount, 
-	            dateCreated, userCreated, appCreated) {
-	    def statement = """INSERT INTO reporting_staff
-	                        (id, version, username, 
-	                        email, first_name, middle_init, 
-	                        last_name, labor_category_id, reports_effort, 
-	                        is_test_account, date_created, user_created, 
-	                        app_created)
-	                    VALUES (?, 0, ?, 
-	                    ?, ?, ?, 
-	                    ?, ?, ?, 
-	                    ?, ?, ?, 
-	                   ?);"""
-	    def params = [id, username, email, firstName, middleInit, lastName, 
-	            laborCategoryId, reportsEffort, isTestAccount, 
-	            dateCreated, userCreated, appCreated]
-	    
-	    myConn.execute(statement, params)    
+		
+	def newStaff(id, username, lastName, firstName, middleInit, laborCategoryId, email, reportsEffort, isTestAccount, dateCreated, userCreated, appCreated) {
+		def statement = """INSERT INTO reporting_staff, 
+			(id, version, username, last_name, first_name, middle_init, labor_category_id, email, reports_effort, is_test_account, date_created, user_created, app_created)
+	        VALUES (?, 0, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);"""		
+	    def params = [id, username, lastName, firstName, middleInit, laborCategoryId, email, reportsEffort, isTestAccount, dateCreated, userCreated, appCreated]	    
+	    myConn.execute(statement, params)		    
 	}
 	
 	/* ASSIGNED EFFORT *********************************************************/
+
 	def importAssignedEfforts() {
-	
+
+		//assigned_effort: id, version, app_created, assigned_effort, assigning_staff_id, commiting_staff_id, date_assigned, date_committed, labor_category_id, period_id, reporting_staff_id	
 	    def query = """SELECT ea.AssignmentID, 
 	            ea.StaffID, 
 	            ea.PeriodID, 
@@ -546,7 +434,9 @@ class NcsDlrEtl {
 	        def periodId = row.PeriodID
 	        
 	        if (reportingStaffId) {
+				
 	            def assignedEffortInstance = getAssignedEffort(assignmentId)
+				
 	            if ( assignedEffortInstance) {
 	                println "Found Assigned Effort: ${assignmentId} : ${assignedEffort}"
 	            } else {
@@ -562,10 +452,15 @@ class NcsDlrEtl {
 	                    periodId,
 	                    reportingStaffId)
 	            }
+				
 	        } else {
+			
 	            println "Couldn't find staff id: ${row.StaffID}"
+				
 	        }
+			
 	    }
+		
 	}  
 	
 	def getAssignedEffort(id) {
@@ -650,26 +545,27 @@ class NcsDlrEtl {
 	
 	
 	/* REPORTED EFFORT  ********************************************************/
+				
 	def importReportedEfforts() {
-	    def query = """SELECT EffortID
-	              ,StaffID
-	              ,PeriodID
-	              ,ActivityID
-	              ,TaskID
-	              ,PercentEffort
-	              ,EnteredWhen
-	              ,EnteredByWhom
-	              ,EnteredByWhat
-	          FROM WebLookup.dbo.ncs_effort"""
+
+		//reported_effort: id, version, activity_id, app_created, assigned_effort_id, date_created, percent_effort, task_id, user_created		
+	    def query = """SELECT 
+	    	EffortID
+	        ,StaffID
+	        ,PeriodID
+	        ,ActivityID
+	        ,TaskID
+	        ,PercentEffort
+	        ,EnteredWhen
+	        ,EnteredByWhom
+	        ,EnteredByWhat
+		FROM WebLookup.dbo.ncs_effort"""
 	          
 	    msConn.eachRow(query) { row ->
 	
 	        def effortId = row.EffortID
 	        def activityId = row.ActivityID
-	        
 	        def assignedEffortId = getAssignedEffort(row.StaffID, row.PeriodID)?.id
-	        
-	        
 	        def percentEffort = row.PercentEffort
 	        def taskId = row.TaskID
 	        def dateCreated = row.EnteredWhen
@@ -677,13 +573,16 @@ class NcsDlrEtl {
 	        def appCreated = row.EnteredByWhat
 	        
 	        def laborCategory = getReportedEffort(effortId)
+			
 	        if ( ! assignedEffortId ) {
 	            println "!!! Couldn't Find assigned effort (ID: ${effortId}) for Staff: ${row.StaffID}, Period: ${row.PeriodID}"
 	            sleep 3000
 	        } else if ( laborCategory) {
 	            println "Found Reported Effort: ${effortId}"
 	        } else {
+			
 	            println "Creating Reported Effort: ${effortId} for assigned effort: ${assignedEffortId}"
+				
 	            laborCategory = newReportedEffort(effortId, activityId, 
 	                assignedEffortId, 
 	                percentEffort, 
@@ -691,15 +590,21 @@ class NcsDlrEtl {
 	                dateCreated, 
 	                userCreated, 
 	                appCreated)
+				
 	        }
+			
 	    }
+		
 	}
 	
 	def getReportedEffort(id) {
+		
 	    def query = """SELECT id, version, activity_id, assigned_effort_id, percent_effort, task_id, date_created, user_created, app_created
 	        FROM reported_effort
 	        WHERE (id = ?);"""
+		
 	    return myConn.firstRow(query, [id])
+		
 	}
 	
 	def newReportedEffort(id, 
