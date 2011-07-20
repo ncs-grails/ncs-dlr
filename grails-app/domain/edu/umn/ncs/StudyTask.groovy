@@ -6,9 +6,9 @@ class StudyTask {
 	static auditable = true
 	
     String name
+    Boolean obsolete = true
     Integer etdlrCode
     Integer odeCode
-    Boolean obsolete = true
     Date dateCreated = new Date()
     String userCreated
     String appCreated = 'ncs-dlr'
@@ -19,9 +19,9 @@ class StudyTask {
 		
         String oldValue = "Study Task"
 			oldValue += ", name: ${oldMap.name}"
+			oldValue += ", obsolete: ${oldMap.obsolete}"
 			oldValue += ", etdlrCode: ${oldMap.etdlrCode}"
 			oldValue += ", odeCode: ${oldMap.odeCode} "
-			oldValue += ", obsolete: ${oldMap.obsolete}"
 			oldValue += ", dateCreated: ${oldMap.dateCreated}"
 			oldValue += ", userCreated: ${oldMap.userCreated}"
 			oldValue += ", appCreated: ${oldMap.appCreated}"
@@ -53,9 +53,9 @@ class StudyTask {
 
     static constraints = {
         name(maxSize:1024)
+        obsolete()
         etdlrCode(nullable:true)
         odeCode(nullable:true)
-        obsolete()
         dateCreated()
         userCreated(blank:false)
         appCreated(blank:false)
