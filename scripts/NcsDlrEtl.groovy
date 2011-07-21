@@ -1,4 +1,4 @@
-import groovy.sql.Sql
+	import groovy.sql.Sql
 import org.joda.time.LocalDateTime
 
 /*
@@ -425,8 +425,6 @@ class RunNcsDlrEtl {
 				) AS e ON a.StaffID = e.StaffID AND a.PeriodID = e.PeriodID LEFT OUTER JOIN
 				ncs_effort_committed AS c ON e.PeriodID = c.PeriodID AND e.StaffID = c.StaffID AND a.StaffID = c.StaffID AND a.PeriodID = c.PeriodID LEFT OUTER JOIN
 				ncs_staff AS s ON a.StaffID = s.StaffID"""
-		  
-		  
 	
 	    msConn.eachRow(query) { row ->
 	        
