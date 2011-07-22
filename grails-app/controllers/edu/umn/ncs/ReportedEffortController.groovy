@@ -239,6 +239,7 @@ class ReportedEffortController {
 		// REPORTED EFFORT
         def reportedEffortInstance = ReportedEffort.read(params.id)
         println "PRINTLN ReportedEffortController.editSave.reportedEffortInstance: ${reportedEffortInstance}"        
+        println "PRINTLN ReportedEffortController.editSave.reportedEffortInstance.percentEffort: ${reportedEffortInstance.percentEffort}"        
         println "PRINTLN ReportedEffortController.editSave.params?.version: ${params?.version}"
         
         if ( reportedEffortInstance ) {
