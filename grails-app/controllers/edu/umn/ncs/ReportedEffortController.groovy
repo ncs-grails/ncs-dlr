@@ -58,8 +58,8 @@ class ReportedEffortController {
         println "PRINTLN ReportedEffortController.addSave.reportedEffortInstance: ${reportedEffortInstance}"                    
         println "PRINTLN ReportedEffortController.addSave.reportedEffortConvertedVal: ${reportedEffortConvertedVal}"
 		
-		def dataTypeIs = reportedEffortConvertedVal.getClass()
-		println "PRINTLN ReportedEffortController.addSave.reportedEffortConvertedVal.dataTypeIs: ${dataTypeIs}"
+		//def dataTypeIs = reportedEffortConvertedVal.getClass()
+		//println "PRINTLN ReportedEffortController.addSave.reportedEffortConvertedVal.dataTypeIs: ${dataTypeIs}"
 		
         // ASSIGNED EFFORT
         def assignedEffortInstance = AssignedEffort.read(params?.assignedEffort?.id)
@@ -270,11 +270,11 @@ class ReportedEffortController {
             }
             println "PRINTLN AssignedEffortController.editSave.sumOfReportedPercentEffort: ${sumOfReportedPercentEffort}"
 
-            def sumReportedPercentEffortConverted 
+            def sumOfReportedPercentEffortConverted 
             if ( sumOfReportedPercentEffort || sumOfReportedPercentEffort == 0 ) {
-                sumReportedPercentEffortConverted = sumOfReportedPercentEffort * 100                    
+                sumOfReportedPercentEffortConverted = sumOfReportedPercentEffort * 100                    
             } 
-            println "PRINTLN ReportedEffortController.editSave.sumReportedPercentEffortConverted: ${sumReportedPercentEffortConverted}"
+            println "PRINTLN ReportedEffortController.editSave.sumOfReportedPercentEffortConverted: ${sumOfReportedPercentEffortConverted}"
 
 			reportedEffortInstance = ReportedEffort.get(params.id)
             println "PRINTLN ReportedEffortController.editSave.reportedEffortInstance: ${reportedEffortInstance}"
