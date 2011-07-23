@@ -256,6 +256,9 @@ class LaborService {
 	
 	def getCombineReportedEffortConverted(sumConverted, entryConverted) {
 		
+        println "PRINTLN LaborService.getCombineReportedEffortConverted.sumConverted: ${sumConverted}"
+		println "PRINTLN LaborService.getCombineReportedEffortConverted.entryConverted: ${entryConverted}"
+		
 		def combineConverted
 		
 		if ( sumConverted && entryConverted ) {

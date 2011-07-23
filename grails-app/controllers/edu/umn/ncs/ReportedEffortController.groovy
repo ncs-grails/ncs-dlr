@@ -72,13 +72,13 @@ class ReportedEffortController {
 		def sumReportedPercentEffort = laborService.getSumOfReportedPercentEffort(assignedEffortInstance)		
         println "PRINTLN ReportedEffortController.addSave.sumReportedPercentEffort: ${sumReportedPercentEffort}"        
 
-        def sumReportedPercentEffortConverted 
+        def sumOfAlreadyReportedPercentEffortConverted 
         if ( sumReportedPercentEffort ) {
-            sumReportedPercentEffortConverted = sumReportedPercentEffort * 100                    
+            sumOfAlreadyReportedPercentEffortConverted = sumReportedPercentEffort * 100                    
         }
-        println "PRINTLN ReportedEffortController.addSave.sumReportedPercentEffortConverted: ${sumReportedPercentEffortConverted}"
+        println "PRINTLN ReportedEffortController.addSave.sumOfAlreadyReportedPercentEffortConverted: ${sumOfAlreadyReportedPercentEffortConverted}"
         
-        def combineReportedEffortConverted = laborService.getCombineReportedEffortConverted(sumReportedPercentEffortConverted, reportedEffortConvertedVal)
+        def combineReportedEffortConverted = laborService.getCombineReportedEffortConverted(sumOfAlreadyReportedPercentEffortConverted, reportedEffortConvertedVal)
         println "PRINTLN ReportedEffortController.addSave.combineReportedEffortConverted: ${combineReportedEffortConverted}"
 
         // REPORTED EFFORT ENTRY VALIDATION
@@ -238,8 +238,11 @@ class ReportedEffortController {
                 
 		// REPORTED EFFORT
         def reportedEffortInstance = ReportedEffort.read(params.id)
+		//def reportedEffortVal = params?.percentEffortConverted?.toBigDecimal()
+		
         println "PRINTLN ReportedEffortController.editSave.reportedEffortInstance: ${reportedEffortInstance}"        
-        println "PRINTLN ReportedEffortController.editSave.reportedEffortInstance.percentEffort: ${reportedEffortInstance.percentEffort}"        
+        println "PRINTLN ReportedEffortController.editSave.reportedEffortInstance.percentEffort: ${reportedEffortInstance.percentEffortConverted}"        
+        //println "PRINTLN ReportedEffortController.editSave.reportedEffortVal: ${reportedEffortVal}"        
         println "PRINTLN ReportedEffortController.editSave.params?.version: ${params?.version}"
         
         if ( reportedEffortInstance ) {
@@ -252,41 +255,42 @@ class ReportedEffortController {
                     return
                 }
             }
-            
+
+			// USER who entered effort
+			def principal = authenticateService.principal()
+			reportedEffortInstance.userCreated = principal.getUsername()
+			println "PRINTLN ReportedEffortController.editSave.reportedEffortInstance.userCreated: ${reportedEffortInstance.userCreated}"
+
             // ASSIGNED EFFORT
             def assignedEffortInstance = reportedEffortInstance.assignedEffort
-            println "PRINTLN ReportedEffortController.editSave.assignedEffortInstance: ${assignedEffortInstance}"
+            println "PRINTLN ReportedEffortController.editSave.assignedEffortInstance.id: ${assignedEffortInstance.id}"
+            println "PRINTLN ReportedEffortController.editSave.assignedEffortInstance.assignedEffortConverted: ${assignedEffortInstance.assignedEffortConverted}"
             
-            // REPORTED EFFORT totals, excluding what is currently being edited
+            // already REPORTED EFFORT total
             def cSum = ReportedEffort.createCriteria()
-            def sumOfReportedPercentEffort = cSum.get {
+            def sumOfAlreadyReportedPercentEffort = cSum.get {
                 eq("assignedEffort", assignedEffortInstance)
                 ne("id", reportedEffortInstance.id)
                 projections {
                     sum("percentEffort")
                 }
             }
-            if ( !sumOfReportedPercentEffort ) {
-                sumOfReportedPercentEffort = 0
+            if ( !sumOfAlreadyReportedPercentEffort ) {
+                sumOfAlreadyReportedPercentEffort = 0
             }
-            println "PRINTLN AssignedEffortController.editSave.sumOfReportedPercentEffort: ${sumOfReportedPercentEffort}"
+            println "PRINTLN AssignedEffortController.editSave.sumOfAlreadyReportedPercentEffort: ${sumOfAlreadyReportedPercentEffort}"
 
-            def sumOfReportedPercentEffortConverted 
-            if ( sumOfReportedPercentEffort || sumOfReportedPercentEffort == 0 ) {
-                sumOfReportedPercentEffortConverted = sumOfReportedPercentEffort * 100                    
+            def sumOfAlreadyReportedPercentEffortConverted 
+            if ( sumOfAlreadyReportedPercentEffort || sumOfAlreadyReportedPercentEffort == 0 ) {
+                sumOfAlreadyReportedPercentEffortConverted = sumOfAlreadyReportedPercentEffort * 100                    
             } 
-            println "PRINTLN ReportedEffortController.editSave.sumOfReportedPercentEffortConverted: ${sumOfReportedPercentEffortConverted}"
+            println "PRINTLN ReportedEffortController.editSave.sumOfAlreadyReportedPercentEffortConverted: ${sumOfAlreadyReportedPercentEffortConverted}"
 
-			reportedEffortInstance = ReportedEffort.get(params.id)
-            println "PRINTLN ReportedEffortController.editSave.reportedEffortInstance: ${reportedEffortInstance}"
+			// ReportedEffortInstance accepts new percentEffort entry
 			reportedEffortInstance.properties = params
-
-	        // USER who entered effort
-	        def principal = authenticateService.principal()   
-			reportedEffortInstance.userCreated = principal.getUsername()
-	        println "PRINTLN ReportedEffortController.editSave.reportedEffortInstance.userCreated: ${reportedEffortInstance.userCreated}"
 			
-			def combineReportedEffortConverted = laborService.getCombineReportedEffortConverted(sumReportedPercentEffortConverted, reportedEffortInstance.percentEffortConverted)			
+            // combined REPORTED EFFORT 
+			def combineReportedEffortConverted = laborService.getCombineReportedEffortConverted(sumOfAlreadyReportedPercentEffortConverted, reportedEffortInstance.percentEffortConverted)			
             println "PRINTLN ReportedEffortController.editSave.combineReportedEffortConverted: ${combineReportedEffortConverted}"
 
             // REPORTED EFFORT ENTRY VALIDATION
@@ -294,17 +298,7 @@ class ReportedEffortController {
             def errMessage
 			def pRange = 0.0..100.0
 			def hideAddButton = false
-			
-			/*
-			if ( reportedEffortInstance.percentEffortConverted.toBigDecimal() == 0 ) { 
-				println "reportedEffortInstance.percentEffortConverted.toBigDecimal() == 0" 
-			}
-			if ( combineReportedEffortConverted && combineReportedEffortConverted.toBigDecimal() == assignedEffortInstance.assignedEffortConverted.toBigDecimal() ) {
-				println "combineReportedEffortConverted && combineReportedEffortConverted.toBigDecimal() == assignedEffortInstance.assignedEffortConverted.toBigDecimal()"
-			}
-			*/
-			 
-            println "PRINTLN ReportedEffortController.editSave.reportedEffortInstance.percentEffortConverted: ${reportedEffortInstance.percentEffortConverted}"			
+						 
             if ( reportedEffortInstance.percentEffortConverted.toBigDecimal() || reportedEffortInstance.percentEffortConverted.toBigDecimal() == 0 ) {
 
 				// entry is zero
@@ -312,30 +306,24 @@ class ReportedEffortController {
 					
 					err = true
 					errMessage = "Cannot enter zero percent effort."
-					//reportedEffortInstance.discard()
 					
 				// entry is not a valid percent effort
 				} else if ( !(pRange.containsWithinBounds(reportedEffortInstance.percentEffortConverted.toBigDecimal())) ) {
 				
 					err = true
 					errMessage = "Please enter a valid percent effort."
-					//reportedEffortInstance.discard()
 					
                 // entry is is greater than what is assigned
             	} else if ( reportedEffortInstance.percentEffortConverted.toBigDecimal() >  assignedEffortInstance.assignedEffortConverted.toBigDecimal() ) {
 
                     err = true
                     errMessage = "The effort you just entered is greater than what has been assigned to you."
-					def rei = ReportedEffort.read(reportedEffortInstance.id)
-					println "rei: ${rei.percentEffort} "
-					//reportedEffortInstance.discard()
 					
                 // combined reported effort is > than assigned effort
                 } else if ( combineReportedEffortConverted && combineReportedEffortConverted.toBigDecimal() > assignedEffortInstance.assignedEffortConverted.toBigDecimal() ) {                
 
                     err = true
                     errMessage = "The effort you just entered, plus what has already been reported, is greater than what is assigned to you."
-					//reportedEffortInstance.discard()
 					
 				// combined reported effort equals what is assigned
 				} else if ( combineReportedEffortConverted && combineReportedEffortConverted.toBigDecimal() == assignedEffortInstance.assignedEffortConverted.toBigDecimal() ) {
@@ -343,10 +331,16 @@ class ReportedEffortController {
 					hideAddButton = true
 
                 }
-
-            }
-            println "PRINTLN ReportedEffortController.editSave.errMessage: ${errMessage}"
-                    
+				
+				println "PRINTLN ReportedEffortController.editSave.reportedEffortInstance.percentEffortConverted BEFORE DISCARD(): ${reportedEffortInstance.percentEffortConverted}"
+				if (err) {
+					reportedEffortInstance.discard()
+				}
+				println "PRINTLN ReportedEffortController.editSave.reportedEffortInstance.percentEffortConverted AFTER DISCARD(): ${reportedEffortInstance.percentEffortConverted}"
+				
+            }			
+			println "PRINTLN ReportedEffortController.editSave.errMessage: ${errMessage}"
+			
             // SAVE
             if ( !err && reportedEffortInstance.validate() && !reportedEffortInstance.hasErrors() && reportedEffortInstance.save(flush: true) ) {
                 
