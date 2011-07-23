@@ -1,4 +1,4 @@
-<g:form name="assignedEffort" method="post" controller:"assignedEffort" action="commit">
+<g:form name="assignedEffort" method="post" controller="assignedEffort" action="commit">
   
   <g:hiddenField name="id" value="${assignedEffortInstance.id}" />
 

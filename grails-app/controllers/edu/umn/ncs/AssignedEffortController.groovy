@@ -1,19 +1,31 @@
 package edu.umn.ncs
 
+import java.awt.GraphicsConfiguration.DefaultBufferCapabilities;
+
 class AssignedEffortController {
 
     def authenticateService
     def laborService
 
+	def index = {
+		
+		println "PRINTLN ASSIGNED EFFORT CONTROLLER > INDEX --------------------"
+		println "PRINTLN AssignedEffortController.index.params: ${params}"
+
+	}
+	
     def show = {
         
         println "PRINTLN ASSIGNED EFFORT CONTROLLER > SHOW ---------------------"                
         println "PRINTLN AssignedEffortController.show.params: ${params}"
         
         def assignedEffortInstance = AssignedEffort.read(params?.id)
-        println "PRINTLN AssignedEffortController.show.assignedEffortInstance: ${assignedEffortInstance}"
-            
-        [ assignedEffortInstance: assignedEffortInstance ]        
+		if ( assignedEffortInstance ) {
+	        println "PRINTLN AssignedEffortController.show.assignedEffortInstance: ${assignedEffortInstance}"
+			println "PRINTLN AssignedEffortController.show.assignedEffortInstance.id: ${assignedEffortInstance.id}"
+		}
+		
+		[ assignedEffortInstance: assignedEffortInstance ]        
 
     } 
  
@@ -187,62 +199,76 @@ class AssignedEffortController {
         println "PRINTLN AssignedEffortController.commit.params: ${params}"
         
         def assignedEffortInstance = AssignedEffort.read(params?.id)        
-        println "PRINTLN AssignedEffortController.commit.assignedEffortInstance: ${assignedEffortInstance}"     
-        
+		println "PRINTLN AssignedEffortController.commit.assignedEffortInstance: ${assignedEffortInstance}"
+		
         if ( assignedEffortInstance ) {
             
 			// ASSIGNED EFFORT
             def assignedPercentEffort = assignedEffortInstance.assignedEffort
-            println "PRINTLN AssignedEffortController.commit.assignedPercentEffort: ${assignedPercentEffort}"
-            
-			// REPORTED EFFORT
+			println "PRINTLN AssignedEffortController.commit.assignedEffortInstance.id: ${assignedEffortInstance.id}"     
+			println "PRINTLN AssignedEffortController.commit.assignedEffortInstance.period: ${assignedEffortInstance.period}"
+			
+			// sum of REPORTED EFFORT
             def sumOfReportedPercentEffort = laborService.getSumOfReportedPercentEffort(assignedEffortInstance)
             println "PRINTLN AssignedEffortController.commit.sumOfReportedPercentEffort: ${sumOfReportedPercentEffort}"
                         
-            def errMessage
-
-			// total reported effort equals what is assigned, ready to commit 
-            if ( sumOfReportedPercentEffort.toBigDecimal() == assignedPercentEffort.toBigDecimal() ) {
-                
-                def principal = authenticateService.principal()                         
-                def reportingStaffInstance = laborService.getReportingStaff(principal)    
-                println "PRINTLN AssignedEffortController.commit.reportingStaffInstance: ${reportingStaffInstance}"
-
-                assignedEffortInstance.dateCommitted = new Date()
-                assignedEffortInstance.commitingStaff = reportingStaffInstance
-                println "PRINTLN AssignedEffortController.commit.assignedEffortInstance.dateCommitted: ${assignedEffortInstance.dateCommitted}"
-                println "PRINTLN AssignedEffortController.commit.assignedEffortInstance.commitingStaff: ${assignedEffortInstance.commitingStaff}"                
-                
-                if ( !assignedEffortInstance.hasErrors() && assignedEffortInstance.save(flush: true)) {                                    
-
-					println "COMMIT SUCCESSFULLY"                    
-                    redirect(controller: 'main', action: "show")
-					//redirect(uri:"/main/show")
-					//render(view: "/assignedEffort/show", model: [ assignedEffortInstance: assignedEffortInstance ])					
-					//render(view: "/main/show")
+			// commit REPORTED EFFORT validation			
+			def errMessage
+						
+			// total reported effort does not equals assigned effort, attempt to commit                
+			if ( sumOfReportedPercentEffort.toBigDecimal() != assignedPercentEffort.toBigDecimal() ) {
+				
+				// total reported effort is less than what is assigned
+				if ( sumOfReportedPercentEffort.toBigDecimal() < assignedPercentEffort.toBigDecimal() ) {
 					
-                } else {
-                    
-					println "COMMIT FAILED"                    
-                    errMessage = "Failed to COMMIT."                   
-                    render(view: "/assignedEffort/show", model: [ assignedEffortInstance: assignedEffortInstance, errMessage: errMessage ])
-                    
-                }
-               
-			// total reported effort equals assigned is less than what is assigned
-            } else if ( sumOfReportedPercentEffort.toBigDecimal() < assignedPercentEffort.toBigDecimal() ) {
-                
-                errMessage = "Cannot COMMIT your reported effort because it is less than what has been assigned to you."                                
-                render(view: "/assignedEffort/show", model: [ assignedEffortInstance: assignedEffortInstance, errMessage: errMessage ])
+					errMessage = "Cannot COMMIT your reported effort because it is less than what has been assigned to you."
+	
+				// total reported effort is greater than what is assigned
+				} else if ( sumOfReportedPercentEffort.toBigDecimal() > assignedPercentEffort.toBigDecimal() ) {
+					
+					errMessage = "Cannot COMMIT your reported effort because it is greater than what has been assigned to you."
+				}
+				
+				println "PRINTLN AssignedEffortController.commit.errMessage: ${errMessage}"
+				render(view: "/assignedEffort/show", model: [ assignedEffortInstance: assignedEffortInstance, errMessage: errMessage ])
+				
+					
+			// total reported effort equals assigned effort, attempt to commit                
+			} else {
+			
+				def principal = authenticateService.principal()
+				def reportingStaffInstance = laborService.getReportingStaff(principal)
+				println "PRINTLN AssignedEffortController.commit.reportingStaffInstance: ${reportingStaffInstance}"
+	
+				assignedEffortInstance.dateCommitted = new Date()
+				assignedEffortInstance.commitingStaff = reportingStaffInstance
+				println "PRINTLN AssignedEffortController.commit.assignedEffortInstance.dateCommitted: ${assignedEffortInstance.dateCommitted}"
+				println "PRINTLN AssignedEffortController.commit.assignedEffortInstance.commitingStaff: ${assignedEffortInstance.commitingStaff}"
+												
+				if ( assignedEffortInstance.validate() && !assignedEffortInstance.hasErrors() && assignedEffortInstance.save(flush: true)) {
+	
+					println "COMMIT SUCCESSFULLY"
+										
+					// TODO: if all assigned effort is committed, send email alert to all administrators
+					def countOfNotCommittedAssignedEffort = laborService.countNotCommittedAssignedEffort(assignedEffortInstance.period)
+					println "PRINTLN AssignedEffortController.commit.countOfNotCommittedAssignedEffort: ${countOfNotCommittedAssignedEffort}"
+		
+					if ( !countOfNotCommittedAssignedEffort) {
+						println "PRINTLN RUN sendAllAssignedEffortIsCommittedEmailAlert "
+					}
+						
+					redirect(controller: 'main', action: "show")
+					
+				} else {
+					
+					println "COMMIT FAILED"
+					errMessage = "Failed to COMMIT."
+					render(view: "/assignedEffort/show", model: [ assignedEffortInstance: assignedEffortInstance, errMessage: errMessage ])
+					
+				} 
 
-			// total reported effort is greater than what is assigned
-            } else if ( sumOfReportedPercentEffort.toBigDecimal() > assignedPercentEffort.toBigDecimal() ) {
-                
-                errMessage = "Cannot COMMIT your reported effort because it is greater than what has been assigned to you."                                
-                render(view: "/assignedEffort/show", model: [ assignedEffortInstance: assignedEffortInstance, errMessage: errMessage ])
-                
-            }//if ( sumOfReportedPercentEffort.toBigDecimal() == assignedPercentEffort.toBigDecimal() )
-    
+			} //( sumOfReportedPercentEffort.toBigDecimal() !== assignedPercentEffort.toBigDecimal() )
+							
         } //if ( assignedEffortInstance )
 
     } //def commit 

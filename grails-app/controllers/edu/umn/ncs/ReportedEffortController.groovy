@@ -158,39 +158,37 @@ class ReportedEffortController {
         println "PRINTLN REPORTED EFFORT CONTROLLER > DELETE -------------------"                
         println "PRINTLN ReportedEffortController.delete.params: ${params}"        
         
-        // ASSIGNED & REPORTED EFFORT
+        // ASSIGNED EFFORT
+        def assignedEffortInstance = AssignedEffort.read(params?.id)
+        println "PRINTLN ReportedEffortController.delete.assignedEffortInstance: ${assignedEffortInstance}"        
+
+		// REPORTED EFFORT
         def reportedEffortInstance = ReportedEffort.read(params?.reportedEffort?.id)
 		println "PRINTLN ReportedEffortController.delete.reportedEffortInstance: ${reportedEffortInstance}"
 		
-        def assignedEffortInstance 
-        if ( reportedEffortInstance ) {
-            assignedEffortInstance = reportedEffortInstance.assignedEffort            
-        }
-        println "PRINTLN ReportedEffortController.delete.assignedEffortInstance: ${assignedEffortInstance}"        
- 
-        // DELETE
+        // validation
         def errMessage
 
         if ( reportedEffortInstance ) {
-			println "PRINTLN ReportedEffortController.delete.if(reportedEffortInstance)=true"        
+			
+			println "PRINTLN ReportedEffortController.delete.if(reportedEffortInstance)=TRUE"        
             try {
                 reportedEffortInstance.delete(flush: true)
 				println "PRINTLN DELETE SUCCESSFUL"        
-                //flash.message = "${message(code: 'default.deleted.message', args: [message(code: 'reportedEffort.label', default: 'ReportedEffort'), params.id])}"
             }
-            catch (org.springframework.dao.DataIntegrityViolationException e) {
+            catch (org.springframework.dao.DataIntegrityViolationException e) {				
 				println "PRINTLN DELETE FAILED"        
                 errMessage = "Reported Effort could not be deleted"
-                //flash.message = "${message(code: 'default.not.deleted.message', args: [message(code: 'reportedEffort.label', default: 'ReportedEffort'), params.id])}"
             }
+			
         } else {
             
-			println "PRINTLN ReportedEffortController.delete.if(reportedEffortInstance)=false"        
+			println "PRINTLN ReportedEffortController.delete.if(reportedEffortInstance)=FALSE"        
             errMessage = "Must select a Reported Effort to delete."
-            //flash.message = "${message(code: 'default.not.found.message', args: [message(code: 'reportedEffort.label', default: 'ReportedEffort'), params.id])}"
-        }        
-        println "PRINTLN ReportedEffortController.delete.errMessage: ${errMessage}"        
-		
+			
+        }   
+		     
+        println "PRINTLN ReportedEffortController.delete.errMessage: ${errMessage}"        		
         render(view: "/assignedEffort/show", model: [assignedEffortInstance: assignedEffortInstance, errMessage: errMessage] )
        
     } //def delete
@@ -238,11 +236,9 @@ class ReportedEffortController {
                 
 		// REPORTED EFFORT
         def reportedEffortInstance = ReportedEffort.read(params.id)
-		//def reportedEffortVal = params?.percentEffortConverted?.toBigDecimal()
 		
         println "PRINTLN ReportedEffortController.editSave.reportedEffortInstance: ${reportedEffortInstance}"        
         println "PRINTLN ReportedEffortController.editSave.reportedEffortInstance.percentEffort: ${reportedEffortInstance.percentEffortConverted}"        
-        //println "PRINTLN ReportedEffortController.editSave.reportedEffortVal: ${reportedEffortVal}"        
         println "PRINTLN ReportedEffortController.editSave.params?.version: ${params?.version}"
         
         if ( reportedEffortInstance ) {

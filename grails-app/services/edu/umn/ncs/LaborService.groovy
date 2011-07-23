@@ -243,6 +243,7 @@ class LaborService {
     def getSumOfReportedPercentEffort(assignedEffortInstance) {
         
         def cSum = ReportedEffort.createCriteria()
+		
         def sumOfReportedPercentEffort = cSum.get {
             eq("assignedEffort", assignedEffortInstance)
             projections {
@@ -278,5 +279,26 @@ class LaborService {
 		return combineConverted
 		
 	}
+	
+	def countNotCommittedAssignedEffort(periodId) {
+
+		def cCount = AssignedEffort.createCriteria()
+		
+		def countOfNotCommittedAssignedEffort = cCount.get {
+			eq("period", periodId)
+			isNull("dateCommitted")
+			projections {
+				count("id")
+			}
+		}
+
+		return countOfNotCommittedAssignedEffort		
+		
+	} //countNotCommittedAssignedEffort(periodId)
+	
+	def sendAllAssignedEffortIsCommittedEmailAlert (periodId) {
+		
+	}
+		
 	 
 } //class LaborService
