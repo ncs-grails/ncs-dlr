@@ -2,7 +2,7 @@ package edu.umn.ncs
 
 import grails.test.*
 
-class EtdlrTaskTests extends GrailsUnitTestCase {
+class StudyTaskEtdlrTests extends GrailsUnitTestCase {
     protected void setUp() {
         super.setUp()
     }

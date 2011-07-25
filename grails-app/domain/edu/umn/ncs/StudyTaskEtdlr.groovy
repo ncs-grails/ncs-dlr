@@ -2,7 +2,7 @@ package edu.umn.ncs
 import java.util.Date;
 import org.codehaus.groovy.grails.plugins.orm.auditable.AuditLogEvent
 
-class EtdlrTask {
+class StudyTaskEtdlr {
 
 	static auditable = true
 
@@ -19,7 +19,7 @@ class EtdlrTask {
 		
 		def now = new Date()
 		
-        String oldValue = "ETDLR Task"
+        String oldValue = "Task ETDLR"
 			oldValue += ", name: ${oldMap.name}"
 			oldValue += ", obsolete: ${oldMap.obsolete}"
 			oldValue += ", dateCreated: ${oldMap.dateCreated}"
