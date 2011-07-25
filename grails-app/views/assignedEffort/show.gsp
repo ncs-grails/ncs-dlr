@@ -44,11 +44,10 @@
       url="${[controller:'reportedEffort',action:'edit' ]}" 
       update="remoteFormContainer" 
     />
-    <g:submitToRemote 
-      class="buttonBasic" 
+	<g:submitButton 
+      class="buttonBasic"
+      name="commit" 
       value="COMMIT" 
-      url="${[controller:'assignedEffort',action:'commit' ]}" 
-      update="remoteFormContainer" 
     />
   </div>
 

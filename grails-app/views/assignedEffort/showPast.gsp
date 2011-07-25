@@ -1,4 +1,4 @@
-<h2>Previous Effort Reported </h2>
+<h2>Past Effort Reported </h2>
 
 <table>
 

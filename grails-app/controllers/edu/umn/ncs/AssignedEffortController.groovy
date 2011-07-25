@@ -215,7 +215,7 @@ class AssignedEffortController {
 			// commit REPORTED EFFORT validation			
 			def errMessage
 						
-			// total reported effort does not equals assigned effort, attempt to commit                
+			// total reported effort does not equal assigned effort, cannot commit        
 			if ( sumOfReportedPercentEffort.toBigDecimal() != assignedPercentEffort.toBigDecimal() ) {
 				
 				// total reported effort is less than what is assigned
@@ -230,8 +230,6 @@ class AssignedEffortController {
 				}
 								
 				render(view: "/assignedEffort/show", model: [ assignedEffortInstance: assignedEffortInstance, errMessage: errMessage ])
-			  	//redirect(controller: 'assignedEffort', action: "show", params: ['id': assignedEffortInstance.id, errMessage: errMessage])
-				//redirect(action: 'show', params: [id: assignedEffortInstance.id, errMessage: errMessage ])				
 					
 			// total reported effort equals assigned effort, attempt to commit                
 			} else {
