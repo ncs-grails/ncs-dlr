@@ -100,88 +100,7 @@ class LaborService {
 
         return nextReportingPeriodDateTime
 
-    } //def getNextReportingPeriodDate
-    
-    
-    def sendEmailNotification (periodId, staffId) {
-        
-        // Get logged in user account
-        def principal = authenticateService.principal()
-        def username = principal.getUsername()
-        def loggedInReportingStaffInstance = ReportingStaff.findByUsername(username)
-        //println "PRINTLN laborService.sendEmailNotification.loggedInReportingStaffInstance: ${loggedInReportingStaffInstance}"
-        //println "LaborService.sendEmailNotification.loggedInReportingStaffInstance.email = ${loggedInReportingStaffInstance.email}"
-
-        // Get reporting staff
-        def reportingStaffInstance = ReportingStaff.read(staffId)
-        //println "LaborService.sendEmailNotification.reportingStaffInstance = ${reportingStaffInstance}"        
-        //println "LaborService.sendEmailNotification.reportingStaffInstance.email = ${reportingStaffInstance.email}"
-
-        //Get reporting due date
-        def currentReportingPeriodInstance = ReportingPeriod.read(periodId)
-        println "PRINTLN LaborService.sendEmailNotification.currentReportingPeriodInstance: ${currentReportingPeriodInstance}"
-        
-        def currentReportingPeriodDate = currentReportingPeriodInstance.periodDate
-        println "PRINTLN LaborService.sendEmailNotification.currentReportingPeriodDate: ${currentReportingPeriodDate}"
-                
-        def nextReportingDate = getNextReportingPeriodDateTime(currentReportingPeriodDate)
-        println "PRINTLN LaborService.sendEmailNotification.nextReportingDate: ${nextReportingDate}"
-        
-        def reportingDueDate = new LocalDate(nextReportingDate)        
-        
-        def reportingDueDateMonthName = reportingDueDate.toString('MMMM')
-        println "PRINTLN LaborService.sendEmailNotification.reportingDueDateMonthName = ${reportingDueDateMonthName}"
-
-        def reportingDueDateYear = reportingDueDate.toString('yyyy')
-        println "PRINTLN LaborService.sendEmailNotification.reportingDueDate = ${reportingDueDateYear}"
-
-        def reportingDueDateString = reportingDueDateMonthName + ' 20 ' + reportingDueDateYear
-        println "PRINTLN LaborService.sendEmailNotification.reportingDueDateString = ${reportingDueDateString}"
-                
-        // Get list of dates emails were sent in the past already
-        def currentPeriodAssignedEffortInstance = AssignedEffort.findByPeriodAndReportingStaff(currentReportingPeriodInstance,reportingStaffInstance)
-        //println "PRINTLN LaborService.sendEmailNotification.currentPeriodAssignedEffortInstance: ${currentPeriodAssignedEffortInstance}"
-        
-        def notificationEmailInstanceList = currentPeriodAssignedEffortInstance.emails
-        //println "PRINTLN LaborService.sendEmailNotification.notificationEmailInstanceList: ${notificationEmailInstanceList}"
-
-        // Create email subject title, indicating email is an initial or reminder
-        def emailSubjectTitle
-        
-        if ( notificationEmailInstanceList ) {
-            //println "PRINTLN LaborService.sendEmailNotification.if(notificationEmailInstance) = TRUE"
-            emailSubjectTitle = "Reminder - NCS Direct Labor Report due ${reportingDueDateString}"
-        // otherwise, send an INITIAL
-        } else {
-            // println "PRINTLN LaborService.sendEmailNotification.if(notificationEmailInstance) = FALSE"
-            emailSubjectTitle = "Notification - NCS Direct Labor Report due ${reportingDueDateString}"                        
-        }
-        //println "PRINTLN LaborService.sendEmailNotification.emailSubjectTitle: ${emailSubjectTitle}"
-        
-        mailService.sendMail {
-            to reportingStaffInstance.email
-            from loggedInReportingStaffInstance.email
-            subject emailSubjectTitle
-            body( 
-                view:"/assignEffort/email",
-                model:[ 
-                    currentReportingPeriodInstance: currentReportingPeriodInstance, 
-                    reportingStaffInstance: reportingStaffInstance
-                ]
-            )                    
-        } //mailService.sendMail
-        //println "PRINTLN called mailService.sendMail"
-        
-        // create row that email was sent
-        def notificationEmailInstance = new NotificationEmail(
-            assignedEffort:currentPeriodAssignedEffortInstance,
-            userSent:loggedInReportingStaffInstance
-        )
-        notificationEmailInstance.save(flush:true)
-        //println "PRINTLN notificationEmailInstance.save(flush:true)"
-        
-        return 'sent email!'
-    }
+    } //def getNextReportingPeriodDate        
 
     def getActiveStudyActivityList() {
         
@@ -296,9 +215,130 @@ class LaborService {
 		
 	} //countNotCommittedAssignedEffort(periodId)
 	
-	def sendAllAssignedEffortIsCommittedEmailAlert (periodId) {
+    def sendEmailNotification (periodId, staffId) {
+        
+        // Get logged in user account
+        def principal = authenticateService.principal()
+        def username = principal.getUsername()
+        def loggedInReportingStaffInstance = ReportingStaff.findByUsername(username)
+        //println "PRINTLN laborService.sendEmailNotification.loggedInReportingStaffInstance: ${loggedInReportingStaffInstance}"
+        //println "LaborService.sendEmailNotification.loggedInReportingStaffInstance.email = ${loggedInReportingStaffInstance.email}"
+
+        // Get reporting staff
+        def reportingStaffInstance = ReportingStaff.read(staffId)
+        //println "LaborService.sendEmailNotification.reportingStaffInstance = ${reportingStaffInstance}"        
+        //println "LaborService.sendEmailNotification.reportingStaffInstance.email = ${reportingStaffInstance.email}"
+
+        //Get reporting due date
+        def currentReportingPeriodInstance = ReportingPeriod.read(periodId)
+        println "PRINTLN LaborService.sendEmailNotification.currentReportingPeriodInstance: ${currentReportingPeriodInstance}"
+        
+        def currentReportingPeriodDate = currentReportingPeriodInstance.periodDate
+        println "PRINTLN LaborService.sendEmailNotification.currentReportingPeriodDate: ${currentReportingPeriodDate}"
+                
+        def nextReportingDate = getNextReportingPeriodDateTime(currentReportingPeriodDate)
+        println "PRINTLN LaborService.sendEmailNotification.nextReportingDate: ${nextReportingDate}"
+        
+        def reportingDueDate = new LocalDate(nextReportingDate)        
+        
+        def reportingDueDateMonthName = reportingDueDate.toString('MMMM')
+        println "PRINTLN LaborService.sendEmailNotification.reportingDueDateMonthName = ${reportingDueDateMonthName}"
+
+        def reportingDueDateYear = reportingDueDate.toString('yyyy')
+        println "PRINTLN LaborService.sendEmailNotification.reportingDueDate = ${reportingDueDateYear}"
+
+        def reportingDueDateString = reportingDueDateMonthName + ' 20 ' + reportingDueDateYear
+        println "PRINTLN LaborService.sendEmailNotification.reportingDueDateString = ${reportingDueDateString}"
+                
+        // Get list of dates emails were sent in the past already
+        def currentPeriodAssignedEffortInstance = AssignedEffort.findByPeriodAndReportingStaff(currentReportingPeriodInstance,reportingStaffInstance)
+        //println "PRINTLN LaborService.sendEmailNotification.currentPeriodAssignedEffortInstance: ${currentPeriodAssignedEffortInstance}"
+        
+        def notificationEmailInstanceList = currentPeriodAssignedEffortInstance.emails
+        //println "PRINTLN LaborService.sendEmailNotification.notificationEmailInstanceList: ${notificationEmailInstanceList}"
+
+        // Create email subject title, indicating email is an initial or reminder
+        def emailSubjectTitle
+        
+        if ( notificationEmailInstanceList ) {
+            //println "PRINTLN LaborService.sendEmailNotification.if(notificationEmailInstance) = TRUE"
+            emailSubjectTitle = "Reminder - NCS Direct Labor Report due ${reportingDueDateString}"
+        // otherwise, send an INITIAL
+        } else {
+            // println "PRINTLN LaborService.sendEmailNotification.if(notificationEmailInstance) = FALSE"
+            emailSubjectTitle = "Notification - NCS Direct Labor Report due ${reportingDueDateString}"                        
+        }
+        //println "PRINTLN LaborService.sendEmailNotification.emailSubjectTitle: ${emailSubjectTitle}"
+        
+        mailService.sendMail {
+            to reportingStaffInstance.email
+            from loggedInReportingStaffInstance.email
+            subject emailSubjectTitle
+            body( 
+                view:"/assignEffort/email",
+                model:[ 
+                    currentReportingPeriodInstance: currentReportingPeriodInstance, 
+                    reportingStaffInstance: reportingStaffInstance
+                ]
+            )                    
+        } //mailService.sendMail
+        //println "PRINTLN called mailService.sendMail"
+        
+        // create row that email was sent
+        def notificationEmailInstance = new NotificationEmail(
+            assignedEffort:currentPeriodAssignedEffortInstance,
+            userSent:loggedInReportingStaffInstance
+        )
+        notificationEmailInstance.save(flush:true)
+        //println "PRINTLN notificationEmailInstance.save(flush:true)"
+        
+        return 'sent email!'
 		
-	}
+    } //def sendEmailNotification (periodId, staffId)
+
+	def generateReportEmail (periodId) {
+
+		// REPORTING PERIOD
+		def reportingPeriodInstance = ReportingPeriod.read(periodId)		
+		println "PRINTLN LaborService.generateReportEmail.reportingPeriodInstance: ${reportingPeriodInstance}"
+
+		def reportingPeriodMonthName = reportingPeriodInstancel.month.toString('MMMM')
+		println "PRINTLN LaborService.generateReportEmail.reportingDueDateMonthName = ${reportingDueDateMonthName}"
 		
-	 
+		def reportingPeriodYear = reportingDueDate.year.toString('yyyy')		
+		println "PRINTLN LaborService.generateReportEmail.reportingPeriodYear = ${reportingPeriodYear}"
+		
+		def reportingPeriodString = g.formatDate(date:reportingPeriodInstance.periodDate, format:'MMMM yyyy')
+		//periodSelectiontList.add([id:it.id, name: g.formatDate(date:it.periodDate, format:'MMMM yyyy')])
+		println "PRINTLN LaborService.generateReportEmail.reportingPeriodString = ${reportingPeriodString}"
+		
+		// email SUBJECT
+		def emailSubjectTitle = "NCS DLR: generate reports for reporting period ${reportingPeriodString}"
+		println "PRINTLN LaborService.generateReportEmail.emailSubjectTitle = ${emailSubjectTitle}"
+		
+		
+		// email TO list
+		def toEmailList = "sqv@cccs.umn.edu, gdw@cccs.umn.edu, jaf@cccs.umn.edu, will1945@umn.edu, bsteward@umn.edu"
+		println "PRINTLN LaborService.generateReportEmail.toEmailList = ${toEmailList}"
+		
+		// email FROM list
+		def fromEmailList = "sqv@cccs.umn.edu"
+		println "PRINTLN LaborService.generateReportEmail.fromEmailList = ${fromEmailList}"
+		
+		// send email
+		mailService.sendMail {
+			to toEmail
+			from fromEmail
+			subject emailSubjectTitle
+			body(
+				view:"/assignEffort/generateReportEmail",
+				model:[reportingPeriodInstance: reportingPeriodInstance]
+			)
+		} 
+		println "PRINTLN called mailService.sendMail"
+		
+		return 'sent Generate Report email!'
+				
+	} // generateReportEmail
+			 
 } //class LaborService

@@ -414,9 +414,7 @@ class AssignEffortController {
                 
                     def message = laborService.sendEmailNotification(reportingPeriodInstance.id, reportingStaffInstance.id)      
                     //println "PRINTLN send email notification"
-                    
-                    
-                   
+                                                           
                 } //if ( sendNowValue )
                 
             } //if ( it.key =~ /staff-[0-9]*/)
@@ -429,6 +427,5 @@ class AssignEffortController {
         redirect(action:'show', params:params)
                         
     } //def update
-
 
 } //class AssignEffortController 

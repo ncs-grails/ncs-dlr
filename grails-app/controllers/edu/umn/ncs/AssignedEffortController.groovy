@@ -228,10 +228,10 @@ class AssignedEffortController {
 					
 					errMessage = "Cannot COMMIT your reported effort because it is greater than what has been assigned to you."
 				}
-				
-				println "PRINTLN AssignedEffortController.commit.errMessage: ${errMessage}"
+								
 				render(view: "/assignedEffort/show", model: [ assignedEffortInstance: assignedEffortInstance, errMessage: errMessage ])
-				
+			  	//redirect(controller: 'assignedEffort', action: "show", params: ['id': assignedEffortInstance.id, errMessage: errMessage])
+				//redirect(action: 'show', params: [id: assignedEffortInstance.id, errMessage: errMessage ])				
 					
 			// total reported effort equals assigned effort, attempt to commit                
 			} else {
@@ -249,12 +249,13 @@ class AssignedEffortController {
 	
 					println "COMMIT SUCCESSFULLY"
 										
-					// TODO: if all assigned effort is committed, send email alert to all administrators
+					// TODO: if all assigned effort, for this period, is committed, send email alerting to all administrators
 					def countOfNotCommittedAssignedEffort = laborService.countNotCommittedAssignedEffort(assignedEffortInstance.period)
 					println "PRINTLN AssignedEffortController.commit.countOfNotCommittedAssignedEffort: ${countOfNotCommittedAssignedEffort}"
 		
+					println "PRINTLN RUN generateReportEmail"
 					if ( !countOfNotCommittedAssignedEffort) {
-						println "PRINTLN RUN sendAllAssignedEffortIsCommittedEmailAlert "
+						def message = laborService.sendAllAssignedEffortIsCommittedEmailAlert(assignedEffortInstance.period)						
 					}
 						
 					redirect(controller: 'main', action: "show")

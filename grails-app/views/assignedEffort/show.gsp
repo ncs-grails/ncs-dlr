@@ -1,6 +1,6 @@
 <g:form name="assignedEffort" method="post" controller="assignedEffort" action="commit">
-  
-  <g:hiddenField name="id" value="${assignedEffortInstance.id}" />
+    
+	<g:hiddenField name="id" value="${assignedEffortInstance.id}" />
 
   <!-- CURRENT REPORTED EFFORT STATUS (AJZ: must have assignedEffortInstance.id here, NOT reportedIstance.assignedEffort.id) -->
   <g:include 
@@ -44,10 +44,11 @@
       url="${[controller:'reportedEffort',action:'edit' ]}" 
       update="remoteFormContainer" 
     />
-    <g:submitButton 
-      class="buttonBasic"
-      name="commit" 
+    <g:submitToRemote 
+      class="buttonBasic" 
       value="COMMIT" 
+      url="${[controller:'assignedEffort',action:'commit' ]}" 
+      update="remoteFormContainer" 
     />
   </div>
 
