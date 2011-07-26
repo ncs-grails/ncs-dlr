@@ -57,10 +57,7 @@ class ReportedEffortController {
 
         println "PRINTLN ReportedEffortController.addSave.reportedEffortInstance: ${reportedEffortInstance}"                    
         println "PRINTLN ReportedEffortController.addSave.reportedEffortConvertedVal: ${reportedEffortConvertedVal}"
-		
-		//def dataTypeIs = reportedEffortConvertedVal.getClass()
-		//println "PRINTLN ReportedEffortController.addSave.reportedEffortConvertedVal.dataTypeIs: ${dataTypeIs}"
-		
+				
         // ASSIGNED EFFORT
         def assignedEffortInstance = AssignedEffort.read(params?.assignedEffort?.id)
         def assignedEffortConverted = assignedEffortInstance.assignedEffortConverted
@@ -136,7 +133,6 @@ class ReportedEffortController {
         if ( err == false && reportedEffortInstance.validate() && reportedEffortInstance.save(flush: true)) {
 
             println "SAVE SUCCESSFULLY"
-
             render(view: "/assignedEffort/show", model: [assignedEffortInstance: assignedEffortInstance, hideAddButton: hideAddButton] )
                         
         // save fails

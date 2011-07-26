@@ -87,7 +87,7 @@ class RunNcsDlrEtl {
 	
 	// Establish connection to source db
     /* Tables:
-     	ncs_assignement_alert 		// need to add
+     	ncs_assignement_alert 		
         ncs_dlr_report
         ncs_effort
         ncs_effort_assignment
@@ -97,8 +97,8 @@ class RunNcsDlrEtl {
         ncs_staff        
         ncs_study_activity
         ncs_task
-        ncs_task_etdlr				// need to add
-        ncs_task_ode				// need to add
+        ncs_task_etdlr				
+        ncs_task_ode				
     */
 	def getMssqlConn() {
 		
@@ -121,8 +121,10 @@ class RunNcsDlrEtl {
 	    def db = [
 	        username : 'ncs-dlr',
 	        password : 'ang1ahXiedohsieng5sheThi',
+			// local mysql database
 	        url : 'jdbc:mysql://localhost/ncs_dlr?noAccessToProcedureBodies=true&autoReconnect=true',
-	        //url : 'jdbc:mysql://sql.ncs.umn.edu/ncs_dlr?useSSL=true&requireSSL=true&verifyServerCertificate=false&noAccessToProcedureBodies=true&autoReconnect=true'    ,
+	        // production mysql
+			//url : 'jdbc:mysql://sql.ncs.umn.edu/ncs_dlr?useSSL=true&requireSSL=true&verifyServerCertificate=false&noAccessToProcedureBodies=true&autoReconnect=true'    ,
 	        driver : 'com.mysql.jdbc.Driver'
 	    ]
 	    
@@ -136,7 +138,7 @@ class RunNcsDlrEtl {
 	    msConn = getMssqlConn()
 	    myConn = getMysqlConn()
 		
-		import data 
+		//import data
 		importLaborCategories()
 	    importStaff()
 	    importReportingPeriods()
@@ -441,13 +443,13 @@ class RunNcsDlrEtl {
 
 	def getOdeTask(id) {
 		def query = """SELECT id, version, app_created, date_created, name, obsolete, user_created
-			FROM ode_task
+			FROM study_task_ode
 			WHERE (id = ?);"""
 		return myConn.firstRow(query, [id])
 	}
 	
 	def newOdeTask(id, name, obsolete, dateCreated, userCreated, appCreated) {
-		def statement = """INSERT INTO `ncs_dlr`.`ode_task`
+		def statement = """INSERT INTO `ncs_dlr`.`study_task_ode`
 			(id, version, name, obsolete, date_created, user_created, app_created)
 			VALUES (?, ?, ?, ?, ?, ?, ?);"""
 		def params = [id, 0, name, obsolete, dateCreated, userCreated, appCreated]
@@ -485,13 +487,13 @@ class RunNcsDlrEtl {
 
 	def getEtdlrTask(id) {
 		def query = """SELECT id, version, app_created, date_created, name, obsolete, user_created
-			FROM etdlr_task
+			FROM study_task_etdlr
 			WHERE (id = ?);"""
 		return myConn.firstRow(query, [id])
 	}
 	
 	def newEtdlrTask(id, name, obsolete, dateCreated, userCreated, appCreated) {
-		def statement = """INSERT INTO `ncs_dlr`.`etdlr_task`
+		def statement = """INSERT INTO `ncs_dlr`.`study_task_etdlr`
 			(id, version, name, obsolete, date_created, user_created, app_created)
 			VALUES (?, ?, ?, ?, ?, ?, ?);"""
 		def params = [id, 0, name, obsolete, dateCreated, userCreated, appCreated]
@@ -712,9 +714,10 @@ class RunNcsDlrEtl {
 		
 		def query = """SELECT id, EffortID,
 			ContractNumber, ReferenceInvoiceNumber, ContractPeriodTitle, ContractPeriodDesc, PrincipalInvestigator,
-			StaffName, LaborCatDesc, ActivityDesc, CASE WHEN id IN (25, 41, 42, 141, 185) THEN NULL ELSE TaskDesc END AS TaskDesc, PercentEffort, 
+			StaffName, LaborCatDesc, ActivityDesc, CASE WHEN id IN (25, 41, 42, 141, 185) THEN 'x' ELSE TaskDesc END AS TaskDesc, PercentEffort, 
 			DatePrepared, CreatedDate, CreatedByWhom, CreatedByWhat
 		FROM WebLookup.dbo.ncs_dlr_report"""
+		
 
 		//println "PRINTLN importSfrReport.query: ${query}"				  
 		

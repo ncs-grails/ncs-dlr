@@ -21,31 +21,21 @@
                 <table>
                     <thead>
                         <tr>
-                        
                             <g:sortableColumn property="id" title="${message(code: 'reportingPeriod.id.label', default: 'Id')}" />
-                        
                             <g:sortableColumn property="referenceInvoiceNumber" title="${message(code: 'reportingPeriod.referenceInvoiceNumber.label', default: 'Reference Invoice Number')}" />
-                        
                             <g:sortableColumn property="periodDate" title="${message(code: 'reportingPeriod.periodDate.label', default: 'Period Date')}" />
-                        
                             <g:sortableColumn property="preparedDate" title="${message(code: 'reportingPeriod.preparedDate.label', default: 'Prepared Date')}" />
-                        
                             <g:sortableColumn property="completedReportDate" title="${message(code: 'reportingPeriod.completedReportDate.label', default: 'Completed Report Date')}" />
-                        
                         </tr>
                     </thead>
                     <tbody>
                     <g:each in="${reportingPeriodInstanceList}" status="i" var="reportingPeriodInstance">
                         <tr class="${(i % 2) == 0 ? 'odd' : 'even'}">
                         
-                            <td><g:link action="show" id="${reportingPeriodInstance.id}">${fieldValue(bean: reportingPeriodInstance, field: "id")}</g:link></td>
-                        
-                            <td>${fieldValue(bean: reportingPeriodInstance, field: "referenceInvoiceNumber")}</td>
-                        
-                            <td><g:formatDate date="${reportingPeriodInstance.periodDate}" /></td>
-                        
+                            <td><g:link action="show" id="${reportingPeriodInstance.id}">${fieldValue(bean: reportingPeriodInstance, field: "id")}</g:link></td>                        
+                            <td>${fieldValue(bean: reportingPeriodInstance, field: "referenceInvoiceNumber")}</td>                       
+                            <td><g:formatDate date="${reportingPeriodInstance.periodDate}" /></td>                        
                             <td><g:formatDate date="${reportingPeriodInstance.preparedDate}" /></td>
-                        
                             <td><g:formatDate date="${reportingPeriodInstance.completedReportDate}" /></td>
                         
                         </tr>

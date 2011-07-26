@@ -318,7 +318,8 @@ class LaborService {
 		
 		
 		// email TO list
-		def toEmailList = "sqv@cccs.umn.edu, gdw@cccs.umn.edu, jaf@cccs.umn.edu, will1945@umn.edu, bsteward@umn.edu"
+		//def toEmailList = "sqv@cccs.umn.edu, gdw@cccs.umn.edu, jaf@cccs.umn.edu, will1945@umn.edu, bsteward@umn.edu"
+		def toEmailList = "sqv@cccs.umn.edu, sqv@umn.edu"
 		println "PRINTLN LaborService.generateReportEmail.toEmailList = ${toEmailList}"
 		
 		// email FROM list

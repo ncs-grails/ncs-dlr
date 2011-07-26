@@ -2,71 +2,69 @@
 
 <html>
 
-  <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    <meta name="layout" content="ncs" />
-    <link rel="stylesheet" type="text/css" href="${resource(dir:'css',file:'custom.css')}" />
-    <title>Report Generation</title>
-  </head>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+		<meta name="layout" content="ncs" />
+		<link rel="stylesheet" type="text/css" href="${resource(dir:'css',file:'custom.css')}" />
+		<title>Report Generation</title>
+	</head>
 
-  <body>
+	<body>
 
-    <!-- NAVIGATION -->
-    <p class="breadcrumbs">
-      <g:link controller="main" action="index">DLR Home</g:link>
-      &nbsp;&nbsp;&gt&nbsp;&nbsp;
-      <g:link controller="applicationManagement" action="list">Application Management</g:link>      
-      &nbsp;&nbsp;&gt&nbsp;&nbsp;
-      <span class="fontMaroon">Report Generation</span>
-    </p>
+		<!-- NAVIGATION -->
+    	<p class="breadcrumbs">
+      		<g:link controller="main" action="index">DLR Home</g:link>
+      		&nbsp;&nbsp;&gt&nbsp;&nbsp;
+      		<g:link controller="applicationManagement" action="list">Application Management</g:link>      
+      		&nbsp;&nbsp;&gt&nbsp;&nbsp;
+      		<span class="fontMaroon">Report Generation</span>
+    	</p>
       
-    <h1>Report Generation</h1>
+		<h1>Report Generation</h1>
 
-    <fieldset>            
+		<fieldset>            
       
-      <g:form controller="export" action="reportingPeriod">
+			<g:form controller="export" action="reportingPeriod">
 
-        <div class="clearCenterPadding">
+        		<div class="clearCenterPadding">
             
-          <span class="controlBackground">              
+          			<span class="controlBackground">              
 
-			<!--  REPORTING PERIOD -->
-            <span class="spacing">
-              <label for="id">Reporting Period</label>          
-              <g:select 
-              	class="basic" 
-                name="id" 
-                from="${reportingPeriodInstanceList}" 
-              />                
-            </span>
+						<!--  REPORTING PERIOD -->
+						<span class="spacing">
+						  	<label for="id">Reporting Period</label>          
+						  	<g:select 
+						 		class="basic" 
+						   		name="id" 
+						   		from="${reportingPeriodInstanceList}" 
+						 	/>                
+						</span>
                          
-			<!--  OUTPUT FORMAT -->
-            <span class="spacing">
-              <label for="format">Output Format</label>
-              <g:select 
-              	class="basic" 
-                name="format" 
-                from="${reportFormats }" 
-              />
-            </span>              
+						<!--  OUTPUT FORMAT -->
+						<span class="spacing">
+						  	<label for="format">Output Format</label>
+						  	<g:select 
+						 		class="basic" 
+						   		name="format" 
+						   		from="${reportFormats }" 
+						 	/>
+						</span>              
 
-			<!-- GENERATE BUTTON -->
-            <span class="spacing">
-              <g:submitButton class="buttonBasic" name="submit" value="GENERATE" />
-            </span>              
+						<!-- GENERATE BUTTON -->
+            			<span class="spacing">
+              				<g:submitButton class="buttonBasic" name="submit" value="GENERATE" />
+            			</span>              
 
-          </span>
+          			</span>
             
-        </div>
+       			</div>
 
-        
-          
-      </g:form>
+			</g:form>
       
-    </fieldset>
+		</fieldset>
     
-    <div class="pageSpacing"> </div>
+		<div class="pageSpacing"> </div>
 
-  </body>
+	</body>
 
 </html>

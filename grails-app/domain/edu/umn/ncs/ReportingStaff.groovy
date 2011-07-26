@@ -63,7 +63,7 @@ class ReportingStaff {
 	}
 	
     String getFullNameLFM() {
-        "${lastName} , ${firstName} ${middleInit ?: ''}".trim()
+        "${lastName}, ${firstName} ${middleInit ?: ''}".trim()
     }
     
     static constraints = {

@@ -219,17 +219,15 @@ class AssignedEffortController {
 			if ( sumOfReportedPercentEffort.toBigDecimal() != assignedPercentEffort.toBigDecimal() ) {
 				
 				// total reported effort is less than what is assigned
-				if ( sumOfReportedPercentEffort.toBigDecimal() < assignedPercentEffort.toBigDecimal() ) {
-					
-					errMessage = "Cannot COMMIT your reported effort because it is less than what has been assigned to you."
-	
+				if ( sumOfReportedPercentEffort.toBigDecimal() < assignedPercentEffort.toBigDecimal() ) {					
+					errMessage = "Cannot COMMIT your reported effort because it is less than what has been assigned to you."	
 				// total reported effort is greater than what is assigned
-				} else if ( sumOfReportedPercentEffort.toBigDecimal() > assignedPercentEffort.toBigDecimal() ) {
-					
+				} else if ( sumOfReportedPercentEffort.toBigDecimal() > assignedPercentEffort.toBigDecimal() ) {					
 					errMessage = "Cannot COMMIT your reported effort because it is greater than what has been assigned to you."
 				}
-								
-				render(view: "/assignedEffort/show", model: [ assignedEffortInstance: assignedEffortInstance, errMessage: errMessage ])
+				println "PRINTLN AssignedEffortController.commit.errMessage: ${errMessage}"
+				
+				render(view: "show", model: [assignedEffortInstance: assignedEffortInstance, errMessage: errMessage])
 					
 			// total reported effort equals assigned effort, attempt to commit                
 			} else {
@@ -255,14 +253,23 @@ class AssignedEffortController {
 					if ( !countOfNotCommittedAssignedEffort) {
 						def message = laborService.sendAllAssignedEffortIsCommittedEmailAlert(assignedEffortInstance.period)						
 					}
-						
-					redirect(controller: 'main', action: "show")
+					
+					def reportingPeriodInstance = laborService.getCurrentReportingPeriod()
+			
+					def model = [            
+						reportingStaffInstance: reportingStaffInstance,
+						reportingPeriodInstance: reportingPeriodInstance,
+						assignedEffortInstance: assignedEffortInstance
+					]
+					
+					redirect(action: "committed")
 					
 				} else {
 					
 					println "COMMIT FAILED"
 					errMessage = "Failed to COMMIT."
-					render(view: "/assignedEffort/show", model: [ assignedEffortInstance: assignedEffortInstance, errMessage: errMessage ])
+					
+					render(view: "show", model: [ assignedEffortInstance: assignedEffortInstance, errMessage: errMessage ])
 					
 				} 
 
@@ -271,5 +278,14 @@ class AssignedEffortController {
         } //if ( assignedEffortInstance )
 
     } //def commit 
+	
+	def committed = {
+		
+		def reportingPeriodInstance = laborService.getCurrentReportingPeriod()
+		
+		[reportingPeriodInstance: reportingPeriodInstance]		
+		
+	}
+
         
 }

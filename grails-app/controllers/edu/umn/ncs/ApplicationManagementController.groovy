@@ -32,11 +32,10 @@ class ApplicationManagementController {
 		// REPORTING PERIOD
 				
 		def c = ReportingPeriod.createCriteria()
-		def periodList = c.list {
-			
+		def periodList = c.list {			
+			order("periodDate", "desc")
 		} 
-		
-        println "PRINTLN ApplicationManagementController.reports.reportingPeriodInstanceList: ${periodList}"
+        println "PRINTLN ApplicationManagementController.reports.periodList: ${periodList}"
 		
 		def reportingPeriodInstanceList = []
         periodList.each{
