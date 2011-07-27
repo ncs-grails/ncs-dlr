@@ -1,11 +1,8 @@
 package edu.umn.ncs
 import org.joda.time.*
 import edu.umn.ncs.dlr.ExportController
-
-// security annotation
 import org.codehaus.groovy.grails.plugins.springsecurity.Secured
 
-//@Secured(['ROLE_NCS_DLR_MANAGE'])
 @Secured(['ROLE_NCS_IT', 'ROLE_NCS_DLR_MANAGE'])
 class ApplicationManagementController {
 

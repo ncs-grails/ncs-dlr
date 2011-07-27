@@ -9,7 +9,7 @@
 		<title>Edit Reporting Staff</title>		
 	</head>
 
-	<body>
+	<body class="body">
 
 		<!-- NAVIGATION -->
 		<p class="breadcrumbs">
@@ -17,13 +17,23 @@
 				&nbsp;&nbsp;&gt&nbsp;&nbsp;
 			<g:link controller="applicationManagement" action="index">Application Management</g:link>
 				&nbsp;&nbsp;&gt&nbsp;&nbsp;
-			<g:link controller="reportingStaff" action="list">Reporting Staff</g:link>
-				&nbsp;&nbsp;&gt&nbsp;&nbsp;
-			<span class="fontMaroon">Edit</span>
+			Reporting Staff
+				&nbsp;
+			[&nbsp;
+			<span class="fontMaroonBold">Edit</span>			
+				&nbsp;&nbsp;::&nbsp;&nbsp;
+			<g:link controller="reportingStaff" action="list">Reports Effort</g:link>
+				&nbsp;&nbsp;::&nbsp;&nbsp; 
+			<g:link controller="reportingStaff" action="listDoesNotReport">Does Not Report Effort</g:link> 
+				&nbsp;&nbsp;::&nbsp;&nbsp; 
+			<g:link controller="reportingStaff" action="create">Add New Staff</g:link>			
+			&nbsp;]
+			
+			
 		</p>
 
 		<!-- PAGE TITLE -->
-        <h1><g:message code="default.edit.label" args="[entityName]" /></h1>
+        <h1>Edit Reporting Staff</h1>
         
         <!-- ERROR MESSAGES -->
         <g:if test="${flash.message}">
@@ -36,23 +46,26 @@
 	        </div>
 		</g:hasErrors>
 		
-        <!-- FORM -->
+        <!-- begin FORM -->
 		<g:form method="post" >
 		
+			<!-- HIDDEN FIELDS -->
 			<g:hiddenField name="id" value="${reportingStaffInstance?.id}" />
 			<g:hiddenField name="version" value="${reportingStaffInstance?.version}" />
                 
 			<table>
+			
 				<tbody>
-					<!-- last name -->
+				
+					<!-- username -->
 					<tr class="prop">
 					    <td valign="top" class="name">
-					    	<label for="lastName"><g:message code="reportingStaff.lastName.label" default="Last Name" /></label>
-					    </td>
-						<td valign="top" class="value ${hasErrors(bean: reportingStaffInstance, field: 'lastName', 'errors')}">
-							<g:textField class="textfieldBasic" name="lastName" value="${reportingStaffInstance?.lastName}" />
+					    	<label for="username"><g:message code="reportingStaff.username.label" default="Username" /></label>
+					    	</td>
+						<td valign="top" class="value ${hasErrors(bean: reportingStaffInstance, field: 'username', 'errors')}">
+							<g:textField class="textfieldBasic" name="username" value="${reportingStaffInstance?.username}" />
 						</td>
-					</tr>
+					</tr>                        					
 					<!-- first name -->
                     <tr class="prop">
                         <td valign="top" class="name">
@@ -71,24 +84,26 @@
 							<g:textField class="textfieldBasic" name="middleInit" value="${reportingStaffInstance?.middleInit}" />
 						</td>
 					</tr>                        
-					<!-- username -->
+					<!-- last name -->
 					<tr class="prop">
 					    <td valign="top" class="name">
-					    	<label for="username"><g:message code="reportingStaff.username.label" default="Username" /></label>
-					    	</td>
-						<td valign="top" class="value ${hasErrors(bean: reportingStaffInstance, field: 'username', 'errors')}">
-							<g:textField class="textfieldBasic" name="username" value="${reportingStaffInstance?.username}" />
+					    	<label for="lastName"><g:message code="reportingStaff.lastName.label" default="Last Name" /></label>
+					    </td>
+						<td valign="top" class="value ${hasErrors(bean: reportingStaffInstance, field: 'lastName', 'errors')}">
+							<g:textField class="textfieldBasic" name="lastName" value="${reportingStaffInstance?.lastName}" />
 						</td>
-					</tr>                        					
+					</tr>
 					<!-- labor category -->
                     <tr class="prop">
 						<td valign="top" class="name">
 						  <label for="laborCategory"><g:message code="reportingStaff.laborCategory.label" default="Labor Category" /></label></td>
 						<td valign="top" class="value ${hasErrors(bean: reportingStaffInstance, field: 'laborCategory', 'errors')}">
-							<g:select class="basic" name="laborCategory.id" from="${edu.umn.ncs.LaborCategory.list()}" optionKey="id" value="${reportingStaffInstance?.laborCategory?.id}" noSelection="['null': '']" />
+							<g:select class="basic" name="laborCategory.id" from="${edu.umn.ncs.LaborCategory.findAllWhere(obsolete: false)}" optionKey="id" value="${reportingStaffInstance?.laborCategory?.id}" noSelection="['null': '']" />
+							
 						</td>
                     </tr>
 					<!-- email -->
+					
 					<tr class="prop">
 						<td valign="top" class="name">
 							<label for="email"><g:message code="reportingStaff.email.label" default="Email" /></label>
@@ -97,7 +112,8 @@
 							<g:textField class="textfieldBasic" name="email" value="${reportingStaffInstance?.email}" />
 						</td>
 					</tr>
-					<!-- reports effort -->					
+					<!-- reports effort -->
+										
 					<tr class="prop">
 						<td valign="top" class="name"><label for="reportsEffort">
 							<g:message code="reportingStaff.reportsEffort.label" default="Reports Effort" /></label>
@@ -106,6 +122,7 @@
 							<g:checkBox name="reportsEffort" value="${reportingStaffInstance?.reportsEffort}" />
 						</td>
 					</tr>
+					
 					<!-- test account -->
 					<tr class="prop">
 						<td valign="top" class="name"><label for="isTestAccount">
@@ -115,15 +132,19 @@
 							<g:checkBox name="isTestAccount" value="${reportingStaffInstance?.isTestAccount}" />
 						</td>
 					</tr>
+					
 				</tbody>
+				
 			</table>
 
+			<!--  UPDATE button -->
 			<div class="buttons">
 			    <span class="button">
-			    	<g:actionSubmit class="save" action="update" value="${message(code: 'default.button.update.label', default: 'Update')}" />
+			    	<g:actionSubmit class="save" action="update" value="UPDATE" />
 			    </span>
 			</div>
                 
+        <!-- end FORM -->
 		</g:form>
 
 	    <div class="pageSpacing"> </div>

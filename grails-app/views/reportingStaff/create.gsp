@@ -1,33 +1,55 @@
-
-
 <%@ page import="edu.umn.ncs.ReportingStaff" %>
 <html>
-    <head>
-        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-        <meta name="layout" content="ncs" />
+
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+		<meta name="layout" content="ncs" />
+		<link rel="stylesheet" type="text/css" href="${resource(dir:'css',file:'custom.css')}" />
         <g:set var="entityName" value="${message(code: 'reportingStaff.label', default: 'ReportingStaff')}" />
-        <title><g:message code="default.create.label" args="[entityName]" /></title>
-    </head>
+		<title>DLR Reporting Staff</title>			    
+	</head>
+	
     <body>
-        <div class="nav">
-            <span class="menuButton"><a class="home" href="${createLink(uri: '/')}"><g:message code="default.home.label"/></a></span>
-            <span class="menuButton"><g:link class="list" action="list"><g:message code="default.list.label" args="[entityName]" /></g:link></span>
-        </div>
+    
+		<!-- NAVIGATION -->
+		<p class="breadcrumbs">
+			<g:link controller="main" action="index">DLR Home</g:link>
+				&nbsp;&nbsp;&gt&nbsp;&nbsp;
+			<g:link controller="applicationManagement" action="index">Application Management</g:link>
+				&nbsp;&nbsp;&gt&nbsp;&nbsp;
+			Reporting Staff
+				&nbsp;
+			[&nbsp;
+			<g:link controller="reportingStaff" action="list">Reports Effort</g:link>&nbsp;&nbsp;&nbsp;::&nbsp;&nbsp;&nbsp; 
+			<g:link controller="reportingStaff" action="listDoesNotReport">Does Not Report Effort</g:link>&nbsp;&nbsp;&nbsp;::&nbsp;&nbsp;&nbsp; 
+			<span class="fontMaroonBold">Add New Staff</span>
+			&nbsp;]
+		</p>
+        
+		<h1>Reporting Staff</h1>
+
         <div class="body">
-            <h1><g:message code="default.create.label" args="[entityName]" /></h1>
+        
+        	<!--  ERROR MESSAGES -->
             <g:if test="${flash.message}">
-            <div class="message">${flash.message}</div>
+            	<div class="message">${flash.message}</div>
             </g:if>
             <g:hasErrors bean="${reportingStaffInstance}">
-            <div class="errors">
-                <g:renderErrors bean="${reportingStaffInstance}" as="list" />
-            </div>
+	            <div class="errors">
+    	            <g:renderErrors bean="${reportingStaffInstance}" as="list" />
+        	    </div>
             </g:hasErrors>
+            
+            <!-- begin FORM -->
             <g:form action="save" >
+            
                 <div class="dialog">
+                
                     <table>
+                    
                         <tbody>
-                        
+
+							<!-- username -->                        
                             <tr class="prop">
                                 <td valign="top" class="name">
                                     <label for="username"><g:message code="reportingStaff.username.label" default="Username" /></label>
@@ -37,6 +59,7 @@
                                 </td>
                             </tr>
                         
+							<!-- first name -->                        
                             <tr class="prop">
                                 <td valign="top" class="name">
                                     <label for="firstName"><g:message code="reportingStaff.firstName.label" default="First Name" /></label>
@@ -46,6 +69,7 @@
                                 </td>
                             </tr>
                         
+							<!-- middle initial -->                        
                             <tr class="prop">
                                 <td valign="top" class="name">
                                     <label for="middleInit"><g:message code="reportingStaff.middleInit.label" default="Middle Init" /></label>
@@ -55,6 +79,7 @@
                                 </td>
                             </tr>
                         
+							<!-- last name -->                        
                             <tr class="prop">
                                 <td valign="top" class="name">
                                     <label for="lastName"><g:message code="reportingStaff.lastName.label" default="Last Name" /></label>
@@ -64,15 +89,17 @@
                                 </td>
                             </tr>
                         
+							<!-- labor category -->                        
                             <tr class="prop">
                                 <td valign="top" class="name">
                                     <label for="laborCategory"><g:message code="reportingStaff.laborCategory.label" default="Labor Category" /></label>
                                 </td>
                                 <td valign="top" class="value ${hasErrors(bean: reportingStaffInstance, field: 'laborCategory', 'errors')}">
-                                    <g:select name="laborCategory.id" from="${edu.umn.ncs.LaborCategory.list()}" optionKey="id" value="${reportingStaffInstance?.laborCategory?.id}" noSelection="['null': '']" />
+                                    <g:select name="laborCategory.id" from="${edu.umn.ncs.LaborCategory.findAllWhere(obsolete: false)}" optionKey="id" value="${reportingStaffInstance?.laborCategory?.id}" noSelection="['null': '']" />
                                 </td>
                             </tr>
                         
+							<!-- email -->                        
                             <tr class="prop">
                                 <td valign="top" class="name">
                                     <label for="email"><g:message code="reportingStaff.email.label" default="Email" /></label>
@@ -81,16 +108,8 @@
                                     <g:textField name="email" value="${reportingStaffInstance?.email}" />
                                 </td>
                             </tr>
-                        
-                            <tr class="prop">
-                                <td valign="top" class="name">
-                                    <label for="isTestAccount"><g:message code="reportingStaff.isTestAccount.label" default="Is Test Account" /></label>
-                                </td>
-                                <td valign="top" class="value ${hasErrors(bean: reportingStaffInstance, field: 'isTestAccount', 'errors')}">
-                                    <g:checkBox name="isTestAccount" value="${reportingStaffInstance?.isTestAccount}" />
-                                </td>
-                            </tr>
-                        
+                                                
+							<!-- reports effort -->                        
                             <tr class="prop">
                                 <td valign="top" class="name">
                                     <label for="reportsEffort"><g:message code="reportingStaff.reportsEffort.label" default="Reports Effort" /></label>
@@ -99,32 +118,37 @@
                                     <g:checkBox name="reportsEffort" value="${reportingStaffInstance?.reportsEffort}" />
                                 </td>
                             </tr>
-                        
+
+							<!-- isTestAccount -->                        
                             <tr class="prop">
                                 <td valign="top" class="name">
-                                    <label for="userCreated"><g:message code="reportingStaff.userCreated.label" default="User Created" /></label>
+                                    <label for="isTestAccount"><g:message code="reportingStaff.isTestAccount.label" default="Is Test Account" /></label>
                                 </td>
-                                <td valign="top" class="value ${hasErrors(bean: reportingStaffInstance, field: 'userCreated', 'errors')}">
-                                    <g:textField name="userCreated" value="${reportingStaffInstance?.userCreated}" />
-                                </td>
-                            </tr>
-                        
-                            <tr class="prop">
-                                <td valign="top" class="name">
-                                    <label for="appCreated"><g:message code="reportingStaff.appCreated.label" default="App Created" /></label>
-                                </td>
-                                <td valign="top" class="value ${hasErrors(bean: reportingStaffInstance, field: 'appCreated', 'errors')}">
-                                    <g:textField name="appCreated" value="${reportingStaffInstance?.appCreated}" />
+                                <td valign="top" class="value ${hasErrors(bean: reportingStaffInstance, field: 'isTestAccount', 'errors')}">
+                                    <g:checkBox name="isTestAccount" value="${reportingStaffInstance?.isTestAccount}" />
                                 </td>
                             </tr>
-                        
+                                                                                                    
                         </tbody>
+                        
                     </table>
+                    
                 </div>
+                
+                <!-- SAVE button -->
                 <div class="buttons">
-                    <span class="button"><g:submitButton name="create" class="save" value="${message(code: 'default.button.create.label', default: 'Create')}" /></span>
+                    <span class="button">
+                    	<g:submitButton name="save" class="save" value="SAVE" />
+                    </span>
                 </div>
+                
+            <!-- end FORM -->
             </g:form>
-        </div>
+            
+			<div class="pageSpacing"> </div>
+
+        </div>        
+
     </body>
+    
 </html>

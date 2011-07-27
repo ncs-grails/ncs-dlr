@@ -1,7 +1,8 @@
 package edu.umn.ncs
-
 import java.awt.GraphicsConfiguration.DefaultBufferCapabilities;
+import org.codehaus.groovy.grails.plugins.springsecurity.Secured
 
+@Secured(['ROLE_NCS_IT', 'ROLE_NCS_DLR_MANAGE'])
 class AssignedEffortController {
 
     def authenticateService

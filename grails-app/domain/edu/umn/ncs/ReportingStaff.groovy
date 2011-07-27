@@ -71,7 +71,7 @@ class ReportingStaff {
         firstName(blank:false)
         middleInit(nullable:true)
         lastName(blank:false)
-        laborCategory(nullable:true)
+        laborCategory(nullable:false)
         email(blank:false, email:true)
         isTestAccount()
         reportsEffort()

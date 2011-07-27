@@ -1,5 +1,8 @@
 package edu.umn.ncs
 
+import org.codehaus.groovy.grails.plugins.springsecurity.Secured
+
+@Secured(['ROLE_NCS_IT', 'ROLE_NCS_DLR-MANAGE'])
 class ReportedEffortController {
 
     static allowedMethods = [save: "POST", update: "POST", delete: "POST"]

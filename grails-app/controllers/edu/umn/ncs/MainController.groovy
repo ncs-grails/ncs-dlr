@@ -1,10 +1,8 @@
 package edu.umn.ncs
 import org.joda.time.*
-
-// security annotation
 import org.codehaus.groovy.grails.plugins.springsecurity.Secured
 
-@Secured(['ROLE_NCS_DLR', 'ROLE_NCS_IT'])
+@Secured(['ROLE_NCS_IT', 'ROLE_NCS_DLR-MANAGE'])
 class MainController {
 
     def authenticateService

@@ -32,7 +32,7 @@
       	<g:link action="report">Report Generation</g:link> - generate effort reports for dissemination
       </dt>
       <dt class="basicMenu">
-      	<g:link controller="reportingStaff" action="list">Staff Information</g:link> - enter staff information
+      	<g:link controller="reportingStaff" action="listReports">Staff Information</g:link> - enter staff information
       </dt>
     </dl>
 
