@@ -24,10 +24,11 @@
 
 	    <g:form>
 
-			<!-- PERIOD SELECTION CONTROL -->
-			<div class="clearBoth"
+			<!-- PERIOD SELECTION CONTROLS -->
+			<div class="clearBoth"			
 				<div class="floatLeft">
 					<div class="spacing">
+					
 						<span class="controlBackground">Reporting Month
 							<g:select 
 								class="basic"
@@ -37,7 +38,9 @@
 								optionValue="name"
 								value="${reportingPeriodInstance.id}" 
 							/>&nbsp;
-						  <g:actionSubmit class="buttonBasic" value="GO" constructor="" action="show" />          
+							
+						  <g:actionSubmit class="buttonBasic" value="GO" constructor="" action="show" />
+						            
 						</span>
 					</div>
 				</div>
@@ -70,7 +73,7 @@
 						<th class="basic" colspan="3">ASSIGNED</th>
 						<th class="basic" rowspan="2">REPORTED</th>
 						<th class="basic" rowspan="2">COMMITTED<br/>(date)</th>
-						<th class="basic" rowspan="2">Dates<br />Email Sent</th>
+						<th class="basic" rowspan="2">Dates Email Sent</th>
 						<th class="basic" rowspan="2">Send<br />Now</th>
 					</tr>
 					<tr>
@@ -86,12 +89,12 @@
 
 					<g:each var="ea" in="${effortAssignmentList}" >
 
-						<!-- if effort has not been committed yet, highlight row-->
+						<!-- logic for highlighting table rows -->
 						<g:if test="${!ea.thisPeriodAssignedEffort}" >
-							<tr bgcolor="gainsboro">							
+							<tr class="backgroundColorGainsboro">		
 						</g:if>
-						<g:elseif test="${!ea.isCommitted}">
-							<tr bgcolor="lemonchiffon">							
+						<g:elseif test="${ea.thisPeriodAssignedEffort && !ea.isCommitted}">
+							<tr class="backgroundColorOrange">							
 						</g:elseif>
 						<g:else>
 							<tr>
@@ -114,7 +117,7 @@
 	
 							<!-- checkbox: copy previous to current -->
 							<td class="basic" style="text-align:center;">
-							  	<g:if test="${ea.previousPeriodEffort}">
+							  	<g:if test="${ea.previousPeriodEffort && !ea.dateCommitted}">
 							    	<input type="checkbox" name="staff-${ea.staffId}.copyPreviousToCurrent"/>
 							  	</g:if>
 							</td>
@@ -181,6 +184,10 @@
 				</tbody>
 
 			</table>
+		    <div class="tableFooterNote">Table row highlighting scheme: 
+		    	<span class="backgroundColorGainsboro">not assigned effort</span>, 
+		    	<span class="backgroundColorOrange">assigned effort, but not committed</span>.
+		    </div>
 
 		</g:form>
       

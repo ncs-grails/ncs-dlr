@@ -70,6 +70,7 @@ class ReportingStaffController {
 			order("firstName", "asc")
 			order("middleInit", "asc")
         }
+				
 		//println "doesNotReportEffortStaffInstanceList:  ${doesNotReportEffortStaffInstanceList}"
 		
 		def c4 = ReportingStaff.createCriteria()

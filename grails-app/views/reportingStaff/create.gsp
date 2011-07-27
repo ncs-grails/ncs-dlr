@@ -20,16 +20,17 @@
 			Reporting Staff
 				&nbsp;
 			[&nbsp;
-			<g:link controller="reportingStaff" action="list">Reports Effort</g:link>&nbsp;&nbsp;&nbsp;::&nbsp;&nbsp;&nbsp; 
-			<g:link controller="reportingStaff" action="listDoesNotReport">Does Not Report Effort</g:link>&nbsp;&nbsp;&nbsp;::&nbsp;&nbsp;&nbsp; 
-			<span class="fontMaroonBold">Add New Staff</span>
+			<g:link controller="reportingStaff" action="list">Reports Effort</g:link>&nbsp;&nbsp;::&nbsp;&nbsp; 
+			<g:link controller="reportingStaff" action="listDoesNotReport">Does Not Report Effort</g:link>&nbsp;&nbsp;::&nbsp;&nbsp; 
+			<span class="fontMaroon">Add</span>
 			&nbsp;]
 		</p>
         
-		<h1>Reporting Staff</h1>
+		<h1>Reporting Staff: Add</h1>
 
         <div class="body">
         
+			
         	<!--  ERROR MESSAGES -->
             <g:if test="${flash.message}">
             	<div class="message">${flash.message}</div>

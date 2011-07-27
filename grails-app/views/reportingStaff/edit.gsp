@@ -20,20 +20,20 @@
 			Reporting Staff
 				&nbsp;
 			[&nbsp;
-			<span class="fontMaroonBold">Edit</span>			
+			<span class="fontMaroon">Edit</span>			
 				&nbsp;&nbsp;::&nbsp;&nbsp;
 			<g:link controller="reportingStaff" action="list">Reports Effort</g:link>
 				&nbsp;&nbsp;::&nbsp;&nbsp; 
 			<g:link controller="reportingStaff" action="listDoesNotReport">Does Not Report Effort</g:link> 
 				&nbsp;&nbsp;::&nbsp;&nbsp; 
-			<g:link controller="reportingStaff" action="create">Add New Staff</g:link>			
+			<g:link controller="reportingStaff" action="create">Add</g:link>			
 			&nbsp;]
 			
 			
 		</p>
 
 		<!-- PAGE TITLE -->
-        <h1>Edit Reporting Staff</h1>
+        <h1>Reporting Staff: Edit</h1>
         
         <!-- ERROR MESSAGES -->
         <g:if test="${flash.message}">

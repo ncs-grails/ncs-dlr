@@ -24,14 +24,21 @@ include {
     font-size:smaller;
 }
 
-/* color **********************************************************************/
+/* backgroud color **********************************************************************/
 .backgroundColorLemonchiffon{
     background-color: lemonchiffon;
+}
+.backgroundColorOrange{
+	padding:.05em .2em;
+    background-color: orange;
+}
+.backgroundColorGainsboro{
+	padding:.05em .2em;
+	    background-color: gainsboro;
 }
 
 /* headers ********************************************************************/
 h1 {
-    font-style:normal;
     font-size:1.5em;
     color: maroon;
     text-align: center;
@@ -41,7 +48,6 @@ h2 {
     margin: 1em 0;
     border-bottom: .05em solid maroon;  
     padding: .25em 0;
-    font-style:normal;
     font-size:1.25em;
     color: maroon;
 }
@@ -264,8 +270,8 @@ td.basic{
 
 .controlBackground {
     border:.05em grey solid;
-    padding:.5em;
-    background-color: lightgray;
+    padding:.75em .5em;
+    background-color: gainsboro;
 }
 
 .textfieldBasic{

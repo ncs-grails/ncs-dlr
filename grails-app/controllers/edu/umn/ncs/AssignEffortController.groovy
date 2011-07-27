@@ -20,19 +20,18 @@ class AssignEffortController {
 
     }
     
-    // display page
     def show = {
         
         println "PRINTLN ASSIGNED EFFORT CONTROLLER > SHOW ---------------------"
         println "PRINTLN AssignEffortController.show.params: ${params}"                        
 
-        // GET PERIODS FOR PERIOD CONTROL --------------------------------------
+        // REPORING PERIODS ----------------------------------------------------
 
-        // Get current period 
+        // current period 
         def currentPeriod = laborService.getCurrentReportingPeriod()
         //println "PRINTLN AssignedEffortController.show.currentPeriod: ${currentPeriod}"
                 
-        // Get next period, after current period. If one does not exit in db, create it 
+        // next period, after current period. If one does not exit in db, create it 
         def c = ReportingPeriod.createCriteria()
         def nextPeriod = c.list{
             and {
@@ -57,7 +56,6 @@ class AssignEffortController {
                     lt("periodDate", currentPeriod.periodDate)
                     isNull("completedReportDate")
                 }
-                //maxResults(2)
                 order("periodDate","desc")
         }
         //println "PRINTLN AssignedEffortController.show.previousPeriods: ${previousPeriods}"
