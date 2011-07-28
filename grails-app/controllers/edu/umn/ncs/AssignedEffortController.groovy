@@ -2,7 +2,7 @@ package edu.umn.ncs
 import java.awt.GraphicsConfiguration.DefaultBufferCapabilities;
 import org.codehaus.groovy.grails.plugins.springsecurity.Secured
 
-@Secured(['ROLE_NCS_DLR_MANAGE', 'ROLE_NCS_IT'])
+@Secured(['ROLE_NCS_IT', 'ROLE_NCS_DLR_MANAGE'])
 class AssignedEffortController {
 
     def authenticateService
@@ -215,66 +215,70 @@ class AssignedEffortController {
                         
 			// commit REPORTED EFFORT validation			
 			def errMessage
-						
-			// total reported effort does not equal assigned effort, cannot commit        
-			if ( sumOfReportedPercentEffort.toBigDecimal() != assignedPercentEffort.toBigDecimal() ) {
-				
-				// total reported effort is less than what is assigned
-				if ( sumOfReportedPercentEffort.toBigDecimal() < assignedPercentEffort.toBigDecimal() ) {					
-					errMessage = "Cannot COMMIT your reported effort because it is less than what has been assigned to you."	
-				// total reported effort is greater than what is assigned
-				} else if ( sumOfReportedPercentEffort.toBigDecimal() > assignedPercentEffort.toBigDecimal() ) {					
-					errMessage = "Cannot COMMIT your reported effort because it is greater than what has been assigned to you."
-				}
-				println "PRINTLN AssignedEffortController.commit.errMessage: ${errMessage}"
-				
-				render(view: "show", model: [assignedEffortInstance: assignedEffortInstance, errMessage: errMessage])
-					
-			// total reported effort equals assigned effort, attempt to commit                
-			} else {
-			
-				def principal = authenticateService.principal()
-				def reportingStaffInstance = laborService.getReportingStaff(principal)
-				println "PRINTLN AssignedEffortController.commit.reportingStaffInstance: ${reportingStaffInstance}"
-	
-				assignedEffortInstance.dateCommitted = new Date()
-				assignedEffortInstance.commitingStaff = reportingStaffInstance
-				println "PRINTLN AssignedEffortController.commit.assignedEffortInstance.dateCommitted: ${assignedEffortInstance.dateCommitted}"
-				println "PRINTLN AssignedEffortController.commit.assignedEffortInstance.commitingStaff: ${assignedEffortInstance.commitingStaff}"
-												
-				if ( assignedEffortInstance.validate() && !assignedEffortInstance.hasErrors() && assignedEffortInstance.save(flush: true)) {
-	
-					println "COMMIT SUCCESSFULLY"
-										
-					// TODO: if all assigned effort, for this period, is committed, send email alerting to all administrators
-					def countOfNotCommittedAssignedEffort = laborService.countNotCommittedAssignedEffort(assignedEffortInstance.period)
-					println "PRINTLN AssignedEffortController.commit.countOfNotCommittedAssignedEffort: ${countOfNotCommittedAssignedEffort}"
-		
-					println "PRINTLN RUN generateReportEmail"
-					if ( !countOfNotCommittedAssignedEffort) {
-						def message = laborService.sendAllAssignedEffortIsCommittedEmailAlert(assignedEffortInstance.period)						
-					}
-					
-					def reportingPeriodInstance = laborService.getCurrentReportingPeriod()
-			
-					def model = [            
-						reportingStaffInstance: reportingStaffInstance,
-						reportingPeriodInstance: reportingPeriodInstance,
-						assignedEffortInstance: assignedEffortInstance
-					]
-					
-					redirect(action: "committed")
-					
-				} else {
-					
-					println "COMMIT FAILED"
-					errMessage = "Failed to COMMIT."
-					
-					render(view: "show", model: [ assignedEffortInstance: assignedEffortInstance, errMessage: errMessage ])
-					
-				} 
 
-			} //( sumOfReportedPercentEffort.toBigDecimal() !== assignedPercentEffort.toBigDecimal() )
+			if ( sumOfReportedPercentEffort ) {
+
+				// total reported effort does not equal assigned effort, cannot commit
+				if ( sumOfReportedPercentEffort.toBigDecimal() != assignedPercentEffort.toBigDecimal() ) {
+					
+					// total reported effort is less than what is assigned
+					if ( sumOfReportedPercentEffort.toBigDecimal() < assignedPercentEffort.toBigDecimal() ) {
+						errMessage = "Cannot COMMIT your reported effort because it is less than what has been assigned to you."
+					// total reported effort is greater than what is assigned
+					} else if ( sumOfReportedPercentEffort.toBigDecimal() > assignedPercentEffort.toBigDecimal() ) {
+						errMessage = "Cannot COMMIT your reported effort because it is greater than what has been assigned to you."
+					}
+					println "PRINTLN AssignedEffortController.commit.errMessage: ${errMessage}"
+					
+					render(view: "show", model: [assignedEffortInstance: assignedEffortInstance, errMessage: errMessage])
+						
+				// total reported effort equals assigned effort, attempt to commit
+				} else {
+				
+					def principal = authenticateService.principal()
+					def reportingStaffInstance = laborService.getReportingStaff(principal)
+					println "PRINTLN AssignedEffortController.commit.reportingStaffInstance: ${reportingStaffInstance}"
+		
+					assignedEffortInstance.dateCommitted = new Date()
+					assignedEffortInstance.commitingStaff = reportingStaffInstance
+					println "PRINTLN AssignedEffortController.commit.assignedEffortInstance.dateCommitted: ${assignedEffortInstance.dateCommitted}"
+					println "PRINTLN AssignedEffortController.commit.assignedEffortInstance.commitingStaff: ${assignedEffortInstance.commitingStaff}"
+													
+					if ( assignedEffortInstance.validate() && !assignedEffortInstance.hasErrors() && assignedEffortInstance.save(flush: true)) {
+		
+						println "COMMIT SUCCESSFULLY"
+											
+						// TODO: if all assigned effort, for this period, is committed, send email alerting to all administrators
+						def countOfNotCommittedAssignedEffort = laborService.countNotCommittedAssignedEffort(assignedEffortInstance.period)
+						println "PRINTLN AssignedEffortController.commit.countOfNotCommittedAssignedEffort: ${countOfNotCommittedAssignedEffort}"
+			
+						println "PRINTLN RUN generateReportEmail"
+						if ( !countOfNotCommittedAssignedEffort) {
+							def message = laborService.sendAllAssignedEffortIsCommittedEmailAlert(assignedEffortInstance.period)
+						}
+						
+						def reportingPeriodInstance = laborService.getCurrentReportingPeriod()
+				
+						def model = [
+							reportingStaffInstance: reportingStaffInstance,
+							reportingPeriodInstance: reportingPeriodInstance,
+							assignedEffortInstance: assignedEffortInstance
+						]
+						
+						redirect(action: "committed")
+						
+					} else {
+						
+						println "COMMIT FAILED"
+						errMessage = "Failed to COMMIT."
+						
+						render(view: "show", model: [ assignedEffortInstance: assignedEffortInstance, errMessage: errMessage ])
+						
+					} 
+	
+				} //( sumOfReportedPercentEffort.toBigDecimal() !== assignedPercentEffort.toBigDecimal() )
+				
+			} //if ( !sumOfReportedPercentEffort )
 							
         } //if ( assignedEffortInstance )
 

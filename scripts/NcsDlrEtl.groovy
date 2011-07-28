@@ -139,17 +139,17 @@ class RunNcsDlrEtl {
 	    myConn = getMysqlConn()
 		
 		//import data
-		importLaborCategories()
-	    importStaff()
-	    importReportingPeriods()
-	    importStudyActivities()
-	    importStudyTasks()
-		importEtdlrTasks()
-		importOdeTasks()
-		importNotificationEmail()
+		//importLaborCategories()
+	    //importStaff()
+	    //importReportingPeriods()
+	    //importStudyActivities()
+	    //importStudyTasks()
+		//importEtdlrTasks()
+		//importOdeTasks()
+		//importNotificationEmail()
 	    importAssignedEfforts()
-	    importReportedEfforts()
-		importSfrReport()
+	    //importReportedEfforts()
+		//importSfrReport()
 	    
 	}
 	

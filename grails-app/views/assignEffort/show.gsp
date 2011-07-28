@@ -26,9 +26,9 @@
 
 			<!-- PERIOD SELECTION CONTROLS -->
 			<div class="clearBoth"			
+			
 				<div class="floatLeft">
 					<div class="spacing">
-					
 						<span class="controlBackground">Reporting Month
 							<g:select 
 								class="basic"
@@ -38,20 +38,20 @@
 								optionValue="name"
 								value="${reportingPeriodInstance.id}" 
 							/>&nbsp;
-							
-						  <g:actionSubmit class="buttonBasic" value="GO" constructor="" action="show" />
-						            
+						  <g:actionSubmit class="buttonBasic" action="show" value="GO" />
 						</span>
 					</div>
 				</div>
+				
 				<div class="floatRight">
 					<div class="spacing">
-						<g:actionSubmit class="buttonBasic" value="SUBMIT ASSGINED EFFORT" action="update"/>
+						<g:actionSubmit class="buttonBasic" action="update" value="SUBMIT ASSGINED EFFORT"/>
 					</div>
 				</div>
+				
 			</div>
 
-			<!-- STAFF EFFORT-->
+			<!-- STAFF EFFORT LIST -->
 			<table>
 
 				<thead>
@@ -90,7 +90,7 @@
 					<g:each var="ea" in="${effortAssignmentList}" >
 
 						<!-- logic for highlighting table rows -->
-						<g:if test="${!ea.tshisPeriodAssignedEffort}" >
+						<g:if test="${!ea.thisPeriodAssignedEffort}" >
 							<tr class="backgroundColorGainsboro">		
 						</g:if>
 						<g:elseif test="${ea.thisPeriodAssignedEffort && !ea.isCommitted}">
@@ -184,6 +184,7 @@
 				</tbody>
 
 			</table>
+			
 		    <div class="tableFooterNote">Table row highlighting scheme: 
 		    	<span class="backgroundColorGainsboro">not assigned effort</span>, 
 		    	<span class="backgroundColorOrange">assigned effort, but not committed</span>.

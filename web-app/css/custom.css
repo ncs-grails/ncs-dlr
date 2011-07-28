@@ -233,6 +233,7 @@ td.basic{
 }
 
 .tableFooterNote{
+	margin-top:.5em;
     padding-bottom:1em;
     color:black;
     font-size:smaller;

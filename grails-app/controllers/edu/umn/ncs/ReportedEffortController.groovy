@@ -1,14 +1,13 @@
 package edu.umn.ncs
-
 import org.codehaus.groovy.grails.plugins.springsecurity.Secured
 
-@Secured(['ROLE_NCS_IT', 'ROLE_NCS_DLR-MANAGE'])
+@Secured(['ROLE_NCS_IT', 'ROLE_NCS_DLR_MANAGE'])
 class ReportedEffortController {
-
-    static allowedMethods = [save: "POST", update: "POST", delete: "POST"]
 
     def authenticateService
     def laborService
+
+	static allowedMethods = [save: "POST", update: "POST", delete: "POST"]
 
     def index = {
         
@@ -29,7 +28,6 @@ class ReportedEffortController {
 
     } 
     
-    // when ADD button is pressed on AssignedEffort > show.gsp
     def create = {
         
         println "PRINTLN REPORTED EFFORT CONTROLLER > CREATE -------------------"                

@@ -22,19 +22,38 @@
 	      
 	    	<h1>DLR Application Management</h1>
 	
-	    	<!-- MENU selection -->
+	    	<!-- MENU SELECTION -->
 	    	<dl>
+	    		<!-- effort assignment -->
 	      		<dt class="basicMenu">
-	      			<g:link controller="assignEffort" action="show">Effort Assignment</g:link> - enter assigned effort for reporting period
+	      			<g:link 
+	      				controller="assignEffort" 
+	      				action="show"
+	      			>Effort Assignment
+	      			</g:link> - enter assigned effort for reporting period
 	      		</dt>
+	    		<!-- reference invoice number -->
 	      		<dt class="basicMenu">
-	      			<g:link controller="reportingPeriod" action="list">Reference Invoice Number</g:link> - enter the RIN for each reporting period
+	      			<g:link 
+	      				controller="reportingPeriod" 
+	      				action="list"
+	      			>Reference Invoice Number
+	      			</g:link> - enter the RIN for each reporting period
 	      		</dt>
+	    		<!-- report generation -->
 	      		<dt class="basicMenu">
-	      			<g:link action="report">Report Generation</g:link> - generate effort reports for dissemination
+	      			<g:link 
+	      				action="report"
+	      			>Report Generation
+	      			</g:link> - generate effort reports for dissemination
 	      		</dt>
+	    		<!-- staff information -->
 	      		<dt class="basicMenu">
-	      			<g:link controller="reportingStaff" action="list">Staff Information</g:link> - enter staff information
+	      			<g:link 
+	      				controller="reportingStaff" 
+	      				action="list"
+	      			>Staff Information
+	      			</g:link> - enter staff information
 	      		</dt>
 	    	</dl>
 	    	
