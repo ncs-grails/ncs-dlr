@@ -12,7 +12,7 @@
 	<body>
 
 		<!-- navigation -->
-		<g:ifAnyGranted role="ROLE_NCS_DLR_MANAGE">
+		<g:ifAnyGranted role="ROLE_NCS_IT,ROLE_NCS_DLR_MANAGE">
 			<p class="breadcrumbs">
 				<g:link controller="applicationManagement" action="list">Application Management</g:link>
 			</p>

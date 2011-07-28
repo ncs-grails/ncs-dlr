@@ -90,7 +90,7 @@
 					<g:each var="ea" in="${effortAssignmentList}" >
 
 						<!-- logic for highlighting table rows -->
-						<g:if test="${!ea.thisPeriodAssignedEffort}" >
+						<g:if test="${!ea.tshisPeriodAssignedEffort}" >
 							<tr class="backgroundColorGainsboro">		
 						</g:if>
 						<g:elseif test="${ea.thisPeriodAssignedEffort && !ea.isCommitted}">
