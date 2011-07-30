@@ -11,7 +11,7 @@
 
 	<body>
       
-		<!-- navigation -->
+		<!-- NAVIGATION -->
 		<p class="breadcrumbs">
 			<g:link controller="main" action="show">DLR Home</g:link>
 			&nbsp;&nbsp;&gt&nbsp;&nbsp;
@@ -65,9 +65,9 @@
 					</tr>				
 					<tr>
 						<th class="basic" rowspan="3"></th>
-						<th class="basic" rowspan="2" colspan="2">Staff</th>
-						<th class="basic" colspan="5">Effort</th>
-						<th class="basic" colspan="2">Email Notification</th>
+						<th class="basic" rowspan="2" colspan="2">STAFF<br />(who reports effort)</th>
+						<th class="basic" colspan="5">EFFORT</th>
+						<th class="basic" colspan="2">NOTIFICATION EMAIL</th>
 					</tr>
 					<tr>
 						<th class="basic" colspan="3">ASSIGNED</th>
@@ -185,9 +185,10 @@
 
 			</table>
 			
+			<!-- TABLE FOOTER -->
 		    <div class="tableFooterNote">Table row highlighting scheme: 
-		    	<span class="backgroundColorGainsboro">not assigned effort</span>, 
-		    	<span class="backgroundColorOrange">assigned effort, but not committed</span>.
+		    	<span class="backgroundColorGainsboro">is not assigned effort</span>, 
+		    	<span class="backgroundColorOrange">is assigned effort, but no reported effort committed</span>.
 		    </div>
 
 		</g:form>

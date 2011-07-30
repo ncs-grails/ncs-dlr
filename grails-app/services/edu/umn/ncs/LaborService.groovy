@@ -217,80 +217,82 @@ class LaborService {
 	
     def sendEmailNotification (periodId, staffId) {
         
-        // Get logged in user account
+		println "LABOR SERVICE > sendEmailNotification -------------------------"
+
+        // LOGGED IN USER (SENDER)
         def principal = authenticateService.principal()
         def username = principal.getUsername()
         def loggedInReportingStaffInstance = ReportingStaff.findByUsername(username)
         //println "PRINTLN laborService.sendEmailNotification.loggedInReportingStaffInstance: ${loggedInReportingStaffInstance}"
-        //println "LaborService.sendEmailNotification.loggedInReportingStaffInstance.email = ${loggedInReportingStaffInstance.email}"
+        println "loggedInReportingStaffInstance.email = ${loggedInReportingStaffInstance.email}"
 
-        // Get reporting staff
+        // REPORTING STAFF
         def reportingStaffInstance = ReportingStaff.read(staffId)
         //println "LaborService.sendEmailNotification.reportingStaffInstance = ${reportingStaffInstance}"        
-        //println "LaborService.sendEmailNotification.reportingStaffInstance.email = ${reportingStaffInstance.email}"
+        println "reportingStaffInstance.email = ${reportingStaffInstance.email}"
 
-        //Get reporting due date
-        def currentReportingPeriodInstance = ReportingPeriod.read(periodId)
-        println "PRINTLN LaborService.sendEmailNotification.currentReportingPeriodInstance: ${currentReportingPeriodInstance}"
+        //REPORTING PERIOD & DUE DATE
+        def reportingPeriodInstance = ReportingPeriod.read(periodId)
+        println "reportingPeriodInstance: ${reportingPeriodInstance}"
         
-        def currentReportingPeriodDate = currentReportingPeriodInstance.periodDate
-        println "PRINTLN LaborService.sendEmailNotification.currentReportingPeriodDate: ${currentReportingPeriodDate}"
-                
+        def reportingPeriodDate = reportingPeriodInstance.periodDate
+        println "reportingPeriodDate: ${reportingPeriodDate}"
+        
+		/*
         def nextReportingDate = getNextReportingPeriodDateTime(currentReportingPeriodDate)
-        println "PRINTLN LaborService.sendEmailNotification.nextReportingDate: ${nextReportingDate}"
+        println "nextReportingDate: ${nextReportingDate}"
+        */
         
-        def reportingDueDate = new LocalDate(nextReportingDate)        
-        
+        def reportingDueDate = new LocalDate(reportingPeriodDate)        
+		println "reportingDueDate = ${reportingDueDate}"
+		
         def reportingDueDateMonthName = reportingDueDate.toString('MMMM')
-        println "PRINTLN LaborService.sendEmailNotification.reportingDueDateMonthName = ${reportingDueDateMonthName}"
+        println "reportingDueDateMonthName = ${reportingDueDateMonthName}"
 
         def reportingDueDateYear = reportingDueDate.toString('yyyy')
-        println "PRINTLN LaborService.sendEmailNotification.reportingDueDate = ${reportingDueDateYear}"
+        println "reportingDueDateYear = ${reportingDueDateYear}"
 
         def reportingDueDateString = reportingDueDateMonthName + ' 20 ' + reportingDueDateYear
-        println "PRINTLN LaborService.sendEmailNotification.reportingDueDateString = ${reportingDueDateString}"
+        println "reportingDueDateString = ${reportingDueDateString}"
                 
-        // Get list of dates emails were sent in the past already
-        def currentPeriodAssignedEffortInstance = AssignedEffort.findByPeriodAndReportingStaff(currentReportingPeriodInstance,reportingStaffInstance)
-        //println "PRINTLN LaborService.sendEmailNotification.currentPeriodAssignedEffortInstance: ${currentPeriodAssignedEffortInstance}"
+        // past NOTIFICATION EMAIL LIST
+        def assignedEffortInstance = AssignedEffort.findByPeriodAndReportingStaff(reportingPeriodInstance,reportingStaffInstance)
+        //println "assignedEffortInstance: ${assignedEffortInstance}"
         
-        def notificationEmailInstanceList = currentPeriodAssignedEffortInstance.emails
-        //println "PRINTLN LaborService.sendEmailNotification.notificationEmailInstanceList: ${notificationEmailInstanceList}"
+        def notificationEmailInstanceList = assignedEffortInstance.emails
+        println "notificationEmailInstanceList: ${notificationEmailInstanceList}"
 
-        // Create email subject title, indicating email is an initial or reminder
-        def emailSubjectTitle
-        
+		// NOTIFICATION EMAIL		
+        // subject title (initial or reminder)
+        def emailSubjectTitle        
         if ( notificationEmailInstanceList ) {
-            //println "PRINTLN LaborService.sendEmailNotification.if(notificationEmailInstance) = TRUE"
             emailSubjectTitle = "Reminder - NCS Direct Labor Report due ${reportingDueDateString}"
-        // otherwise, send an INITIAL
         } else {
-            // println "PRINTLN LaborService.sendEmailNotification.if(notificationEmailInstance) = FALSE"
             emailSubjectTitle = "Notification - NCS Direct Labor Report due ${reportingDueDateString}"                        
         }
-        //println "PRINTLN LaborService.sendEmailNotification.emailSubjectTitle: ${emailSubjectTitle}"
+        println "PRINTLN emailSubjectTitle: ${emailSubjectTitle}"
         
         mailService.sendMail {
             to reportingStaffInstance.email
             from loggedInReportingStaffInstance.email
             subject emailSubjectTitle
             body( 
-                view:"/assignEffort/email",
+                view:"/assignEffort/notificationEmail",
                 model:[ 
-                    currentReportingPeriodInstance: currentReportingPeriodInstance, 
+                    reportingPeriodInstance: reportingPeriodInstance, 
                     reportingStaffInstance: reportingStaffInstance
                 ]
             )                    
-        } //mailService.sendMail
-        //println "PRINTLN called mailService.sendMail"
+        } 
+        println "PRINTLN call mailService.sendMail"
         
-        // create row that email was sent
+        // INSERT NOTIFICATION EMAIL into db
         def notificationEmailInstance = new NotificationEmail(
-            assignedEffort:currentPeriodAssignedEffortInstance,
+            assignedEffort:assignedEffortInstance,
             userSent:loggedInReportingStaffInstance
         )
         notificationEmailInstance.save(flush:true)
-        //println "PRINTLN notificationEmailInstance.save(flush:true)"
+        println "PRINTLN notificationEmailInstance.save(flush:true)"
         
         return 'sent email!'
 		

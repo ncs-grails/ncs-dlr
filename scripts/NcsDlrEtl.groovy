@@ -147,8 +147,8 @@ class RunNcsDlrEtl {
 		//importEtdlrTasks()
 		//importOdeTasks()
 		//importNotificationEmail()
-	    importAssignedEfforts()
-	    //importReportedEfforts()
+	    //importAssignedEfforts()
+	    importReportedEfforts()
 		//importSfrReport()
 	    
 	}

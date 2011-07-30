@@ -10,8 +10,8 @@ class MainController {
 
     def index = {
         
-        println "PRINTLN MAIN CONTROLLER > INDEX -------------------------------"        
-        println "PRINTLNcd  MainController.index.params: ${params}"        
+        println "MAIN CONTROLLER > INDEX ---------------------------------------"        
+        println "=> params: ${params}"        
         
         redirect(action: "show")
 
@@ -19,8 +19,8 @@ class MainController {
     
     def show = {
         
-        println "PRINTLN MAIN CONTROLLER > SHOW --------------------------------"        
-        println "PRINTLN MainController.show.params: ${params}"        
+        println "MAIN CONTROLLER > SHOW ----------------------------------------"        
+        println "=> params: ${params}"        
         
         // create REPORTING STAFF, REPORTING PERIOD, & ASSIGNED EFFORT instance
         def principal = authenticateService.principal()                         
@@ -28,11 +28,11 @@ class MainController {
         def reportingPeriodInstance = laborService.getCurrentReportingPeriod()     
         def assignedEffortInstance = AssignedEffort.findByReportingStaffAndPeriod(reportingStaffInstance, reportingPeriodInstance)
 
-        println "PRINTLN MainController.show.reportingStaffInstance: ${reportingStaffInstance}"            
-        println "PRINTLN MainController.show.reportingPeriodInstance: ${reportingPeriodInstance}"
-        println "PRINTLN MainController.show.assignedEffortInstance: ${assignedEffortInstance}"            
+        println "=> reportingStaffInstance: ${reportingStaffInstance}"            
+        println "=> reportingPeriodInstance: ${reportingPeriodInstance}"
+        println "=> assignedEffortInstance: ${assignedEffortInstance}"            
         if ( assignedEffortInstance ) {
-            println "PRINTLN MainController.show.assignedEffortInstance.dateCommitted: ${assignedEffortInstance.dateCommitted}"                        
+            println "=> assignedEffortInstance.dateCommitted: ${assignedEffortInstance.dateCommitted}"                        
         }
         
         [

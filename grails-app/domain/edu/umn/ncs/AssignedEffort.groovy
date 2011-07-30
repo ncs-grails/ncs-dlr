@@ -26,8 +26,10 @@ class AssignedEffort {
 			oldValue += ", assigningStaff.id: ${oldMap.assigningStaff.id}"
 			oldValue += ", appCreated: ${oldMap.appCreated}"
 			oldValue += ", dateCommitted: ${oldMap.dateCommitted}"
-			oldValue += ", commitingStaff.id: ${oldMap.commitingStaff.id} "
-		//println "PRINTLN AssignedEffortDomain.onDelete.oldValue: ${oldValue}"
+			oldValue += ", commitingStaff.id: "
+			oldValue += "${oldMap.commitingStaff}" ? "${null} " : "${oldMap.commitingStaff.id} "  
+				//oldValue += ", commitingStaff.id: ${oldMap.commitingStaff.id} "
+			println "AssignedEffortDomain.onDelete.oldValue: ${oldValue}"
 			
 		String className = this.class.toString().replace('class ', '')
 		//println "${now}\tAudit:DELETE::\t${oldValue}"
@@ -83,7 +85,7 @@ class AssignedEffort {
         assigningStaff(blank:false)
         appCreated(blank:false)
         dateCommitted(nullable:true)
-        commitingStaff(nullable:true)
+		commitingStaff(nullable:true)
     }
 
 }
