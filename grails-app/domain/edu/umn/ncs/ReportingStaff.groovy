@@ -56,7 +56,7 @@ class ReportingStaff {
 	} //def onDelete
 
     static hasMany = [assignedEfforts: AssignedEffort]
-    static transients = ['fullNameLFM']
+    static transients = ['fullNameLFM', 'fullNameFML']
 
 	String toString() {
 		fullNameLFM
@@ -65,7 +65,11 @@ class ReportingStaff {
     String getFullNameLFM() {
         "${lastName}, ${firstName} ${middleInit ?: ''}".trim()
     }
-    
+
+	String getFullNameFML() {
+		"${firstName} ${middleInit ?: ''} ${lastName}".trim()
+	}
+
     static constraints = {
         username(blank:false, unique:true)
         firstName(blank:false)

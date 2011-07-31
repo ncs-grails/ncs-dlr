@@ -22,6 +22,23 @@
 
 	    <h1>Effort Assignment</h1>
 
+		<!-- display ERROR MESSAGES -->       
+		<g:if test="${errMessageList}">
+			<g:each in="${errMessageList}" >		
+				<g:if test="${it}">
+					<div class="errors">${it}</div>        
+				</g:if>
+			</g:each>
+		</g:if>
+		<g:else>
+			<g:hasErrors bean="${reportedEffortInstance}">
+				<div class="errors">
+					<g:renderErrors bean="${reportedEffortInstance}" as="list" />
+				</div>
+			</g:hasErrors>
+		</g:else>
+
+		<!--  begin FORM -->
 	    <g:form>
 
 			<!-- PERIOD SELECTION CONTROLS -->
@@ -191,6 +208,7 @@
 		    	<span class="backgroundColorOrange">is assigned effort, but no reported effort committed</span>.
 		    </div>
 
+		<!-- end FORM -->
 		</g:form>
       
 		<div class="pageSpacing"> </div>

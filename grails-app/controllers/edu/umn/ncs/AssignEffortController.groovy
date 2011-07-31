@@ -25,7 +25,25 @@ class AssignEffortController {
         
         println "ASSIGN EFFORT CONTROLLER > SHOW -------------------------------"
         println "=> params: ${params}"                        
+		
+		// ERROR MESSAGE
+		def messages = params?.errMessageList
+		println "=> errMessage: ${errMessage}"
+		
+		def errMessageList
+		if ( errMessage && errMessage.find(/\,/)) {
+			println "=> is list"
+			errMessageList = []			
+			errMessage.each{
+				errMessageList.add(it)
+			}
+		} else {
+			println "=> is not list"
+			errMessageList = errMessage		
+		}
 
+		println "=> errMessageList: ${errMessageList}"
+		
         /********************************************************************************************************
          * REPORING PERIODS (current, next, previous )
          ********************************************************************************************************/
@@ -167,11 +185,12 @@ class AssignEffortController {
             effortAssignmentList.add(record)
             
         }
-                
+		
         [
             reportingPeriodInstance: reportingPeriodInstance, 
             periodSelectiontList: periodSelectiontList,
-            effortAssignmentList: effortAssignmentList
+            effortAssignmentList: effortAssignmentList, 
+			errMessageList: errMessageList
         ]
 
     } //def show 
@@ -180,7 +199,11 @@ class AssignEffortController {
                 
         println "ASSIGNED EFFORT CONTROLLER > UPDATE ---------------------------"
         //println "=> params: ${params}"
-        
+		
+		def err = false
+		def errMessage = ""
+		def errMessageList = []
+		
         /********************************************************************************************************
          * LOG-IN USER 
          ********************************************************************************************************/
@@ -203,7 +226,7 @@ class AssignEffortController {
 		println "=> reportingPeriodInstance: ${reportingPeriodInstance}"
 		
         /********************************************************************************************************
-         * per Staff: ASSIGNED EFFORT, previous ASSIGNED EFFORT, SAVE
+         * per Staff: ASSIGNED EFFORT, previous ASSIGNED EFFORT, and then SAVE
          ********************************************************************************************************/
         params.each{
                         
@@ -219,16 +242,22 @@ class AssignEffortController {
                  ********************************************************************************************************/
                 
                 def reportingStaffId = Integer.parseInt(it.key.replace('staff-', ''))
-                //println "=> reportingStaffId: ${reportingStaffId}"
+                println "=> reportingStaffId: ${reportingStaffId}"
 
-                // reporting staff instance
-                def reportingStaffInstance = ReportingStaff.read(reportingStaffId)
-                println "=> reportingStaffInstance: ${reportingStaffInstance}"                
-
+				def reportingStaffInstance
+				if ( reportingStaffId ) {
+					reportingStaffInstance = ReportingStaff.read(reportingStaffId)
+					println "=> reportingStaffInstance: ${reportingStaffInstance}"
+					if ( reportingStaffInstance ) {
+						println "=> reportingStaffInstance.id: ${reportingStaffInstance.id}"
+						println "=> reportingStaffInstance.fullNameFML: ${reportingStaffInstance.fullNameFML}"
+					}
+	
+				}
+				                
                 /********************************************************************************************************
                  * ASSIGNED EFFORT (from gsp)
                  ********************************************************************************************************/
-				
 				def assignedEffortValue
 				
                 def assignedEffortConvertedValue = it.value.thisPeriodAssignedEffort      
@@ -246,24 +275,36 @@ class AssignEffortController {
 					
 					// validate assigned effort (from gsp); that is, does effort have 0-3 digits before the decimal, and 0-2 after the decimal
 					if ( assignedEffortConvertedValue =~ /[0-9]{1,3}\.?[0-9]{0,2}/ ) {
+						
 						println "=> assignedEffortConvertedValue meets requirements (0-3 digits . 0-2 digits)"
+												
+						// verify if this assigned effort (from gsp) is between 0 - 100
+						def r = 0.0..100.0
+						if ( r.containsWithinBounds(assignedEffortConvertedValue.toBigDecimal()) ) {
+							println "=> assignedEffortConvertedValue is between 0.0..100.0"
+						} else {
+							println "=> assignedEffortConvertedValue is NOT between 0.0..100.0"
+							err = true
+							errMessage = "Assigned effort (${assignedEffortConvertedValue}) entered for ${reportingStaffInstance.fullNameFML} is not a valid percent.  " 
+							errMessageList.add(errMessage)						
+							assignedEffortValue = '0'
+						}						
+
+						
 					} else {
-						println "=> assignedEffortConvertedValue DOES NOT meet requirements (0-3 digits . 0-2 digits)"
-						assignedEffortValue = '0'
-					}
-					println "=> assignedEffortValue = ${assignedEffortValue}"
 					
-					// verify if this assigned effort (from gsp) is between 0 - 100
-					def r = 0.0..100.0
-					if ( r.containsWithinBounds(assignedEffortConvertedValue.toBigDecimal()) ) {
-						println "=> assignedEffortConvertedValue is between 0.0..100.0"
-					} else {
-						println "=> assignedEffortConvertedValue is NOT between 0.0..100.0"
+						println "=> assignedEffortConvertedValue DOES NOT meet requirements (0-3 digits . 0-2 digits)"
+						err = true
+						errMessage = "Assigned effort entered (${assignedEffortConvertedValue}}) for ${reportingStaffInstance.fullNameFML} is not a valid percent.  "
+						errMessageList.add(errMessage)						
 						assignedEffortValue = '0'
+						
 					}
 					
 				} else {
+				
 					assignedEffortValue = '0'
+					
 				}				
 				println "=> assignedEffortValue = ${assignedEffortValue}"
 																
@@ -305,12 +346,12 @@ class AssignEffortController {
 				}
 								
 				// ASSIGNED EFFORT INSTANCE exists
-				if ( assignedEffortInstance ) {
+				if ( !err && assignedEffortInstance ) {
 					
 					println "=> if assignedEffortInstance exists in db"
 					
 					// DELETE
-					if ( !assignedEffortValue || assignedEffortValue.toBigDecimal() == 0 ) {
+					if ( !err && !assignedEffortValue || assignedEffortValue.toBigDecimal() == 0 ) {
 
 						println "=> and assignedEffortValue is 0/null"
 						
@@ -320,7 +361,9 @@ class AssignEffortController {
 						}
 						catch (org.springframework.dao.DataIntegrityViolationException e) {
 							println "=> asignedEffortInstance.delete FAILED"
-							flash.message = "Unable DELETE assigned effort for ${reportingStaffInstance.getFullNameLFM()}"
+							err = true
+							errMessage = "Unable DELETE assigned effort for ${reportingStaffInstance.fullNameFML}.  "
+							errMessageList.add(errMessage)						
 						}
 						
 					// UPDATE
@@ -330,32 +373,34 @@ class AssignEffortController {
 												
 						println "=> assignedEffortInstance.version before update: ${assignedEffortInstance.version}"
 						
-						assignedEffortInstance.assignedEffort = assignedEffortValue
-												
-						if ( !assignedEffortInstance.hasErrors() && assignedEffortInstance.save(flush: true)) {
+						if ( !err ) {
 							
-							println "=> assignedEffortInstance.assignedEffort update SUCCEEDED"
-							println "=> updated assignedEffortInstance.id: ${assignedEffortInstance.id}"
-							println "=> updated assignedEffortInstance.assignedEffort: ${assignedEffortInstance.assignedEffort}"
-							println "=> updated assignedEffortInstance.version: ${assignedEffortInstance.version}"
+							assignedEffortInstance.assignedEffort = assignedEffortValue
 							
-						} else {
-						
-							println "=> updated assignedEffortInstance.id: ${assignedEffortInstance.id}"
-							println "=> updated assignedEffortInstance.assignedEffort: ${assignedEffortInstance.assignedEffort}"
-							println "=> updated assignedEffortInstance.version: ${assignedEffortInstance.version}"
-							flash.message = "Unable UPDATE assigned effort for ${reportingStaffInstance.getFullNameLFM()}"
-													
-						}
+							if ( !assignedEffortInstance.hasErrors() && assignedEffortInstance.save(flush: true)) {
+								println "=> assignedEffortInstance.assignedEffort update SUCCEEDED"
+								println "=> updated assignedEffortInstance.id: ${assignedEffortInstance.id}"
+								println "=> updated assignedEffortInstance.assignedEffort: ${assignedEffortInstance.assignedEffort}"
+								println "=> updated assignedEffortInstance.version: ${assignedEffortInstance.version}"
+							} else {
+								println "=> updated assignedEffortInstance.id: ${assignedEffortInstance.id}"
+								println "=> updated assignedEffortInstance.assignedEffort: ${assignedEffortInstance.assignedEffort}"
+								println "=> updated assignedEffortInstance.version: ${assignedEffortInstance.version}"
+								err = true
+								errMessage = "Unable UPDATE assigned effort for ${reportingStaffInstance.fullNameFML}.  "
+								errMessageList.add(errMessage)
+							}
+							
+						} //if ( !err )
 						
 					} //if ( !assignedEffortValue || assignedEffortValue.toBigDecimal() == 0 )
 					
 				// ASSIGNED EFFORT INSTANCE does not exist (INSERT)
-				} else {
+				} else if (!err && !assignedEffortInstance) {
 				
 					println "=> if assignedEffortInstance DOES NOT exist in db"
-					
-					if ( assignedEffortValue &&  assignedEffortValue.toBigDecimal() > 0 ) {
+						
+					if ( !err && assignedEffortValue &&  assignedEffortValue.toBigDecimal() > 0 ) {
 						
 						println "=> and assignedEffortValue > 0"
 						
@@ -376,7 +421,9 @@ class AssignEffortController {
 						}
 						else {
 							println "=> asignedEffortInstance.save FAILED"
-							flash.message = "Unable ADD assigned effort for ${reportingStaffInstance.getFullNameLFM()}"
+							err = true
+							errMessage = "Unable ADD assigned effort for ${reportingStaffInstance.fullNameFML}.  "
+							errMessageList.add(errMessage)
 						}
 						
 					}
@@ -387,21 +434,40 @@ class AssignEffortController {
                  * SEND EMAIL NOTIFICATION 
                  ********************************************************************************************************/
                 
-                def sendNowValue = it.value.sendNow
-                println "=> sendNowValue: ${sendNowValue}"
-                
-                // if "Send Now" checkbox (from gsp) is selected
-                if ( sendNowValue ) { 
-					println "=> if(sendNowValue) = TRUE"
-                    def message = laborService.sendEmailNotification(reportingPeriodInstance.id, reportingStaffInstance.id)
-                    println "=> send email notification"
-                } 
-                
+				if ( !err ) {
+					
+					// if "Send Now" checkbox (from gsp) is selected
+					def sendNowValue = it.value.sendNow
+					println "=> sendNowValue: ${sendNowValue}"
+					
+					if ( sendNowValue ) {
+						println "=> if(sendNowValue) = TRUE"
+						def message = laborService.sendEmailNotification(reportingPeriodInstance.id, reportingStaffInstance.id)
+						println "=> send email notification"
+					}
+	
+				}				
+
             } //if ( it.key =~ /staff-[0-9]*/)
 
         } //params.each
-        
-        def params = ['reportingPeriodInstance.id': reportingPeriodInstance?.id ]
+
+		
+		/********************************************************************************************************
+		 * ERROR MESSAGES
+		 ********************************************************************************************************/
+		
+		println "=> errMessageList: ${errMessageList}"
+		if ( errMessageList ) {
+			errMessageList.each{
+				println "=> errMessageList.each: ${it}"
+			}
+		}
+		        
+        def params = [
+			'reportingPeriodInstance.id': reportingPeriodInstance?.id,
+			errMessageList: errMessageList 
+		]
 		println "=> params = [reportingPeriodInstance.id]: ${params}"
 		
         redirect(action:'show', params:params)
