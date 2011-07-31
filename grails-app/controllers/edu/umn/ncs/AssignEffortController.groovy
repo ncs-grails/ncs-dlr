@@ -182,7 +182,7 @@ class AssignEffortController {
         //println "=> params: ${params}"
         
         /********************************************************************************************************
-         * LOGGED IN USER 
+         * LOG-IN USER 
          ********************************************************************************************************/
 		
         def principal = authenticateService.principal()
@@ -202,6 +202,9 @@ class AssignEffortController {
         }
 		println "=> reportingPeriodInstance: ${reportingPeriodInstance}"
 		
+        /********************************************************************************************************
+         * per Staff: ASSIGNED EFFORT, previous ASSIGNED EFFORT, SAVE
+         ********************************************************************************************************/
         params.each{
                         
             //println "=> AssignedEffortController.update.params.each: ${it}"
@@ -215,7 +218,6 @@ class AssignEffortController {
                  * REPORTING STAFF (from gsp)
                  ********************************************************************************************************/
                 
-                // reporting staff id, from gsp 
                 def reportingStaffId = Integer.parseInt(it.key.replace('staff-', ''))
                 //println "=> reportingStaffId: ${reportingStaffId}"
 
@@ -226,38 +228,47 @@ class AssignEffortController {
                 /********************************************************************************************************
                  * ASSIGNED EFFORT (from gsp)
                  ********************************************************************************************************/
-                
-                // assigned effort. If null, make it zero
-                def assignedEffortConvertedValue = it.value.thisPeriodAssignedEffort      
-				assignedEffortConvertedValue = assignedEffortConvertedValue.trim()
 				
-				if ( !assignedEffortConvertedValue ) {
+				def assignedEffortValue
+				
+                def assignedEffortConvertedValue = it.value.thisPeriodAssignedEffort      
+				println "=> assignedEffortConvertedValue (raw): ${assignedEffortConvertedValue}"
+				if ( assignedEffortConvertedValue ){
+					assignedEffortConvertedValue = assignedEffortConvertedValue.trim()				
+				} else {
 					assignedEffortConvertedValue = '0'
 				}
-				println "=> assignedEffortConvertedValue: ${assignedEffortConvertedValue}"
+				println "=> assignedEffortConvertedValue (cleaned): ${assignedEffortConvertedValue}"
 				
-                // validate assigned effort (from gsp); that is, does effort have 0-3 digits before the decimal, and 0-2 after the decimal
-                if ( assignedEffortConvertedValue =~ /[0-9]{1,3}\.?[0-9]{0,2}/ ) {
-					println "=> assignedEffortConvertedValue meets requirements (0-3 digits . 0-2 digits)"                    
-				} else {				
-					println "=> assignedEffortConvertedValue DOES NOT meet requirements (0-3 digits . 0-2 digits)"
-					assignedEffortConvertedValue = null
-				}
-				println "=> assignedEffortConvertedValue = ${assignedEffortConvertedValue}"
-				
-				// verify if this assigned effort (from gsp) is between 0 - 100
-                def r = 0.0..100.0                
-                if ( r.containsWithinBounds(assignedEffortConvertedValue) ) {					
-					println "=> assignedEffortConvertedValue is between 0.0..100.0"
-					                    														
-                } else {				
-					println "=> assignedEffortConvertedValue is NOT between 0.0..100.0"                        
-                    assignedEffortConvertedValue = null                    
-                } 
-				println "=> assignedEffortConvertedValue = ${assignedEffortConvertedValue}"
-												
+				if ( assignedEffortConvertedValue && assignedEffortConvertedValue.toBigDecimal() > 0 ) {
+					
+					assignedEffortValue = assignedEffortConvertedValue.toBigDecimal()/100
+					
+					// validate assigned effort (from gsp); that is, does effort have 0-3 digits before the decimal, and 0-2 after the decimal
+					if ( assignedEffortConvertedValue =~ /[0-9]{1,3}\.?[0-9]{0,2}/ ) {
+						println "=> assignedEffortConvertedValue meets requirements (0-3 digits . 0-2 digits)"
+					} else {
+						println "=> assignedEffortConvertedValue DOES NOT meet requirements (0-3 digits . 0-2 digits)"
+						assignedEffortValue = '0'
+					}
+					println "=> assignedEffortValue = ${assignedEffortValue}"
+					
+					// verify if this assigned effort (from gsp) is between 0 - 100
+					def r = 0.0..100.0
+					if ( r.containsWithinBounds(assignedEffortConvertedValue.toBigDecimal()) ) {
+						println "=> assignedEffortConvertedValue is between 0.0..100.0"
+					} else {
+						println "=> assignedEffortConvertedValue is NOT between 0.0..100.0"
+						assignedEffortValue = '0'
+					}
+					
+				} else {
+					assignedEffortValue = '0'
+				}				
+				println "=> assignedEffortValue = ${assignedEffortValue}"
+																
                 /********************************************************************************************************
-                 * PREVIOUS PERIOD'S ASSIGNED EFFORT (if checkbox "Copy Previous to Current" is selected)
+                 * PREVIOUS PERIOD'S ASSIGNED EFFORT (if "Copy Previous to Current" checkbox is selected)
                  ********************************************************************************************************/
 				
 				// "Copy Previous to Current" checkbox value (from gsp)
@@ -270,201 +281,108 @@ class AssignEffortController {
 					println "=> if(copyPreviousToCurrentValue) = TRUE"
 					
 					// previous period's assigned effort (from gsp)
-					def previousAssignedEffortConvertedValue = it.value.previousPeriodEffort
-					if ( previousAssignedEffortConvertedValue || previousAssignedEffortConvertedValue.toBigDecimal = 0 ) {
-						previousPeriodAssignedEffortValue = null						
-					}
-					
-					println "=> previousAssignedEffortConvertedValue: ${previousAssignedEffortConvertedValue}"
+					def previousAssignedEffortValue = it.value.previousPeriodEffort
+					if ( !previousAssignedEffortValue ) {
+						previousAssignedEffortValue = '0'						
+					}					
+					println "=> previousAssignedEffortValue (validated): ${previousAssignedEffortValue}"
 	
-	                // validate previous period's assigned effort from gsp (that is, ensure effort is not null or is 0)
-	                if ( previousAssignedEffortConvertedValue || previousAssignedEffortConvertedValue.toBigDecimal != 0 ) {
-	                    previousAssignedEffortConvertedValue = previousAssignedEffortConvertedValue.toBigDecimal()
-	                } else {
-	                    previousPeriodAssignedEffortValue = null
-	                }
-	                println "=> previousPeriodAssignedEffortValue (validated): ${previousPeriodAssignedEffortValue}"                                 
-
 					// set assigned effort (from gsp) to previous period's assigned effort
-					assignedEffortConvertedValue = previousPeriodAssignedEffortValue
-					println "=> then assignedEffortValue (based on preivous period's): ${assignedEffortValue}"
+					assignedEffortValue = previousAssignedEffortValue
+					println "=> then assignedEffortValue (based on preivous period's): ${assignedEffortValue}"					
 					
 				}
 				
                 /********************************************************************************************************
-                 * UPDATE/INSERT ASSIGNED EFFORT
+                 * DELETE/UPDATE/INSERT ASSIGNED EFFORT
                  ********************************************************************************************************/
 
-				def didSave = false
-				
 				// ASSIGNED EFFORT INSTANCE, if one exists in the db
                 def assignedEffortInstance = AssignedEffort.findByPeriodAndReportingStaff(reportingPeriodInstance,reportingStaffInstance)
-                println "=> assignedEffortInstance: ${assignedEffortInstance}"
-				
+				println "=> assignedEffortInstance: ${assignedEffortInstance}"
+				if ( assignedEffortInstance ) {
+	                println "=> assignedEffortInstance.id: ${assignedEffortInstance.id}"
+				}
+								
+				// ASSIGNED EFFORT INSTANCE exists
 				if ( assignedEffortInstance ) {
 					
 					println "=> if assignedEffortInstance exists in db"
 					
-					if ( !assignedEffortValue &&  assignedEffortValue == 0 ) {
+					// DELETE
+					if ( !assignedEffortValue || assignedEffortValue.toBigDecimal() == 0 ) {
 
 						println "=> and assignedEffortValue is 0/null"
 						
-						//TODO: delete instance
+						try {
+							assignedEffortInstance.delete(flush: true)
+							println "=> asignedEffortInstance.delete SUCCEEDED"							
+						}
+						catch (org.springframework.dao.DataIntegrityViolationException e) {
+							println "=> asignedEffortInstance.delete FAILED"
+							flash.message = "Unable DELETE assigned effort for ${reportingStaffInstance.getFullNameLFM()}"
+						}
 						
-						
-					}
-
-					println "=> assignedEffortValue.toBigDecimal(): ${assignedEffortValue.toBigDecimal()}"
-					println "=> assignedEffortInstance.assignedEffortConverted: ${assignedEffortInstance.assignedEffortConverted}"
+					// UPDATE
+					} else if ( assignedEffortValue &&  assignedEffortValue > 0 && assignedEffortValue.toBigDecimal() != assignedEffortInstance.assignedEffort ) {
 					
-					if ( assignedEffortValue &&  assignedEffortValue > 0 && assignedEffortValue.toBigDecimal() != assignedEffortInstance.assignedEffortConverted ) {
+						println "=> and assignedEffortValue > 0 and assignedEffortValue != assignedEffortInstance.assignedEffort"
+												
+						println "=> assignedEffortInstance.version before update: ${assignedEffortInstance.version}"
 						
-						println "=> and assignedEffortValue > 0"
+						assignedEffortInstance.assignedEffort = assignedEffortValue
+												
+						if ( !assignedEffortInstance.hasErrors() && assignedEffortInstance.save(flush: true)) {
+							
+							println "=> assignedEffortInstance.assignedEffort update SUCCEEDED"
+							println "=> updated assignedEffortInstance.id: ${assignedEffortInstance.id}"
+							println "=> updated assignedEffortInstance.assignedEffort: ${assignedEffortInstance.assignedEffort}"
+							println "=> updated assignedEffortInstance.version: ${assignedEffortInstance.version}"
+							
+						} else {
 						
-						//TODO: update instance
+							println "=> updated assignedEffortInstance.id: ${assignedEffortInstance.id}"
+							println "=> updated assignedEffortInstance.assignedEffort: ${assignedEffortInstance.assignedEffort}"
+							println "=> updated assignedEffortInstance.version: ${assignedEffortInstance.version}"
+							flash.message = "Unable UPDATE assigned effort for ${reportingStaffInstance.getFullNameLFM()}"
+													
+						}
 						
-					} 
-
+					} //if ( !assignedEffortValue || assignedEffortValue.toBigDecimal() == 0 )
+					
+				// ASSIGNED EFFORT INSTANCE does not exist (INSERT)
 				} else {
 				
 					println "=> if assignedEffortInstance DOES NOT exist in db"
 					
-					if ( assignedEffortValue &&  assignedEffortValue > 0 ) {
+					if ( assignedEffortValue &&  assignedEffortValue.toBigDecimal() > 0 ) {
 						
 						println "=> and assignedEffortValue > 0"
 						
-						//TODO: create an instance
-						
-						println "=> create (new) assigned effort instance based on assignedEffortValue"
+						println "=> create (new) assignedEffort instance based on assignedEffortValue"
 						assignedEffortInstance = new AssignedEffort(
 							reportingStaff: reportingStaffInstance,
 							laborCategory: reportingStaffInstance.laborCategory,
 							period: reportingPeriodInstance,
-							assignedEffort: assignedEffortValue,
+							assignedEffort: assignedEffortValue.toBigDecimal(),
 							assigningStaff: loggedInReportingStaffInstance,
 							appCreated: 'ncs-dlr'
 						)
-						println "=> newly created assignedEffortInstance.id:${assignedEffortInstance.id} "
-						println "=> newly created assignedEffortInstance:${assignedEffortInstance} "
-
 						
-					}
-						
-				
-				
-				} //if ( assignedEffortInstance )
-				
-
-				// UPDATE OR INSERT ASSIGNED EFFORT?
-
-				// update ASSIGNED EFFORT, because there is already an assignedEffortInstance
-                if ( assignedEffortInstance ) {
-											                        
-					println "=> if assignedEffortInstance exists in db"
-					                    
-					if ( assignedEffortValue &&  assignedEffortValue > 0 ) {
-												
-						println "=> and assignedEffortValue is > 0"
-						
-                        if ( assignedEffortValue != assignedEffortInstance.assignedEffort ) {
-							
-							println "=> and assignedEffortValue != assignedEffortInstance.assignedEffort"
-						
-							version = assignedEffortInstance.version
-							println "=> current version from db: ${version}"
-							
-							version = version.toLong()
-							println "=> version (toLong): ${version}"
-							
-							version = version + 1							
-							println "=> version + 1: ${version}"
-							
-							if (version >  assignedEffortInstance.version) {
-								
-								println "=> assignedEffortInstance.id: ${assignedEffortInstance.id}"
-																
-								assignedEffortInstance.assignedEffort = assignedEffortValue								
-								println "=> updated assignedEffortInstance.assignedEffort: ${assignedEffortInstance.assignedEffort}"
-																
-								assignedEffortInstance.version = version
-								println "=> updated assignedEffortInstance.version: ${assignedEffortInstance.version}"
-								
-								if ( assignedEffortInstance.validate() && !assignedEffortInstance.hasErrors() && assignedEffortInstance.save(flush:true) ) {
-									didSave = false
-								}
-							}
-							
-                        }
-						
-					} else {
-					
-						println "=> and assignedEffortValue is 0/null"						
-						assignedEffortInstance.delete()
-						if ( assignedEffortInstance ) {
-							println "=> assignedEffortInstance.id:${assignedEffortInstance.id} "
-							println "=> assignedEffortInstance:${assignedEffortInstance} "
+						if ( assignedEffortInstance.save(flush: true )) {
+							println "=> asignedEffortInstance.save SUCCEEDED"
+							println "=> newly created assignedEffortInstance.id:${assignedEffortInstance.id} "
+							println "=> newly created assignedEffortInstance:${assignedEffortInstance} "	
+						}
+						else {
+							println "=> asignedEffortInstance.save FAILED"
+							flash.message = "Unable ADD assigned effort for ${reportingStaffInstance.getFullNameLFM()}"
 						}
 						
-						
-						
-					}
-
-				// insert ASSIGNED EFFORT entry, because an assignedEffortInstance does not exist                        
-                } else {
-				
-					println "=> if assignedEffortInstance DOES NOT exist in db"
-					
-					if ( assignedEffortValue &&  assignedEffortValue > 0 ) {
-						
-						println "=> and assignedEffortValue is > 0"
-						
-						println "=> create (new) assigned effort instance based on assignedEffortValue"
-						assignedEffortInstance = new AssignedEffort(
-							reportingStaff: reportingStaffInstance,
-							laborCategory: reportingStaffInstance.laborCategory,
-							period: reportingPeriodInstance,
-							assignedEffort: assignedEffortValue,
-							assigningStaff: loggedInReportingStaffInstance,
-							appCreated: 'ncs-dlr'
-						)
-						println "=> newly created assignedEffortInstance.id:${assignedEffortInstance.id} "
-						println "=> newly created assignedEffortInstance:${assignedEffortInstance} "
-						
-					}	
-				
-				} //if ( assignedEffortInstance ) 
-
-                if ( assignedEffortInstance &&  !assignedEffortInstance.validate() && !assignedEffortInstance.hasErrors() && assignedEffortInstance.save(flush:true) ) {
-					
-					println "=> asignedEffortInstance.save SUCCEEDED"
-					println "=> then newly created assignedEffortInstance.id:${assignedEffortInstance.id} "
-					println "=> then newly created assignedEffortInstance:${assignedEffortInstance} "
-
-                } else {
-				
-					println "=> asignedEffortInstance.save FAILED"
-					
-					assignedEffortInstance.errors.each{
-						println "=> then assignedEffortInstance.error: ${it}"
 					}
 					
-					// if "Copy Previous to Current" checkbox is selected, notify user it failed
-					if ( copyPreviousToCurrentValue ) {
-						
-						flash.message = "Unable to copy previous period's assigned effort to current period for ${reportingStaffInstance.getFullNameLFM()}}"
-						println "flash.message: ${flash.message}}"
-						
-					// if user entered/modified effort in "Current Period's Assigned Effort" textbox, notify user it failed
-					} else if ( assignedEffortValue && assignedEffortInstance && assignedEffortValue != assignedEffortInstance) {
-					
-						flash.message = "Unable to save assigned effort for ${reportingStaffInstance.getFullNameLFM()}}"
-						println "flash.message: ${flash.message}}"
-						
-					}
-					
-				} 
+				} //if ( assignedEffortInstance )
 
-                                             
                 /********************************************************************************************************
                  * SEND EMAIL NOTIFICATION 
                  ********************************************************************************************************/
@@ -474,25 +392,18 @@ class AssignEffortController {
                 
                 // if "Send Now" checkbox (from gsp) is selected
                 if ( sendNowValue ) { 
-                
 					println "=> if(sendNowValue) = TRUE"
-                
-                    //println "=> reportingPeriodInstance.id: ${reportingPeriodInstance.id}"
-                    //println "=> reportingStaffInstance.id: ${reportingStaffInstance.id}"
-                
-                    def message = laborService.sendEmailNotification(reportingPeriodInstance.id, reportingStaffInstance.id)      
+                    def message = laborService.sendEmailNotification(reportingPeriodInstance.id, reportingStaffInstance.id)
                     println "=> send email notification"
-                                                           
                 } 
                 
             } //if ( it.key =~ /staff-[0-9]*/)
 
         } //params.each
         
-        
-        // REDIRECT TO SHOW GSP PAGE ----------------------------------------------------------------------------------------------------
         def params = ['reportingPeriodInstance.id': reportingPeriodInstance?.id ]
 		println "=> params = [reportingPeriodInstance.id]: ${params}"
+		
         redirect(action:'show', params:params)
                         
     } //def update
