@@ -11,24 +11,30 @@ class ApplicationManagementController {
 
     def index = {
 		
-        println "APPLICATION MANAGEMENT CONTROLLER > INDEX ---------------------"
-        println "=> params: ${params}"
+		if (debug) {
+	        println "APPLICATION MANAGEMENT CONTROLLER > INDEX ---------------------"
+	        println "=> params: ${params}"
+		}
 		
 		redirect(action: "list", params: params)
 		
     }
 
-    def list = {     
-		
-        println "APPLICATION MANAGEMENT CONTROLLER > LIST ----------------------"
-        println "=> params: ${params}"
+    def list = {    
+		 
+		if (debug) {
+	        println "APPLICATION MANAGEMENT CONTROLLER > LIST ----------------------"
+	        println "=> params: ${params}"
+		}
 		                
     }
     
 	def report = {
         
-        println "APPLICATION MANAGEMENT CONTROLLER > REPORT ---------------------"
-        println "=> params: ${params}"
+		if (debug) {
+		    println "APPLICATION MANAGEMENT CONTROLLER > REPORT ---------------------"
+	        println "=> params: ${params}"
+		}
 
 		// REPORTING PERIOD
 				
@@ -36,17 +42,17 @@ class ApplicationManagementController {
 		def periodList = c.list {			
 			order("periodDate", "desc")
 		} 
-        println "=> periodList: ${periodList}"
+        if (debug) { println "=> periodList: ${periodList}" }
 		
 		def reportingPeriodInstanceList = []
         periodList.each{
             reportingPeriodInstanceList.add(g.formatDate(date:it.periodDate, format:'MMMM yyyy'))
         }
-		println "=> reportingPeriodInstanceList: ${reportingPeriodInstanceList}"
+		if (debug) { println "=> reportingPeriodInstanceList: ${reportingPeriodInstanceList}" }
 
 		// REPORT FORMAT		
 		def reportFormats = ExportController.allowedFormats
-        println "=> reportFormats: ${reportFormats}"
+        if (debug) { println "=> reportFormats: ${reportFormats}" }
 		
 		[ 
             reportingPeriodInstanceList: reportingPeriodInstanceList,

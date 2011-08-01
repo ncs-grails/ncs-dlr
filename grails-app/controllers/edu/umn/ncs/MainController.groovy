@@ -10,8 +10,10 @@ class MainController {
 
     def index = {
         
-        println "MAIN CONTROLLER > INDEX ---------------------------------------"        
-        println "=> params: ${params}"        
+        if (debug) { 
+			println "MAIN CONTROLLER > INDEX ---------------------------------------"        
+			println "=> params: ${params}"
+        }        
         
         redirect(action: "show")
 
@@ -19,8 +21,10 @@ class MainController {
     
     def show = {
         
-        println "MAIN CONTROLLER > SHOW ----------------------------------------"        
-        println "=> params: ${params}"        
+        if (debug) { 
+			println "MAIN CONTROLLER > SHOW ----------------------------------------"        
+			println "=> params: ${params}"
+        }        
         
         // create REPORTING STAFF, REPORTING PERIOD, & ASSIGNED EFFORT instance
         def principal = authenticateService.principal()                         
@@ -28,12 +32,14 @@ class MainController {
         def reportingPeriodInstance = laborService.getCurrentReportingPeriod()     
         def assignedEffortInstance = AssignedEffort.findByReportingStaffAndPeriod(reportingStaffInstance, reportingPeriodInstance)
 
-        println "=> reportingStaffInstance: ${reportingStaffInstance}"            
-        println "=> reportingPeriodInstance: ${reportingPeriodInstance}"
-        println "=> assignedEffortInstance: ${assignedEffortInstance}"            
-        if ( assignedEffortInstance ) {
-            println "=> assignedEffortInstance.dateCommitted: ${assignedEffortInstance.dateCommitted}"                        
-        }
+        if (debug) { 
+			println "=> reportingStaffInstance: ${reportingStaffInstance}"            
+			println "=> reportingPeriodInstance: ${reportingPeriodInstance}"
+			println "=> assignedEffortInstance: ${assignedEffortInstance}"
+			if ( assignedEffortInstance ) {
+				println "=> assignedEffortInstance.dateCommitted: ${assignedEffortInstance.dateCommitted}"
+			}
+        }            
         
         [
             reportingStaffInstance: reportingStaffInstance,

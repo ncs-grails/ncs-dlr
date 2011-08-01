@@ -121,10 +121,10 @@ class RunNcsDlrEtl {
 	    def db = [
 	        username : 'ncs-dlr',
 	        password : 'ang1ahXiedohsieng5sheThi',
-			// local mysql database
-	        url : 'jdbc:mysql://localhost/ncs_dlr?noAccessToProcedureBodies=true&autoReconnect=true',
-	        // production mysql
-			//url : 'jdbc:mysql://sql.ncs.umn.edu/ncs_dlr?useSSL=true&requireSSL=true&verifyServerCertificate=false&noAccessToProcedureBodies=true&autoReconnect=true'    ,
+			/* local mysql database *************************/
+	        //url : 'jdbc:mysql://localhost/ncs_dlr?noAccessToProcedureBodies=true&autoReconnect=true',
+			/* production mysql database *************************/
+			url : 'jdbc:mysql://sql.ncs.umn.edu/ncs_dlr?useSSL=true&requireSSL=true&verifyServerCertificate=false&noAccessToProcedureBodies=true&autoReconnect=true',
 	        driver : 'com.mysql.jdbc.Driver'
 	    ]
 	    
@@ -139,18 +139,18 @@ class RunNcsDlrEtl {
 	    myConn = getMysqlConn()
 		
 		//import data
-		//importLaborCategories()
+		//importLaborCategories()		
 	    //importStaff()
 	    //importReportingPeriods()
 	    //importStudyActivities()
 	    //importStudyTasks()
 		//importEtdlrTasks()
 		//importOdeTasks()
-		//importNotificationEmail()
 	    //importAssignedEfforts()
-	    importReportedEfforts()
+	    //importReportedEfforts()
 		//importSfrReport()
-	    
+		importNotificationEmail()
+		
 	}
 	
 	/* LABOR CATEGORY SECTION **************************************************/

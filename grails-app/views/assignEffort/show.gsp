@@ -23,8 +23,8 @@
 	    <h1>Effort Assignment</h1>
 
 		<!-- display ERROR MESSAGES -->       
-		<g:if test="${errMessageList}">
-			<g:each in="${errMessageList}" >		
+		<g:if test="${flash.messageList}">
+			<g:each in="${flash.messageList}" >		
 				<g:if test="${it}">
 					<div class="errors">${it}</div>        
 				</g:if>
