@@ -2,6 +2,8 @@ package edu.umn.ncs
 
 class SfrReportController {
 
+	def debug = true
+	
     static allowedMethods = [save: "POST", update: "POST", delete: "POST"]
 
     def index = {

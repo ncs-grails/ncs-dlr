@@ -5,13 +5,16 @@ import org.codehaus.groovy.grails.plugins.springsecurity.Secured
 class ReportingStaffController {
 
     def authenticateService
-
+	def debug = true
+	
 	static allowedMethods = [save: "POST", update: "POST", delete: "POST"]
 
     def index = {
-        
-        println "PRINTLN REPORTING STAFF CONTROLLER > INDEX --------------------"                
-        println "PRINTLN ReportingStaffController.index.params: ${params}"
+		
+		if (debug) {        
+			println "=> REPORTING STAFF CONTROLLER > INDEX --------------------"                
+			println "=> params: ${params}"
+		}
 		                
         redirect(action: "list", params: params)
 		
@@ -19,14 +22,16 @@ class ReportingStaffController {
 
     def list = {
 		
-        println "PRINTLN REPORTING STAFF CONTROLLER > LIST REPORTS -------------"                
-        println "PRINTLN params: ${params}"
+		if (debug) {
+			println "=> REPORTING STAFF CONTROLLER > LIST REPORTS -------------"                
+			println "=> params: ${params}"
+		}
 		                
         //params.max = Math.min(params.max ? params.int('max') : 10, 100)
-		//println "PRINTLN ReportingStaffController.list.params.max: ${params.max}"
+		//if (debug) { println "=> ReportingStaffController.list.params.max: ${params.max}" }
 		
 		//def reportsEffortStaffInstanceList = ReportingStaff.list(params)		
-		//println "reportsEffortStaffInstanceList:  ${reportsEffortStaffInstanceList}"
+		//if (debug) { println "reportsEffortStaffInstanceList:  ${reportsEffortStaffInstanceList}" }
 		
 		def c = ReportingStaff.createCriteria()
 		def reportsEffortStaffInstanceList = c.list{
@@ -43,7 +48,7 @@ class ReportingStaffController {
 				rowCount()
 			}
         }
-		println "reportsEffortStaffInstanceCount:  ${reportsEffortStaffInstanceCount}"
+		if (debug) { println "reportsEffortStaffInstanceCount:  ${reportsEffortStaffInstanceCount}" }
 		
 		[
 			reportsEffortStaffInstanceList: reportsEffortStaffInstanceList,
@@ -54,14 +59,16 @@ class ReportingStaffController {
 
     def listDoesNotReport = {
 		
-        println "PRINTLN REPORTING STAFF CONTROLLER > LIST DOES NOT REPORT -----"                
-        println "PRINTLN params: ${params}"
+		if (debug) {
+			println "=> REPORTING STAFF CONTROLLER > LIST DOES NOT REPORT -----"                
+			println "=> params: ${params}"
+		}
 		                
         //params.max = Math.min(params.max ? params.int('max') : 10, 100)
-		//println "PRINTLN ReportingStaffController.list.params.max: ${params.max}"
+		//if (debug) { println "=> ReportingStaffController.list.params.max: ${params.max}" }
 		
 		//def reportsEffortStaffInstanceList = ReportingStaff.list(params)		
-		//println "reportsEffortStaffInstanceList:  ${reportsEffortStaffInstanceList}"
+		//if (debug) { println "reportsEffortStaffInstanceList:  ${reportsEffortStaffInstanceList}" }
 				
 		def c3 = ReportingStaff.createCriteria()
 		def doesNotReportEffortStaffInstanceList = c3.list{
@@ -71,7 +78,7 @@ class ReportingStaffController {
 			order("middleInit", "asc")
         }
 				
-		//println "doesNotReportEffortStaffInstanceList:  ${doesNotReportEffortStaffInstanceList}"
+		//if (debug) { println "doesNotReportEffortStaffInstanceList:  ${doesNotReportEffortStaffInstanceList}" }
 		
 		def c4 = ReportingStaff.createCriteria()
 		def doesNotReportEffortStaffInstanceCount = c4.list{
@@ -80,7 +87,7 @@ class ReportingStaffController {
 				rowCount()
 			}
         }
-		println "doesNotReportEffortStaffInstanceCount: ${doesNotReportEffortStaffInstanceCount}"
+		if (debug) { println "doesNotReportEffortStaffInstanceCount: ${doesNotReportEffortStaffInstanceCount}" }
 
 		[
 			doesNotReportEffortStaffInstanceList: doesNotReportEffortStaffInstanceList, 
@@ -91,13 +98,15 @@ class ReportingStaffController {
 
 	def create = {
 		
-        println "PRINTLN REPORTING STAFF CONTROLLER > CREATE (ADD) -------------"                
-        println "PRINTLN params: ${params}"
+		if (debug) { 
+	        println "=> REPORTING STAFF CONTROLLER > CREATE (ADD) -------------"                
+			println "=> params: ${params}"
+		}
 
 		// REPORTING STAFF
 		def reportingStaffInstance = new ReportingStaff()
         reportingStaffInstance.properties = params
-		println "PRINTLN reportingStaffInstance: ${reportingStaffInstance}"		
+		if (debug) { println "=> reportingStaffInstance: ${reportingStaffInstance}" }		
 		
         return [reportingStaffInstance: reportingStaffInstance]
 		
@@ -105,28 +114,30 @@ class ReportingStaffController {
 
 	def save = {
 		
-        println "PRINTLN REPORTING STAFF CONTROLLER > SAVE ---------------------"                
-        println "PRINTLN ReportingStaffController.params: ${params}"
+		if (debug) { 
+	        println "=> REPORTING STAFF CONTROLLER > SAVE ---------------------"                
+			println "=> params: ${params}"
+		}
 		
 		// REPORTING STAFF
 		def reportingStaffInstance = new ReportingStaff(params)
-		println "PRINTLN reportingStaffInstance: ${reportingStaffInstance}"
-		println "PRINTLN reportingStaffInstance.id: ${reportingStaffInstance.id}"
+		if (debug) { println "=> reportingStaffInstance: ${reportingStaffInstance}" }
+		if (debug) { println "=> reportingStaffInstance.id: ${reportingStaffInstance.id}" }
 
 		// USER CREATED
 		def principal = authenticateService.principal()
 		def userCreated = principal.getUsername()
-		println "PRINTLN userCreated: ${userCreated}"
+		if (debug) { println "=> userCreated: ${userCreated}" }
 
 		if ( reportingStaffInstance ) {
-			println "PRINTLN if(reportingStaffInstance) = TRUE"			
+			if (debug) { println "=> if(reportingStaffInstance) = TRUE" }			
 			reportingStaffInstanceK.userCreated = userCreated 
-			println "PRINTLN reportingStaffIsntance.userCreated: reportingStaffIsntance.userCreated"			
+			if (debug) { println "=> reportingStaffIsntance.userCreated: reportingStaffIsntance.userCreated" }			
 		}
 				
 		if (reportingStaffInstance.save(flush: true)) {
 			
-			println "PRINTLN SAVE SUCCESSFULLY"
+			if (debug) { println "=> SAVE SUCCESSFULLY" }
 			
 			flash.message = "${message(code: 'default.created.message', args: [message(code: 'reportingStaff.label', default: 'ReportingStaff'), reportingStaffInstance.id])}"
 			//redirect(action: "show", id: reportingStaffInstance.id)
@@ -134,7 +145,7 @@ class ReportingStaffController {
 			
 		} else {
 		
-			println "PRINTLN SAVE FAILED"
+			println "=> SAVE FAILED"
 			render(view: "create", model: [reportingStaffInstance: reportingStaffInstance])
 			
 		}
@@ -143,20 +154,22 @@ class ReportingStaffController {
 
 	def edit = {
 		
-        println "PRINTLN REPORTING STAFF CONTROLLER > EDIT ---------------------"                
-        println "PRINTLN params: ${params}"
+		if (debug) { 
+	        println "=> REPORTING STAFF CONTROLLER > EDIT ---------------------"                
+			println "=> params: ${params}"
+		}
 
 		def reportingStaffInstance = ReportingStaff.get(params.id)
-		println "PRINTLN reportingStaffInstance: ${reportingStaffInstance}"
+		if (debug) { println "=> reportingStaffInstance: ${reportingStaffInstance}" }
 		
 		if ( reportingStaffInstance ) {
-			println "PRINTLN if(reportingStaffInstance) =  TRUE"
+			if (debug) { println "=> if(reportingStaffInstance) =  TRUE" }
 			
 			return [reportingStaffInstance: reportingStaffInstance]
 			
 		} else {
 		
-			println "PRINTLN if(reportingStaffInstance) =  FALSE"
+			if (debug) { println "=> if(reportingStaffInstance) =  FALSE" }
 			flash.message = "${message(code: 'default.not.found.message', args: [message(code: 'reportingStaff.label', default: 'ReportingStaff'), params.id])}"
 			redirect(action: "list")
 			
@@ -166,15 +179,17 @@ class ReportingStaffController {
 
 	def update = {
 		
-        println "PRINTLN REPORTING STAFF CONTROLLER > UPDATE -------------------"                
-        println "PRINTLN params: ${params}"
+		if (debug) { 
+	        println "=> REPORTING STAFF CONTROLLER > UPDATE -------------------"                
+			println "=> params: ${params}"
+		}
 
 		def reportingStaffInstance = ReportingStaff.get(params.id)
-		println "PRINTLN reportingStaffInstance: ${reportingStaffInstance}"
+		if (debug) { println "=> reportingStaffInstance: ${reportingStaffInstance}" }
 		
 		if (reportingStaffInstance) {
 			
-			println "if (reportingStaffInstance) = TRUE"	
+			if (debug) { println "if (reportingStaffInstance) = TRUE" }	
 			if (params.version) {
 				
 				def version = params.version.toLong()
@@ -190,7 +205,7 @@ class ReportingStaffController {
 			
 			if ( !reportingStaffInstance.hasErrors() && reportingStaffInstance.save(flush: true) ) {
 				
-				println "UPDATES SUCCESSFULLY"	
+				if (debug) { println "UPDATES SUCCESSFULLY" }	
 				flash.message = "${message(code: 'default.updated.message', args: [message(code: 'reportingStaff.label', default: 'ReportingStaff'), reportingStaffInstance.id])}"
 				//redirect(action: "show", id: reportingStaffInstance.id)
 				render(view: "edit", model: [reportingStaffInstance: reportingStaffInstance])
@@ -198,91 +213,90 @@ class ReportingStaffController {
 				
 			} else {
 			
-				println "UPDATE FAILED"	
+				if (debug) { println "UPDATE FAILED" }	
 				render(view: "edit", model: [reportingStaffInstance: reportingStaffInstance])
 				
 			}
 			
 		} else {
 		
-			println "if (reportingStaffInstance) = FALSE"	
+			if (debug) { println "if (reportingStaffInstance) = FALSE" }	
 			flash.message = "${message(code: 'default.not.found.message', args: [message(code: 'reportingStaff.label', default: 'ReportingStaff'), params.id])}"
 			redirect(action: "list")
 			
 		}
 		
 	} //def update
-
-		
-/*
-    def create = {
-        def reportingStaffInstance = new ReportingStaff()
-        reportingStaffInstance.properties = params
-        return [reportingStaffInstance: reportingStaffInstance]
-    }
-
-
-    def show = {
-        def reportingStaffInstance = ReportingStaff.get(params.id)
-        if (!reportingStaffInstance) {
-            flash.message = "${message(code: 'default.not.found.message', args: [message(code: 'reportingStaff.label', default: 'ReportingStaff'), params.id])}"
-            redirect(action: "list")
-        }
-        else {
-            [reportingStaffInstance: reportingStaffInstance]
-        }
-    }
-
-    def update = {
-		
-        def reportingStaffInstance = ReportingStaff.get(params.id)
-        if (reportingStaffInstance) {
-            if (params.version) {
-                def version = params.version.toLong()
-                if (reportingStaffInstance.version > version) {
-                    
-                    reportingStaffInstance.errors.rejectValue("version", "default.optimistic.locking.failure", [message(code: 'reportingStaff.label', default: 'ReportingStaff')] as Object[], "Another user has updated this ReportingStaff while you were editing")
-                    render(view: "edit", model: [reportingStaffInstance: reportingStaffInstance])
-                    return
-                }
-            }
-            reportingStaffInstance.properties = params
-            if (!reportingStaffInstance.hasErrors() && reportingStaffInstance.save(flush: true)) {
-                flash.message = "${message(code: 'default.updated.message', args: [message(code: 'reportingStaff.label', default: 'ReportingStaff'), reportingStaffInstance.id])}"
-                redirect(action: "show", id: reportingStaffInstance.id)
-            }
-            else {
-                render(view: "edit", model: [reportingStaffInstance: reportingStaffInstance])
-            }
-        }
-        else {
-            flash.message = "${message(code: 'default.not.found.message', args: [message(code: 'reportingStaff.label', default: 'ReportingStaff'), params.id])}"
-            redirect(action: "list")
-        }
-		
-    } //def update
-
-    def delete = {
-		
-        def reportingStaffInstance = ReportingStaff.get(params.id)
-        if (reportingStaffInstance) {
-            try {
-                reportingStaffInstance.delete(flush: true)
-                flash.message = "${message(code: 'default.deleted.message', args: [message(code: 'reportingStaff.label', default: 'ReportingStaff'), params.id])}"
-                redirect(action: "list")
-            }
-            catch (org.springframework.dao.DataIntegrityViolationException e) {
-                flash.message = "${message(code: 'default.not.deleted.message', args: [message(code: 'reportingStaff.label', default: 'ReportingStaff'), params.id])}"
-                redirect(action: "show", id: params.id)
-            }
-        }
-        else {
-            flash.message = "${message(code: 'default.not.found.message', args: [message(code: 'reportingStaff.label', default: 'ReportingStaff'), params.id])}"
-            redirect(action: "list")
-        }
-		
-    } //def delete
-    
-*/
 	    
 }
+
+/*
+def create = {
+	def reportingStaffInstance = new ReportingStaff()
+	reportingStaffInstance.properties = params
+	return [reportingStaffInstance: reportingStaffInstance]
+}
+
+
+def show = {
+	def reportingStaffInstance = ReportingStaff.get(params.id)
+	if (!reportingStaffInstance) {
+		flash.message = "${message(code: 'default.not.found.message', args: [message(code: 'reportingStaff.label', default: 'ReportingStaff'), params.id])}"
+		redirect(action: "list")
+	}
+	else {
+		[reportingStaffInstance: reportingStaffInstance]
+	}
+}
+
+def update = {
+	
+	def reportingStaffInstance = ReportingStaff.get(params.id)
+	if (reportingStaffInstance) {
+		if (params.version) {
+			def version = params.version.toLong()
+			if (reportingStaffInstance.version > version) {
+				
+				reportingStaffInstance.errors.rejectValue("version", "default.optimistic.locking.failure", [message(code: 'reportingStaff.label', default: 'ReportingStaff')] as Object[], "Another user has updated this ReportingStaff while you were editing")
+				render(view: "edit", model: [reportingStaffInstance: reportingStaffInstance])
+				return
+			}
+		}
+		reportingStaffInstance.properties = params
+		if (!reportingStaffInstance.hasErrors() && reportingStaffInstance.save(flush: true)) {
+			flash.message = "${message(code: 'default.updated.message', args: [message(code: 'reportingStaff.label', default: 'ReportingStaff'), reportingStaffInstance.id])}"
+			redirect(action: "show", id: reportingStaffInstance.id)
+		}
+		else {
+			render(view: "edit", model: [reportingStaffInstance: reportingStaffInstance])
+		}
+	}
+	else {
+		flash.message = "${message(code: 'default.not.found.message', args: [message(code: 'reportingStaff.label', default: 'ReportingStaff'), params.id])}"
+		redirect(action: "list")
+	}
+	
+} //def update
+
+def delete = {
+	
+	def reportingStaffInstance = ReportingStaff.get(params.id)
+	if (reportingStaffInstance) {
+		try {
+			reportingStaffInstance.delete(flush: true)
+			flash.message = "${message(code: 'default.deleted.message', args: [message(code: 'reportingStaff.label', default: 'ReportingStaff'), params.id])}"
+			redirect(action: "list")
+		}
+		catch (org.springframework.dao.DataIntegrityViolationException e) {
+			flash.message = "${message(code: 'default.not.deleted.message', args: [message(code: 'reportingStaff.label', default: 'ReportingStaff'), params.id])}"
+			redirect(action: "show", id: params.id)
+		}
+	}
+	else {
+		flash.message = "${message(code: 'default.not.found.message', args: [message(code: 'reportingStaff.label', default: 'ReportingStaff'), params.id])}"
+		redirect(action: "list")
+	}
+	
+} //def delete
+
+*/

@@ -5,6 +5,7 @@ class LaborCategoryController {
     static allowedMethods = [save: "POST", update: "POST", delete: "POST"]
 
     //def scaffold = true
+	def debug = true
 
     def index = {
         redirect(action: "list", params: params)
