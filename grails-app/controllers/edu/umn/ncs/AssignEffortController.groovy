@@ -188,14 +188,14 @@ class AssignEffortController {
     def update = {
 		
 		if (debug) {
-			println "ASSIGNED EFFORT CONTROLLER > UPDATE ---------------------------"
+			println "ASSIGN EFFORT CONTROLLER > UPDATE ---------------------------"
 			//if (debug) {println "=> params: ${params}" }
 		}
-		
-		def err = false
+				
+		def err 
 		def errMessage = ""
 		def errMessageList = []
-		
+			
         /********************************************************************************************************
          * LOG-IN USER 
          ********************************************************************************************************/
@@ -222,6 +222,8 @@ class AssignEffortController {
          ********************************************************************************************************/
         params.each{
                         
+			err = false
+			
 			if (debug) { 
 	            //println "=> AssignedEffortController.update.params.each: ${it}"
 				//println "=> AssignedEffortController.update.params.each IT: ${it}, KEY: ${it.key}, VALUE: ${it.value}"
@@ -250,7 +252,7 @@ class AssignEffortController {
 				}
 				                
                 /********************************************************************************************************
-                 * ASSIGNED EFFORT (from gsp)
+                 * ASSIGNED EFFORT (from gsp) validation
                  ********************************************************************************************************/
 				def assignedEffortValue
 				
@@ -268,7 +270,7 @@ class AssignEffortController {
 					assignedEffortValue = assignedEffortConvertedValue.toBigDecimal()/100
 					
 					// validate assigned effort (from gsp); that is, does effort have 0-3 digits before the decimal, and 0-2 after the decimal
-					if ( assignedEffortConvertedValue =~ /[0-9]{1,3}\.?[0-9]{0,2}/ ) {
+					if ( assignedEffortConvertedValue =~ /[0-9]{0,3}\.?[0-9]{0,3}/ ) {
 						
 						if (debug) { println "=> assignedEffortConvertedValue meets requirements (0-3 digits . 0-2 digits)" }
 												
@@ -462,7 +464,7 @@ class AssignEffortController {
 		 * ERROR MESSAGES
 		 ********************************************************************************************************/
 		
-		if ( err ) {
+		if ( errMessageList ) {
 			
 			flash.messageList = errMessageList
 

@@ -1,7 +1,7 @@
 package edu.umn.ncs
 import org.codehaus.groovy.grails.plugins.springsecurity.Secured
 
-@Secured(['ROLE_NCS_IT', 'ROLE_NCS_DLR-MANAGE'])
+@Secured(['ROLE_NCS_IT', 'ROLE_NCS_DLR_MANAGE'])
 class ReportingStaffController {
 
     def authenticateService

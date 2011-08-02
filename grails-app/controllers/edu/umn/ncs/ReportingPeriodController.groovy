@@ -3,6 +3,7 @@ package edu.umn.ncs
 class ReportingPeriodController {
 
     static allowedMethods = [save: "POST", update: "POST", delete: "POST"]
+
 	def debug = true
 	
     def index = {
@@ -91,7 +92,7 @@ class ReportingPeriodController {
 			if ( it.key =~ /^id-[0-9]*$/ && it.value ) {
 				
 				def reportingPeriodInstance = ReportingPeriod.get(Integer.parseInt(it.key.replace('id-', '')))
-				if (debug) { println "=> ReportingPeriodController.save.reportingPeriodInstance: ${reportingPeriodInstance}"  				
+				if (debug) { println "=> ReportingPeriodController.save.reportingPeriodInstance: ${reportingPeriodInstance}" }  				
 								
 				if ( reportingPeriodInstance ) {
 					
@@ -238,6 +239,3 @@ def delete = {
 	}
 }
 */
-
-
-

@@ -80,7 +80,7 @@ class AssignedEffort {
         reportingStaff()
         laborCategory()
         period()
-        assignedEffort(max:1.0, scale:3)
+        assignedEffort(max:1.0, scale:5)
         dateAssigned()
         assigningStaff(blank:false)
         appCreated(blank:false)
