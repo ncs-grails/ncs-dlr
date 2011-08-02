@@ -108,7 +108,7 @@
 	                                    <label for="email"><g:message code="reportingStaff.email.label" default="Email" /></label>
 	                                </td>
 	                                <td valign="top" class="value ${hasErrors(bean: reportingStaffInstance, field: 'email', 'errors')}">
-:textField name="email" value="${reportingStaffInstance?.email}" />
+										<g:textField name="email" value="${reportingStaffInstance?.email}" />
 	                                </td>
 	                            </tr>
 	                                                
