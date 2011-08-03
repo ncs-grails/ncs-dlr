@@ -27,7 +27,9 @@
 		</span>
 
 		<!-- CURRENT EFFORT REPORTING SECTION -->
-		<h2>Current Effort Reporting Period (<g:formatDate date="${reportingPeriodInstance.periodDate}" format="MMMM yyyy" />)</h2>
+		<h2>
+			Current Effort Reporting Period (<g:formatDate date="${reportingPeriodInstance.periodDate}" format="MMMM yyyy" />)
+		</h2>
 
         <!-- DISPLAY MESSAGE OR SECTIONS BASED ON ASSIGNED AND COMMITTED EFFORT -->
 

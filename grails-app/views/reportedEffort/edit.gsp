@@ -2,7 +2,7 @@
 <%@ page import="edu.umn.ncs.StudyActivity" %>
 <%@ page import="edu.umn.ncs.StudyTask" %>
 
-<g:ifAnyGranted role="ROLE_NCS_IT,ROLE_NCS_DLR_MANAGE">
+<g:ifAnyGranted role="ROLE_NCS_IT,ROLE_NCS_DLR_MANAGE,ROLE_NCS_DLR">
 
 	<!-- ASSIGNED, REPORTED & COMMITTED message boxes -->
 	<!-- REPORTED EFFORT for current period -->      

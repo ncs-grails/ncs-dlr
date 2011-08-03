@@ -131,7 +131,7 @@ class ReportingStaffController {
 
 		if ( reportingStaffInstance ) {
 			if (debug) { println "=> if(reportingStaffInstance) = TRUE" }			
-			reportingStaffInstanceK.userCreated = userCreated 
+			reportingStaffInstance.userCreated = userCreated 
 			if (debug) { println "=> reportingStaffIsntance.userCreated: reportingStaffIsntance.userCreated" }			
 		}
 				
