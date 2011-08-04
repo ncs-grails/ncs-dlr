@@ -62,7 +62,11 @@
 				
 				<div class="floatRight">
 					<div class="spacing">
-						<g:actionSubmit class="buttonBasic" action="update" value="SUBMIT ASSGINED EFFORT"/>
+						<g:actionSubmit 
+							class="buttonBasic" 
+							action="update" 
+							value="SUBMIT ASSIGNED EFFORT"
+						/>
 					</div>
 				</div>
 				

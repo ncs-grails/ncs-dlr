@@ -223,50 +223,54 @@ class LaborService {
         def principal = authenticateService.principal()
         def username = principal.getUsername()
         def loginReportingStaffInstance = ReportingStaff.findByUsername(username)
-        println "loginReportingStaffInstance = ${loginReportingStaffInstance}"
+        println "LaborService.sendEmailNotification.loginReportingStaffInstance = ${loginReportingStaffInstance}"
 		if ( loginReportingStaffInstance ) {
-	        println "loginReportingStaffInstance.username = ${loginReportingStaffInstance.username}"
-	        println "loginReportingStaffInstance.email = ${loginReportingStaffInstance.email}"
+	        println "LaborService.sendEmailNotification.loginReportingStaffInstance.username = ${loginReportingStaffInstance.username}"
+	        println "LaborService.sendEmailNotification.loginReportingStaffInstance.email = ${loginReportingStaffInstance.email}"
 		}
 
         // REPORTING STAFF
         def reportingStaffInstance = ReportingStaff.read(staffId)
-        println "reportingStaffInstance = ${reportingStaffInstance}"
+        println "LaborService.sendEmailNotification.reportingStaffInstance = ${reportingStaffInstance}"
 		if ( reportingStaffInstance ) {
-			println "reportingStaffInstance.email = ${reportingStaffInstance.email}"
+			println "LaborService.sendEmailNotification.reportingStaffInstance.email = ${reportingStaffInstance.email}"
 		}
 
-        //REPORTING PERIOD & DUE DATE
+        //REPORTING PERIOD  
+		def reportingPeriodInstance = ReportingPeriod.read(periodId)
+		println "LaborService.sendEmailNotification.reportingPeriodInstance.id: ${reportingPeriodInstance.id}"
+		println "LaborService.sendEmailNotification.reportingPeriodInstance: ${reportingPeriodInstance}"
+		
+		//REPORTING DUE DATE
 		def reportingDueDateString
 		
-        def reportingPeriodInstance = ReportingPeriod.read(periodId)
-        println "reportingPeriodInstance: ${reportingPeriodInstance}"
 		if ( reportingPeriodInstance ) {
 			
-			println "reportingPeriodInstance.id: ${reportingPeriodInstance.id}"
-
-			def reportingPeriodDateLong = reportingPeriodInstance.periodDate
-			println "reportingPeriodDateLong: ${reportingPeriodDateLong}"
-	
-			def reportingPeriodDate = new LocalDate(reportingPeriodDateLong)
-			println "reportingPeriodDate = ${reportingPeriodDate}"
+			def reporingDueDate = new LocalDate(reportingPeriodInstance.periodDate)
+			println "LaborService.sendEmailNotification.reporingDueDate: ${reporingDueDate}"
 			
-			def reportingDueDateMonthName = reportingPeriodDate.toString('MMMM')
-			println "reportingDueDateMonthName = ${reportingDueDateMonthName}"
+			reporingDueDate = reporingDueDate.plusMonths(1).plusDays(19)
+			println "LaborService.sendEmailNotification.reporingDueDate: ${reporingDueDate}"
+			
+			def reportingDueDateMonthName = reporingDueDate.toString('MMMM')
+			println "LaborService.sendEmailNotification.reportingDueDateMonthName = ${reportingDueDateMonthName}"
 	
-			def reportingDueDateYear = reportingPeriodDate.toString('yyyy')
-			println "reportingDueDateYear = ${reportingDueDateYear}"
+			def reportingDueDateDay = reporingDueDate.toString('dd')
+			println "LaborService.sendEmailNotification.reportingDueDateDay = ${reportingDueDateDay}"
+
+			def reportingDueDateYear = reporingDueDate.toString('yyyy')
+			println "LaborService.sendEmailNotification.reportingDueDateYear = ${reportingDueDateYear}"
 	
-			reportingDueDateString = reportingDueDateMonthName + ' 20 ' + reportingDueDateYear
-	
-		} 
-		println "reportingDueDateString = ${reportingDueDateString}"
-		
+			reportingDueDateString = reportingDueDateMonthName + ' ' + reportingDueDateDay + ' ' + reportingDueDateYear
+			
+		}				
+		println "LaborService.sendEmailNotification.reportingDueDateString = ${reportingDueDateString}"
+
 		// ASSIGNED EFFORT 
 		def assignedEffortInstance = AssignedEffort.findByPeriodAndReportingStaff(reportingPeriodInstance,reportingStaffInstance)
-		println "assignedEffortInstance: ${assignedEffortInstance}"
+		println "LaborService.sendEmailNotification.assignedEffortInstance: ${assignedEffortInstance}"
 		if ( assignedEffortInstance ) {
-			println "assignedEffortInstance.id: ${assignedEffortInstance.id}"
+			println "LaborService.sendEmailNotification.assignedEffortInstance.id: ${assignedEffortInstance.id}"
 		} 
 		
 		// send & record NOTIFICATION EMAIL
@@ -277,14 +281,14 @@ class LaborService {
 			def emailSubjectTitle
 			
 			notificationEmailInstanceList = assignedEffortInstance.emails
-			println "notificationEmailInstanceList: ${notificationEmailInstanceList}"
+			println "LaborService.sendEmailNotification.notificationEmailInstanceList: ${notificationEmailInstanceList}"
 	
 			if ( notificationEmailInstanceList ) {
 				emailSubjectTitle = "Reminder - NCS Direct Labor Report due ${reportingDueDateString}"
 			} else {
 				emailSubjectTitle = "Notification - NCS Direct Labor Report due ${reportingDueDateString}"
 			}
-			println "emailSubjectTitle: ${emailSubjectTitle}"
+			println "LaborService.sendEmailNotification.emailSubjectTitle: ${emailSubjectTitle}"
 
 			// send email						
 			mailService.sendMail {
@@ -299,7 +303,7 @@ class LaborService {
 					]
 				)
 			}
-			println "call mailService.sendMail"
+			println "LaborService.sendEmailNotification.call mailService.sendMail"
 			
 			// record NOTIFICATION EMAIL into db
 			def notificationEmailInstance = new NotificationEmail(
@@ -307,11 +311,11 @@ class LaborService {
 				userSent:loginReportingStaffInstance.username
 			)
 			if ( notificationEmailInstance.save(flush:true) ) {
-				println "=> notificationEmailInstance.save SUCCESSFULLY"
-				println "=> newly created notificationEmailInstance.id:${notificationEmailInstance.id} "
-				println "=> newly created notificationEmailInstance.assignedEffort:${notificationEmailInstance.assignedEffort} "
-				println "=> newly created notificationEmailInstance.dateSent:${notificationEmailInstance.dateSent} "
-				println "=> newly created notificationEmailInstance.userSent:${notificationEmailInstance.userSent} "
+				println "=> LaborService.sendEmailNotification.notificationEmailInstance.save SUCCESSFULLY"
+				println "=> LaborService.sendEmailNotification.newly created notificationEmailInstance.id:${notificationEmailInstance.id} "
+				println "=> LaborService.sendEmailNotification.newly created notificationEmailInstance.assignedEffort:${notificationEmailInstance.assignedEffort} "
+				println "=> LaborService.sendEmailNotification.newly created notificationEmailInstance.dateSent:${notificationEmailInstance.dateSent} "
+				println "=> LaborService.sendEmailNotification.newly created notificationEmailInstance.userSent:${notificationEmailInstance.userSent} "
 			} else {
 				println "=> notificationEmailInstance.save FAILED"
 				notificationEmailInstance.errors.each{

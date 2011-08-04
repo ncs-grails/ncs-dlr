@@ -100,3 +100,8 @@ grails.gorm.default.mapping = {
 	"user-type" type: org.joda.time.contrib.hibernate.PersistentLocalDateTime, class: org.joda.time.LocalDateTime
 	"user-type" type: org.joda.time.contrib.hibernate.PersistentPeriod, class: org.joda.time.Period
 }
+
+// for sending email
+grails.mail.host = "mail.cccs.umn.edu"
+// disable for debugging 
+grails.mail.disabled = false

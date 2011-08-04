@@ -16,7 +16,8 @@
     To access this system:
     
     <ol>
-      <li>Go to the <em>secure</em> <strong>University of Minnesota - National Children's Study</strong> login page (<strong>https://secure.ncs.umn.edu/ncs-dlr/</strong>).</li>
+      <li>Open Mozilla Firefox browser.</li>
+      <li>Go to the <em>secure</em> <strong>University of Minnesota - National Children's Study</strong> login page (<strong><a href="https://secure.ncs.umn.edu/ncs-dlr/">https://secure.ncs.umn.edu/ncs-dlr/</a></strong>).</li>
       <li>Login with your University of Minnesota Internet ID (x.500 username) <strong>${reportingStaffInstance.username}</strong> and password.</li>
     </ol>
     
