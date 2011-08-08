@@ -22,10 +22,12 @@
 	      		<span class="fontMaroon">Report Generation</span>
 	    	</p>
 	      
+			<!--  PAGE TITLE -->	      
 			<h1>Report Generation</h1>
 	
 			<fieldset>            
 	      
+				<!-- BEGIN FORM -->
 				<g:form controller="export" action="reportingPeriod">
 	
 	        		<div class="clearCenterPadding">
@@ -37,8 +39,10 @@
 							  	<label for="id">Reporting Period</label>          
 							  	<g:select 
 							 		class="basic" 
-							   		name="id" 
-							   		from="${reportingPeriodInstanceList}" 
+							   		name="id"
+							   		optionKey="id"
+							   		optionValue="name"  
+							   		from="${reportingPeriodInstanceList}"
 							 	/>                
 							</span>
 	                         
@@ -48,13 +52,17 @@
 							  	<g:select 
 							 		class="basic" 
 							   		name="format" 
-							   		from="${reportFormats }" 
+							   		from="${reportFormats}" 
 							 	/>
 							</span>              
 	
 							<!-- GENERATE BUTTON -->
 	            			<span class="spacing">
-	              				<g:submitButton class="buttonBasic" name="submit" value="GENERATE" />
+	              				<g:submitButton 
+	              					class="buttonBasic" 
+	              					name="submit" 
+	              					value="GENERATE" 
+	              				/>
 	            			</span>              
 	
 	          			</span>
@@ -62,11 +70,13 @@
 	       			</div>
 	
 				</g:form>
+				<!-- END FORM -->
 	      
 			</fieldset>
 
 		</g:ifAnyGranted>
     
+		<!-- FOOTER SPACING -->
 		<div class="pageSpacing"> </div>
 
 	</body>

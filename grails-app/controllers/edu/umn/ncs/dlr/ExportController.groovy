@@ -8,59 +8,66 @@ import grails.converters.*
 @Secured(['ROLE_NCS_DLR', 'ROLE_NCS_IT'])
 class ExportController {
 	
-	static def allowedFormats = [ 'csv', 'pdf', 'xml' ] as Set
-	static def defaultFormat = "csv"
-	static def debug = false
-
 	def laborService
+
+	//static def allowedFormats = [ 'csv', 'pdf', 'xml' ] as Set
+	static def allowedFormats = [ 'csv', 'pdf'] as Set
+	static def defaultFormat = "csv"	
+	static def debug = true
 	
     def reportingPeriod = {
 
-        println "PRINTLN EXPORT CONTROLLER > REPORTING PERIOD ------------------"
-        println "PRINTLN ExportController.reportingPeriod.params: ${params}"
+        if (debug) { 
+			println "EXPORT CONTROLLER > REPORTING PERIOD ----------------------" 
+			println "=> params: ${params}"
+		}
 		
         // OUTPUT FORMAT
 		def format = params?.format
-        println "PRINTLN ExportController.reportingPeriod.format: ${format}"
+        if (debug) { println "=> format: ${format}" }
         
-		if ( ! format ) {
+		if ( !format ) {
+			if (debug) { println "=> if(!format) = TRUE" }
 			format = defaultFormat
+			if (debug) { println "=> format: ${format}" }
 		}
-		// check / force format
-
-		if (debug) { println "rendering as : ${format}" }				
-		if (debug) { println "entering : reportingPeriod" }
-        
+		        
 		// REPORTING PERIOD
 		def reportingPeriodInstance = ReportingPeriod.read(params?.id)
-        
+		if (debug) { println "=> reportingPeriodInstance: ${reportingPeriodInstance}" }
+				
 		// if Reporting Period exist in database
         if (reportingPeriodInstance) {
 			
-			// create file name
-			def fileName = "reporting-period_${reportingPeriodInstance.year}-${reportingPeriodInstance.month}.${format}"
-
-			// Set the filename ??? AJZ
-
-			// RENDER TO FORMAT ------------------------------------------------
+			if (debug) { println "=> if(reportingPeriodInstance) = TRUE" }
+			
+			// file name
+			//def fileName = "reporting-period_${reportingPeriodInstance.year}-${reportingPeriodInstance.month}.${format}"
+			def fileName = "${reportingPeriodInstance.year}-${reportingPeriodInstance.month}.${format}"
+			if (debug) { println "=> fileName: ${fileName}" }
+			
+			// Render to Format ------------------------------------------------
             
-            // render PDF, using rendering plugin to generate a PDF
+            // render PDF (use rendering plugin to generate a PDF)
 			if (format == "pdf") {                
 				
+				if (debug) { println "=> if (format == pdf) = TRUE" }				
 				renderPdf(template: "/pdfs/reportingPeriod", model: [reportingPeriodInstance: reportingPeriodInstance], filename: fileName)
 				return
                 
-    		// renderas XML, using the Grails Converter
+    		// render XML (use Grails Converter)
 			} else if (format == "xml") {
                 
+				if (debug) { println "=> if (format == xml) = TRUE" }				
 				XML.use("deep") {
 					render reportingPeriodInstance as XML
 				}                
                 
-            // render CSV (default), using our own CVS renderer
+            // render CSV (use our own CVS renderer)
 			} else if (format == "csv") {
                 
-                // create record set for reporting period from LaborService
+				if (debug) { println "=> if (format == csv) = TRUE" }				
+
                 def recordSet = laborService.getReportingPeriodData(reportingPeriodInstance)
                 
 				renderAsCsv recordSet, fileName, response
@@ -70,6 +77,7 @@ class ExportController {
             // other?    
 			} else {
                 
+				if (debug) { println "=> if (format == other?) = TRUE" }				
 				flash.message = "Unknown format: ${fmt}. Please choose from ${allowedFormats}"
 				redirect(action:'list')
                 
@@ -77,41 +85,42 @@ class ExportController {
 			
 		} else {
             
+			if (debug) { println "=> if(reportingPeriodInstance) = FALSE" }
+
 			flash.message = "Reporting Period ID: '${params?.id}' not found."
 			redirect(action:'list')
             
-		} //if (reportingPeriodInstance)
+		} 
         
-    } //def reportingPeriod
+    } 
 	
 	
-	// method to convert a list of maps to CSV
+	// Convert list of maps to CSV
 	private void renderAsCsv(recordset, fileName, outputStream) {
         
-        println "PRINTLN EXPORT CONTROLLER > renderAsCsv METHOD ----------------"
-        println "PRINTLN ExportController.renderAsCsv.params: ${params}"
+        if (debug) { 
+			println "EXPORT CONTROLLER > renderAsCsv METHOD ----------------"
+			println "params: ${params}"
+        }
 		
-		if (debug) { println "entering : renderAsCsv" }
-
 		def fmt = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm")
-        println "PRINTLN ExportController.renderAsCsv.fmt: ${fmt}"
+		if (debug) { println "fmt: ${fmt}" }
 		
 		response.setHeader("Content-disposition", "attachment; filename=\"${fileName}\"");
 		response.contentType = "text/csv"
 
-        // Render outputData as CSV, if there is a recordset
+        // Render output data as CSV, if there is a recordset
 		if (recordset) {
             
-			// get a field list
+			if (debug) { println "if(recordset)" }
+		
+			// field list
 			def firstRow = recordset[0]
 			def columnNames = firstRow.collect{ it.key }
 
-			/*columnNames.each{
-				println "Dataset columnNames >> ${it}"
-			}*/
+			//columnNames.each{ println "Dataset columnNames >> ${it}" }
 
-			// write header column
-			//  "ID","FirstName","MiddleName","LastName","Suffix"
+			// write header column ("ID","FirstName","MiddleName","LastName","Suffix")
 			columnNames.eachWithIndex{ col, i ->
 				if (i > 0) {
 					outputStream << ","
@@ -171,4 +180,5 @@ class ExportController {
         
 	} //private void renderAsCsv(recordset, fileName, outputStream)
     
-} //class ExportController
+	
+} 

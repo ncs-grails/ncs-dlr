@@ -39,16 +39,20 @@ class ApplicationManagementController {
 		}
 
 		// REPORTING PERIOD
-				
+
+		def currentReportingPeriodIsntance = laborService.getCurrentReportingPeriod()
+		if (debug) {println "=> currentReportingPeriodIsntance: ${currentReportingPeriodIsntance}"}
+			
 		def c = ReportingPeriod.createCriteria()
-		def periodList = c.list {			
+		def periodList = c.list {		
+			lt("periodDate",currentReportingPeriodIsntance.periodDate)
 			order("periodDate", "desc")
 		} 
         if (debug) { println "=> periodList: ${periodList}" }
 		
 		def reportingPeriodInstanceList = []
         periodList.each{
-            reportingPeriodInstanceList.add(g.formatDate(date:it.periodDate, format:'MMMM yyyy'))
+            reportingPeriodInstanceList.add(['id':it.id, name:g.formatDate(date:it.periodDate, format:'MMMM yyyy')] )
         }
 		if (debug) { println "=> reportingPeriodInstanceList: ${reportingPeriodInstanceList}" }
 
