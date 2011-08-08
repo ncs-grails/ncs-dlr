@@ -9,6 +9,7 @@ class ReportingStaff {
     String lastName
     String firstName
     String middleInit
+	String fullName
     LaborCategory laborCategory
     String email
     Boolean isTestAccount = false
@@ -75,6 +76,7 @@ class ReportingStaff {
         firstName(blank:false)
         middleInit(nullable:true)
         lastName(blank:false)
+		fullName(nullable:true)
         laborCategory(nullable:false)
         email(blank:false, email:true)
         isTestAccount()
