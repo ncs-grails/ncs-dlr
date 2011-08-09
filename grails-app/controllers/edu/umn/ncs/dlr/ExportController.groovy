@@ -24,12 +24,12 @@ class ExportController {
 		
         // OUTPUT FORMAT
 		def format = params?.format
-        if (debug) { println "=> format: ${format}" }
+        //if (debug) { println "=> format: ${format}" }
         
 		if ( !format ) {
-			if (debug) { println "=> if(!format) = TRUE" }
+			//if (debug) { println "=> if(!format) = TRUE" }
 			format = defaultFormat
-			if (debug) { println "=> format: ${format}" }
+			//if (debug) { println "=> format: ${format}" }
 		}
 		        
 		// REPORTING PERIOD
@@ -44,12 +44,28 @@ class ExportController {
 			// file name
 			//def fileName = "reporting-period_${reportingPeriodInstance.year}-${reportingPeriodInstance.month}.${format}"
 			def fileName = "${reportingPeriodInstance.year}-${reportingPeriodInstance.month}.${format}"
-			if (debug) { println "=> fileName: ${fileName}" }
 			
 			// Render to Format ------------------------------------------------
             
-            // render PDF (use rendering plugin to generate a PDF)
-			if (format == "pdf") {                
+            // render CSV (use our own CVS renderer)
+			if (format == "csv") {
+                
+				if (debug) { println "=> if (format == csv) = TRUE" }				
+
+                def recordSet = laborService.getReportingPeriodData(reportingPeriodInstance)                
+				
+				if (debug) { 
+					println "=> recordSet: ${recordSet}" 
+					println "=> fileName: ${fileName}"
+					println "=> response: ${response}" 
+				}				
+
+				renderAsCsv recordSet, fileName, response
+				render ""
+				return
+				
+			// render PDF (use rendering plugin to generate a PDF)
+			} else if (format == "pdf") {                
 				
 				if (debug) { println "=> if (format == pdf) = TRUE" }				
 				renderPdf(template: "/pdfs/reportingPeriod", model: [reportingPeriodInstance: reportingPeriodInstance], filename: fileName)
@@ -62,17 +78,6 @@ class ExportController {
 				XML.use("deep") {
 					render reportingPeriodInstance as XML
 				}                
-                
-            // render CSV (use our own CVS renderer)
-			} else if (format == "csv") {
-                
-				if (debug) { println "=> if (format == csv) = TRUE" }				
-
-                def recordSet = laborService.getReportingPeriodData(reportingPeriodInstance)
-                
-				renderAsCsv recordSet, fileName, response
-				render ""
-				return
                 
             // other?    
 			} else {
@@ -112,13 +117,20 @@ class ExportController {
         // Render output data as CSV, if there is a recordset
 		if (recordset) {
             
-			if (debug) { println "if(recordset)" }
+			if (debug) { println "START if(recordset)" }
 		
-			// field list
+			// field list (row 1)
 			def firstRow = recordset[0]
 			def columnNames = firstRow.collect{ it.key }
 
-			//columnNames.each{ println "Dataset columnNames >> ${it}" }
+			if (debug) { println "firstRow: ${firstRow}" }
+			if (debug) { println "columnNames: ${columnNames}" }
+			
+			if (debug) { 
+				columnNames.each{ 
+					println "columnNames.each.it: ${it}" 
+				} 
+			}
 
 			// write header column ("ID","FirstName","MiddleName","LastName","Suffix")
 			columnNames.eachWithIndex{ col, i ->
@@ -130,55 +142,76 @@ class ExportController {
             
 			// Using \r\n for MS Windows
 			outputStream << "\r\n"
-
+			if (debug) { println "outputStream: ${outputStream}" }
+			
 			// write data
 			recordset.each{ row ->
                 
+				if (debug) { println "START recordset.each{ row ->" }
+				
 				columnNames.eachWithIndex{ col, i ->
 
+					if (debug) { println "START columnNames.eachWithIndex{ col, i ->" }
+				
 					// default content is empty
 					def columnValue = ""
                     
 					// if there's a non-null value
 					if (row[col] != null) {
                         
+						if (debug) { println "if (row[col] != null)" }
+
 						// take the content and escape the double quotes (")						
 						def columnContent = "" 
 
                         // if it's a date, then format it specifically
 						if (row[col].class == java.util.Date) {
-                            
+							
+							if (debug) { println "if (row[col].class == java.util.Date) = TRUE" }							
 							Date refDate = row[col]
 							columnContent = fmt.print(refDate.time)
-                            
+							if (debug) { println "columnContent: ${columnContent}" }
+							
                         // Otherwise use the default toString() method
 						} else {                            
                             
+							if (debug) { println "if (row[col].class == java.util.Date) = FALSE" }							
 							columnContent = row[col].toString().replace('"', '""')                            
-                            
+							if (debug) { println "columnContent: ${columnContent}" }
+							
 						}
 						
 						// then surround it with double quotes
 						columnValue = '"' + columnContent  + '"'
+						if (debug) { println "columnValue: ${columnValue}" }
 						
-						// print a comma if is not the first field
+						// print a comma if this is not the first field
 						if (i > 0) {
 							outputStream << ","
 						}
-                        
+						if (debug) { println "outputStream: ${outputStream}" }
+						
 					} //if (row[col] != null)
 
 					outputStream << columnValue
-                    
-				} //columnNames.eachWithIndex
+					
+					if (debug) { println "outputStream: ${outputStream}" }
+					if (debug) { println "END columnNames.eachWithIndex{ col, i ->" }
+					
+				} //columnNames.eachWithIndex{ col, i -> 
                 
 				outputStream << "\r\n"
-                
-			} //recordset.each
+				
+				if (debug) { println "outputStream: ${outputStream}" }
+				if (debug) { println "END recordset.each{ row ->" }
+				
+			} //recordset.each{ row -> 
             
+			if (debug) { println "END if(recordset)" }
+			
 		} //if (recordset)
         
-	} //private void renderAsCsv(recordset, fileName, outputStream)
+	} 
     
 	
 } 
