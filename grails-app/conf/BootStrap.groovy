@@ -6,8 +6,38 @@ class BootStrap {
         
         environments {
             
+			production {				
+			}
+			
+			
             development {
-                
+				
+				/*
+				// REPORTS
+				def reportsNata = new Reports(
+					name:'Sponsored Financial Reporting',
+					abbreviation:'SFR', 
+					obsolete:false
+				).save()
+				def reportsEtdlr = new Reports(
+					name:'Electronic Technical Direct Labor Report', 
+					abbreviation:'ETDLR', 
+					obsolete:false, 
+
+				).save()
+				def reportsOde = new Reports(
+					name:'Operational Data Elements', 
+					abbreviation:'ODE', 
+					obsolete:false
+				).save()
+				*/
+				
+				// PROJECT INFORMATION
+				def project = new ProjectInfo(
+					principalInvestigator: 'Patricia M McGovern, Ph.D., MPH',
+					contractNumber: 'HHSN267200700022C'
+				).save()
+				                
                 if (false) {
 
                     /* Error checking for what was saved ***************************

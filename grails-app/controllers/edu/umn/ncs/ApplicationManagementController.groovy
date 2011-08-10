@@ -39,7 +39,6 @@ class ApplicationManagementController {
 		}
 
 		// REPORTING PERIOD
-
 		def currentReportingPeriodIsntance = laborService.getCurrentReportingPeriod()
 		if (debug) {println "=> currentReportingPeriodIsntance: ${currentReportingPeriodIsntance}"}
 			
@@ -48,13 +47,27 @@ class ApplicationManagementController {
 			lt("periodDate",currentReportingPeriodIsntance.periodDate)
 			order("periodDate", "desc")
 		} 
-        if (debug) { println "=> periodList: ${periodList}" }
+        //if (debug) { println "=> periodList: ${periodList}" }
 		
 		def reportingPeriodInstanceList = []
         periodList.each{
-            reportingPeriodInstanceList.add(['id':it.id, name:g.formatDate(date:it.periodDate, format:'MMMM yyyy')] )
+            reportingPeriodInstanceList.add(['reporting_period_id':it.id, name:g.formatDate(date:it.periodDate, format:'MMMM yyyy')] )
         }
 		if (debug) { println "=> reportingPeriodInstanceList: ${reportingPeriodInstanceList}" }
+		
+		// REPORT TYPE
+		def cR = Reports.createCriteria()
+		def reportsList = cR.list {
+			eq("obsolete", false)
+			order("name", "desc")
+		}
+		//if (debug) { println "=> reportsList: ${reportsList}" }
+		
+		def reportsInstanceList = []
+		reportsList.each{
+			reportsInstanceList.add(['reports_id':it.id, name:it.name] )
+		}
+		if (debug) { println "=> reportsInstanceList: ${reportsInstanceList}" }
 
 		// REPORT FORMAT		
 		def reportFormats = ExportController.allowedFormats
@@ -62,6 +75,7 @@ class ApplicationManagementController {
 		
 		[ 
             reportingPeriodInstanceList: reportingPeriodInstanceList,
+			reportsInstanceList: reportsInstanceList,
 			reportFormats: reportFormats 
         ]
 		

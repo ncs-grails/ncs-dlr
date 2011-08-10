@@ -2,6 +2,7 @@ package edu.umn.ncs.dlr
 
 import org.codehaus.groovy.grails.plugins.springsecurity.Secured
 import edu.umn.ncs.ReportingPeriod
+import edu.umn.ncs.Reports
 import org.joda.time.format.DateTimeFormat
 import grails.converters.*
 
@@ -15,12 +16,16 @@ class ExportController {
 	static def defaultFormat = "csv"	
 	static def debug = true
 	
-    def reportingPeriod = {
+    def generateReport = {
 
         if (debug) { 
-			println "EXPORT CONTROLLER > REPORTING PERIOD ----------------------" 
+			println "EXPORT CONTROLLER > GENERATE REPORT _----------------------" 
 			println "=> params: ${params}"
 		}
+		
+		// REPORT TYPE
+		def reportsInstance = Reports.read(params?.reports_id)
+		if (debug) { println "=> reportsInstance: ${reportsInstance}" }
 		
         // OUTPUT FORMAT
 		def format = params?.format
@@ -33,13 +38,13 @@ class ExportController {
 		}
 		        
 		// REPORTING PERIOD
-		def reportingPeriodInstance = ReportingPeriod.read(params?.id)
+		def reportingPeriodInstance = ReportingPeriod.read(params?.reporting_period_id)
 		if (debug) { println "=> reportingPeriodInstance: ${reportingPeriodInstance}" }
-				
+		
 		// if Reporting Period exist in database
-        if (reportingPeriodInstance) {
+        if (reportsInstance && reportingPeriodInstance) {
 			
-			if (debug) { println "=> if(reportingPeriodInstance) = TRUE" }
+			if (debug) { println "=> if(reportsInstance && reportingPeriodInstance) = TRUE" }
 			
 			// file name
 			//def fileName = "reporting-period_${reportingPeriodInstance.year}-${reportingPeriodInstance.month}.${format}"
@@ -90,7 +95,7 @@ class ExportController {
 			
 		} else {
             
-			if (debug) { println "=> if(reportingPeriodInstance) = FALSE" }
+			if (debug) { println "=> if(reportsInstance && reportingPeriodInstance) = FALSE" }
 
 			flash.message = "Reporting Period ID: '${params?.id}' not found."
 			redirect(action:'list')

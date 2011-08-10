@@ -299,6 +299,7 @@ td.basic{
 }
 
 select.basic{
+	margin: 0 .5em;
     border:.1em solid gray;
     padding:.2em;
     background-color: white;
@@ -306,7 +307,7 @@ select.basic{
 }
 
 .buttonBasic:hover {
-    margin: 0 1em;
+    margin: 0 .5em;
     border:.15em outset purple;
     -moz-border-radius: 1em; 
     -webkit-border-radius: 1em;
@@ -316,7 +317,7 @@ select.basic{
 }
 
 .buttonBasic {
-    margin: 0 1em;
+    margin: 0 .5em;
     border:.15em outset papayawhip;
     -moz-border-radius: 1em; 
     -webkit-border-radius: 1em;

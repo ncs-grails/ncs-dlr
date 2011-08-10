@@ -28,43 +28,47 @@
 			<fieldset>            
 	      
 				<!-- BEGIN FORM -->
-				<g:form controller="export" action="reportingPeriod">
+				<g:form controller="export" action="generateReport">
 	
 	        		<div class="clearCenterPadding">
 	            
 	          			<span class="controlBackground">              
 	
-							<!--  REPORTING PERIOD -->
-							<span class="spacing">
-							  	<label for="id">Reporting Period</label>          
-							  	<g:select 
-							 		class="basic" 
-							   		name="id"
-							   		optionKey="id"
-							   		optionValue="name"  
-							   		from="${reportingPeriodInstanceList}"
-							 	/>                
-							</span>
-	                         
+							<!--  REPORT TYPE -->
+						  	<label for="reports_id">Report</label>          
+						  	<g:select 
+						 		class="basic" 
+						   		name="reports_id"
+						   		optionKey="reports_id"
+						   		optionValue="name"  
+						   		from="${reportsInstanceList}"
+						 	/>                
+
 							<!--  OUTPUT FORMAT -->
-							<span class="spacing">
-							  	<label for="format">Output Format</label>
-							  	<g:select 
-							 		class="basic" 
-							   		name="format" 
-							   		from="${reportFormats}" 
-							 	/>
-							</span>              
-	
+						  	<label for="format">Output</label>
+						  	<g:select 
+						 		class="basic" 
+						   		name="format" 
+						   		from="${reportFormats}" 
+						 	/>
+
+							<!--  REPORTING PERIOD -->
+						  	<label for="reporting_period_id">Period</label>          
+						  	<g:select 
+						 		class="basic" 
+						   		name="reporting_period_id"
+						   		optionKey="reporting_period_id"
+						   		optionValue="name"  
+						   		from="${reportingPeriodInstanceList}"
+						 	/>                
+
 							<!-- GENERATE BUTTON -->
-	            			<span class="spacing">
-	              				<g:submitButton 
-	              					class="buttonBasic" 
-	              					name="submit" 
-	              					value="GENERATE" 
-	              				/>
-	            			</span>              
-	
+              				<g:submitButton 
+              					class="buttonBasic" 
+              					name="submit" 
+              					value="GENERATE" 
+              				/>
+	              					
 	          			</span>
 	            
 	       			</div>

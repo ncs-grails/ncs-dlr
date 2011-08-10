@@ -45,8 +45,10 @@ class StudyTaskEtdlr {
 			}
 		}        
 
-	} //def onDelete
-
+	}
+	 
+	static belongsTo = [task: StudyTask]
+	
     String toString() {
         name
     }

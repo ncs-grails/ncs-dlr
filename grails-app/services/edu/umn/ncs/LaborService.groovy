@@ -75,17 +75,17 @@ class LaborService {
         def lastMonthPeriodDate = lastMonth.minusDays(lastMonth.dayOfMonth - 1)
         if (debug) { println "=> laborService.getCurrentReportingPeriod.lastMonthPeriodDate = ${lastMonthPeriodDate}" }
 
-        def lastMonthDateTime = lastMonthPeriodDate.toDateTime(midnight).toCalendar().getTime()
-        if (debug) { println "=> laborService.getCurrentReportingPeriod.lastMonthDateTime = ${lastMonthDateTime}" }
+        def lastMonthPeriodDateTime = lastMonthPeriodDate.toDateTime(midnight).toCalendar().getTime()
+        if (debug) { println "=> laborService.getCurrentReportingPeriod.lastMonthPeriodDateTime = ${lastMonthPeriodDateTime}" }
 
-        def reportingPeriodInstance = ReportingPeriod.findByPeriodDate(lastMonthDateTime)
+        def reportingPeriodInstance = ReportingPeriod.findByPeriodDate(lastMonthPeriodDateTime)
         if (debug) { println "=> laborService.getCurrentReportingPeriod.reportingPeriodInstance = ${reportingPeriodInstance}" }
 
         //if current reporting period does not exist in db, insert a new one in there
         if ( !reportingPeriodInstance ) {
 			
 			if (debug) { println "=> laborService.getCurrentReportingPeriod.if(!reportingPeriodInstance) = TRUE" }			
-            reportingPeriodInstance = new ReportingPeriod(periodDate:lastMonthDateTime)
+            reportingPeriodInstance = new ReportingPeriod(periodDate:lastMonthPeriodDateTime)
             reportingPeriodInstance.save(flush:true)
             if (debug) { println "=> laborService.getCurrentReportingPeriod.reportingPeriodInstance = ${reportingPeriodInstance}" }
 			 
@@ -143,7 +143,7 @@ class LaborService {
     }
     
 	
-	def getReportingPeriodData(ReportingPeriod reportingPeriodInstance) {
+	def getReportingPeriodData(Reports reportsInstance, ReportingPeriod reportingPeriodInstance) {
         
 		if (debug) { println "=> laborService.getReportingPeriodData.reportingPeriodInstance = ${reportingPeriodInstance}" }
 
@@ -154,6 +154,16 @@ class LaborService {
 			if (debug) { println "=> laborService.getReportingPeriodData.if(reportingPeriodInstance) = TRUE" }
 			
 			dataset = []
+			
+			def cre = ReportedEffort.createCriteria()
+			
+			def sumOfReportedEffortByEtdlrTask = cre.list{
+	            eq("assignedEffort", assignedEffortInstance)
+	            projections {
+	                sum("percentEffort")
+	            }
+			}
+			
 			
 			// per row
 			(1..5).each{
