@@ -2,6 +2,7 @@ package edu.umn.ncs
 import java.util.Date;
 import org.codehaus.groovy.grails.plugins.orm.auditable.AuditLogEvent
 
+//TODO: explain what ode is
 class StudyTaskOde {
 
 	static auditable = true
@@ -46,7 +47,7 @@ class StudyTaskOde {
 
 	} 
 
-	static belongsTo = [studyTask: StudyTask]	
+	static belongsTo = [task: StudyTask]	
 
     String toString() {
         name

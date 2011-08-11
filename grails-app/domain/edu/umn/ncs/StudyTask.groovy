@@ -7,12 +7,13 @@ class StudyTask {
 	
     String name
     Boolean obsolete = true
-    Integer etdlrCode
-    Integer odeCode
+	StudyTaskEtdlr studyTaskEtdlr
+	StudyTaskOde studyTaskOde
     Date dateCreated = new Date()
     String userCreated
     String appCreated = 'ncs-dlr'
-
+	
+	
 	def onDelete = { oldMap ->
 		
 		def now = new Date()
@@ -47,7 +48,7 @@ class StudyTask {
 
 	} 
 
-	static belongsTo = [studyTaskEtdlr: StudyTaskEtdlr, studyTaskOde: StudyTaskOde]
+	static belongsTo = [taskEtdlr: StudyTaskEtdlr, taskOde: StudyTaskOde]
 	
     String toString() {
         name
@@ -56,8 +57,8 @@ class StudyTask {
     static constraints = {
         name(maxSize:1024)
         obsolete()
-        etdlrCode(nullable:true)
-        odeCode(nullable:true)
+        studyTaskEtdlr(nullable:true)
+        studyTaskOde(nullable:true)
         dateCreated()
         userCreated(blank:false)
         appCreated(blank:false)

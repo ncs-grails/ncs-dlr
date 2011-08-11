@@ -2,6 +2,7 @@ package edu.umn.ncs
 import java.util.Date;
 import org.codehaus.groovy.grails.plugins.orm.auditable.AuditLogEvent
 
+//TODO: explain what etdlr is
 class StudyTaskEtdlr {
 
 	static auditable = true

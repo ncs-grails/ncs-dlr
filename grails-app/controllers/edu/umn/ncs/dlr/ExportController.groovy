@@ -57,7 +57,7 @@ class ExportController {
                 
 				if (debug) { println "=> if (format == csv) = TRUE" }				
 
-                def recordSet = laborService.getReportingPeriodData(reportingPeriodInstance)                
+                def recordSet = laborService.getReportingPeriodData(reportsInstance, reportingPeriodInstance)                
 				
 				if (debug) { 
 					println "=> recordSet: ${recordSet}" 
@@ -65,7 +65,7 @@ class ExportController {
 					println "=> response: ${response}" 
 				}				
 
-				renderAsCsv recordSet, fileName, response
+				renderAsCsv recordSet, false, fileName, response
 				render ""
 				return
 				
@@ -106,7 +106,7 @@ class ExportController {
 	
 	
 	// Convert list of maps to CSV
-	private void renderAsCsv(recordset, fileName, outputStream) {
+	private void renderAsCsv(recordset, headerRow, fileName, outputStream) {
         
         if (debug) { 
 			println "EXPORT CONTROLLER > renderAsCsv METHOD ----------------"
@@ -137,18 +137,19 @@ class ExportController {
 				} 
 			}
 
-			// write header column ("ID","FirstName","MiddleName","LastName","Suffix")
-			columnNames.eachWithIndex{ col, i ->
-				if (i > 0) {
-					outputStream << ","
+			if (headerRow) {
+				// write header column ("ID","FirstName","MiddleName","LastName","Suffix")
+				columnNames.eachWithIndex{ col, i ->
+					if (i > 0) {
+						outputStream << ","
+					}
+					outputStream << ("\"" + col.replace("\"", "\"\"") + "\"")
 				}
-				outputStream << ("\"" + col.replace("\"", "\"\"") + "\"")
+	            
+				// Using \r\n for MS Windows
+				outputStream << "\r\n"
+				if (debug) { println "outputStream: ${outputStream}" }
 			}
-            
-			// Using \r\n for MS Windows
-			outputStream << "\r\n"
-			if (debug) { println "outputStream: ${outputStream}" }
-			
 			// write data
 			recordset.each{ row ->
                 

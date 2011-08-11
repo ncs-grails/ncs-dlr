@@ -10,6 +10,9 @@ class Reports {
 	String name
 	String abbreviation
 	Boolean obsolete = true
+	Boolean pdf = false
+	Boolean csv = false
+	Boolean xml = false
 
 	def onDelete = { oldMap ->
 		

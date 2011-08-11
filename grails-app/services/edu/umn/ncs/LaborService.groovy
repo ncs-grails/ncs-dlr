@@ -154,30 +154,33 @@ class LaborService {
 			if (debug) { println "=> laborService.getReportingPeriodData.if(reportingPeriodInstance) = TRUE" }
 			
 			dataset = []
-			
-			def cre = ReportedEffort.createCriteria()
-			
-			def sumOfReportedEffortByEtdlrTask = cre.list{
-	            eq("assignedEffort", assignedEffortInstance)
-	            projections {
-	                sum("percentEffort")
-	            }
-			}
+			def hql = """SELECT ae.fullNameLFM, lc.name as laborCategory, te.name as taskEtdlr, sum(re.percentEffort) as percentEffort
+			FROM AssignedEffort ae inner join
+				ae.reportingStaff s inner join
+				ae.laborCategory lc inner join
+				ae.reportedEffort re inner join
+				re.task t inner join
+				t.studyTaskEtdlr te
+			WHERE (ae.period.id = ?)
+			GROUP BY s.fullNameLFM, lc.name, te.name
+			ORDER BY s.fullNameLFM, sum(re.percentEffort) desc"""
+
+			dataset = AssignedEffort.executeQuery(hql, [reportingPeriodInstance.id] );
+
 			
 			
 			// per row
-			(1..5).each{
+			dataset.each{ dataRow ->
 				
 				// create an empty row
 				def row = [:]
 				
-				row.id = it
-				row.name = "purple"
-				row.color = "rock"
-				row.size = "square"
-				row.shape = "medium"
-				row.status = "confusing"
-				row.when = new Date()
+				row["Staff Name"] = dataRow.fullNameLFM
+				row["Labor Category"] = laborCategory
+				row["Task"] = taskEtdlr
+				row["Blank 1"] = ''
+				row["Blank 2"] = ''
+				row["Percent Effort"] = percentEffort
 				
 				if (debug) { println "=> laborService.getReportingPeriodData.adding row ${it}: ${row}" }
 
