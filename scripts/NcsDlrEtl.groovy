@@ -148,7 +148,7 @@ class RunNcsDlrEtl {
 		//importOdeTasks()
 	    //importAssignedEfforts()
 	    //importReportedEfforts()
-		//importSfrReport()
+		importReportSfr()
 		//importNotificationEmail()
 		
 	}
@@ -710,20 +710,18 @@ class RunNcsDlrEtl {
 	// staff_name, labor_category_name, study_activity_name, study_task_name, percent_effort,  
 	// date_prepared, date_created, user_created,app_created
 	
-	def importSfrReport() {
+	def importReportSfr() {
 		
 		def query = """SELECT id, EffortID,
 			ContractNumber, ReferenceInvoiceNumber, ContractPeriodTitle, ContractPeriodDesc, PrincipalInvestigator,
 			StaffName, LaborCatDesc, ActivityDesc, CASE WHEN id IN (25, 41, 42, 141, 185) THEN 'x' ELSE TaskDesc END AS TaskDesc, PercentEffort, 
 			DatePrepared, CreatedDate, CreatedByWhom, CreatedByWhat
-		FROM WebLookup.dbo.ncs_dlr_report"""
-		
-
-		//println "PRINTLN importSfrReport.query: ${query}"				  
+		FROM WebLookup.dbo.ncs_dlr_report"""		
+		//println "PRINTLN importReportSfr.query: ${query}"				  
 		
 		msConn.eachRow(query) { row ->
 			
-			def sfrReportId = row.id
+			def reportSfrId = row.id
 			def theEffortId = row.EffortID
 			def contractNumber = row.ContractNumber
 			def referenceInvoiceNumber = row.ReferenceInvoiceNumber
@@ -741,43 +739,43 @@ class RunNcsDlrEtl {
 			def createdByWhat = row.CreatedByWhat
 			
 			/*
-			println "PRINTLN importSfrReport.sfrReportId: ${sfrReportId}"
-			println "PRINTLN importSfrReport.theEffortId: ${theEffortId}"
-			println "PRINTLN importSfrReport.contractNumber: ${contractNumber}"
-			println "PRINTLN importSfrReport.referenceInvoiceNumber: ${referenceInvoiceNumber}"
-			println "PRINTLN importSfrReport.contractPeriodTitle: ${contractPeriodTitle}"
-			println "PRINTLN importSfrReport.contractPeriodDesc: ${contractPeriodDesc}"
-			println "PRINTLN importSfrReport.principalInvestigator: ${principalInvestigator}"
-			println "PRINTLN importSfrReport.staffName: ${staffName}"
-			println "PRINTLN importSfrReport.laborCatDesc: ${laborCatDesc}"
-			println "PRINTLN importSfrReport.activityDesc: ${activityDesc}"
-			println "PRINTLN importSfrReport.taskDesc: ${taskDesc}"
-			println "PRINTLN importSfrReport.percentEffort: ${percentEffort}"
-			println "PRINTLN importSfrReport.datePrepared: ${datePrepared}"
-			println "PRINTLN importSfrReport.createdDate: ${createdDate}"
-			println "PRINTLN importSfrReport.createdByWhom: ${createdByWhom}"
-			println "PRINTLN importSfrReport.createdByWhat: ${createdByWhat}"
+			println "PRINTLN importReportSfr.reportSfrId: ${reportSfrId}"
+			println "PRINTLN importReportSfr.theEffortId: ${theEffortId}"
+			println "PRINTLN importReportSfr.contractNumber: ${contractNumber}"
+			println "PRINTLN importReportSfr.referenceInvoiceNumber: ${referenceInvoiceNumber}"
+			println "PRINTLN importReportSfr.contractPeriodTitle: ${contractPeriodTitle}"
+			println "PRINTLN importReportSfr.contractPeriodDesc: ${contractPeriodDesc}"
+			println "PRINTLN importReportSfr.principalInvestigator: ${principalInvestigator}"
+			println "PRINTLN importReportSfr.staffName: ${staffName}"
+			println "PRINTLN importReportSfr.laborCatDesc: ${laborCatDesc}"
+			println "PRINTLN importReportSfr.activityDesc: ${activityDesc}"
+			println "PRINTLN importReportSfr.taskDesc: ${taskDesc}"
+			println "PRINTLN importReportSfr.percentEffort: ${percentEffort}"
+			println "PRINTLN importReportSfr.datePrepared: ${datePrepared}"
+			println "PRINTLN importReportSfr.createdDate: ${createdDate}"
+			println "PRINTLN importReportSfr.createdByWhom: ${createdByWhom}"
+			println "PRINTLN importReportSfr.createdByWhat: ${createdByWhat}"
 			*/
 			
-			def sfrReportInstance = getSfrReport(sfrReportId)
-			//println "PRINTLN importSfrReport.sfrReportInstance: ${sfrReportInstance}"
+			def reportSfrInstance = getReportSfr(reportSfrId)
+			//println "PRINTLN importReportSfr.reportSfrInstance: ${reportSfrInstance}"
 			
-			if ( sfrReportInstance ) {
+			if ( reportSfrInstance ) {
 				
-				println "PRINTLN Found SRF Report: ${sfrReportId}"
+				println "PRINTLN Found SRF Report: ${reportSfrId}"
 				
 			} else {
 			
-				println "PRINTLN Creating SRF Report: sfrReportId - ${sfrReportId}, theEffortId - ${theEffortId}"
+				println "PRINTLN Creating SRF Report: reportSfrId - ${reportSfrId}, theEffortId - ${theEffortId}"
 				
-				sfrReportInstance = newSfrReport(
-					sfrReportId, theEffortId, 
+				reportSfrInstance = newReportSfr(
+					reportSfrId, theEffortId, 
 					contractNumber, referenceInvoiceNumber, contractPeriodTitle, contractPeriodDesc, principalInvestigator, 
 					staffName, laborCatDesc, activityDesc, taskDesc, percentEffort, 
 					datePrepared, createdDate, createdByWhom, createdByWhat
 				)
 				
-				//println "PRINTLN importSfrReport.sfrReportInstance: ${sfrReportInstance}"
+				//println "PRINTLN importReportSfr.sfrReportInstance: ${reportSfrInstance}"
 								
 			}
 			
@@ -785,29 +783,29 @@ class RunNcsDlrEtl {
 		
 	}
 
-	def getSfrReport(id) {
+	def getReportSfr(id) {
 		
 		def query = """SELECT id, version, effort_id, 
 				contract_number, reference_invoice_number, contract_period_title, contract_period_desc, principal_investigator, 
 				staff_name, labor_category_name, study_activity_name, study_task_name, percent_effort, 
 				date_prepared, date_created, user_created, app_created
-			FROM sfr_report
+			FROM report_sfr
 			WHERE (id = ?);"""
-		//println "PRINTLN getSfrReport.query: ${query}"
+		//println "PRINTLN getReportSfr.query: ${query}"
 		
-		//println "PRINTLN getSfrReport.query.firstRow: ${myConn.firstRow(query, [id])}"		
+		//println "PRINTLN getReportSfr.query.firstRow: ${myConn.firstRow(query, [id])}"		
 		return myConn.firstRow(query, [id])
 		
 	}
 	
-	def newSfrReport(
+	def newReportSfr(
 		id, theEffortId, 
 			contractNumber, referenceInvoiceNumber, contractPeriodTitle, contractPeriodDesc, principalInvestigator, 
 			staffName, laborCatDesc, activityDesc, taskDesc, percentEffort, 
 			datePrepared, createdDate, createdByWhom, createdByWhat
 	) {
 		
-		def statement = """INSERT INTO `ncs_dlr`.`sfr_report` 
+		def statement = """INSERT INTO `ncs_dlr`.`report_sfr` 
 			(
 				id, version, effort_id, 
 				contract_number, reference_invoice_number, contract_period_title, contract_period_desc, principal_investigator, 
@@ -815,7 +813,7 @@ class RunNcsDlrEtl {
 				date_prepared, date_created, user_created, app_created
 			)
 			VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);"""
-		//println "PRINTLN newSfrReport.statement: ${statement}"
+		//println "PRINTLN newReportSfr.statement: ${statement}"
 		
 		def params = [
 			id, 0, theEffortId, 
@@ -823,7 +821,7 @@ class RunNcsDlrEtl {
 			staffName, laborCatDesc, activityDesc, taskDesc, percentEffort, 
 			datePrepared, createdDate, createdByWhom, createdByWhat
 		]
-		//println "PRINTLN newSfrReport.params: ${params}"
+		//println "PRINTLN newReportSfr.params: ${params}"
 		
 		myConn.execute(statement, params)
 		

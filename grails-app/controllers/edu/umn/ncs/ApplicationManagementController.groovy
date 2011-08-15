@@ -53,10 +53,10 @@ class ApplicationManagementController {
         periodList.each{
             reportingPeriodInstanceList.add(['reporting_period_id':it.id, name:g.formatDate(date:it.periodDate, format:'MMMM yyyy')] )
         }
-		if (debug) { println "=> reportingPeriodInstanceList: ${reportingPeriodInstanceList}" }
+		//if (debug) { println "=> reportingPeriodInstanceList: ${reportingPeriodInstanceList}" }
 		
-		// REPORT TYPE
-		def cR = Reports.createCriteria()
+		// REPORT TYPES
+		def cR = ReportType.createCriteria()
 		def reportsList = cR.list {
 			eq("obsolete", false)
 			order("name", "desc")

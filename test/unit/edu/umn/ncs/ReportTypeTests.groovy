@@ -2,7 +2,7 @@ package edu.umn.ncs
 
 import grails.test.*
 
-class SfrReportControllerTests extends ControllerUnitTestCase {
+class ReportTypeTests extends GrailsUnitTestCase {
     protected void setUp() {
         super.setUp()
     }

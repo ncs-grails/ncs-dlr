@@ -9,34 +9,34 @@ class BootStrap {
 			production {				
 			}
 			
-			
-            development {
+						
+            development {				
 				
 				/*
 				// REPORTS
-				def reportsNata = new Reports(
+				def reportsSfr = new ReportType(
 					name:'Sponsored Financial Reporting',
 					abbreviation:'SFR', 
 					obsolete:false
 				).save()
-				def reportsEtdlr = new Reports(
+				def reportsEtdlr = new ReportType(
 					name:'Electronic Technical Direct Labor Report', 
 					abbreviation:'ETDLR', 
 					obsolete:false, 
 
 				).save()
-				def reportsOde = new Reports(
+				def reportsOde = new ReportType(
 					name:'Operational Data Elements', 
 					abbreviation:'ODE', 
 					obsolete:false
 				).save()
-				*/
 				
 				// PROJECT INFORMATION
 				def project = new ProjectInfo(
 					principalInvestigator: 'Patricia M McGovern, Ph.D., MPH',
 					contractNumber: 'HHSN267200700022C'
 				).save()
+				*/
 				                
                 if (false) {
 

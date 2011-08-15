@@ -2,7 +2,7 @@ package edu.umn.ncs.dlr
 
 import org.codehaus.groovy.grails.plugins.springsecurity.Secured
 import edu.umn.ncs.ReportingPeriod
-import edu.umn.ncs.Reports
+import edu.umn.ncs.ReportType
 import org.joda.time.format.DateTimeFormat
 import grails.converters.*
 
@@ -24,7 +24,7 @@ class ExportController {
 		}
 		
 		// REPORT TYPE
-		def reportsInstance = Reports.read(params?.reports_id)
+		def reportsInstance = ReportType.read(params?.reports_id)
 		if (debug) { println "=> reportsInstance: ${reportsInstance}" }
 		
         // OUTPUT FORMAT
@@ -36,19 +36,21 @@ class ExportController {
 			format = defaultFormat
 			//if (debug) { println "=> format: ${format}" }
 		}
-		        
+		if (debug) { println "=> format: ${format}" }
+		
 		// REPORTING PERIOD
 		def reportingPeriodInstance = ReportingPeriod.read(params?.reporting_period_id)
 		if (debug) { println "=> reportingPeriodInstance: ${reportingPeriodInstance}" }
 		
 		// if Reporting Period exist in database
-        if (reportsInstance && reportingPeriodInstance) {
+        if (reportsInstance && format && reportingPeriodInstance) {
 			
-			if (debug) { println "=> if(reportsInstance && reportingPeriodInstance) = TRUE" }
+			if (debug) { println "=> if(reportsInstance && format && reportingPeriodInstance) = TRUE" }
 			
 			// file name
 			//def fileName = "reporting-period_${reportingPeriodInstance.year}-${reportingPeriodInstance.month}.${format}"
 			def fileName = "${reportingPeriodInstance.year}-${reportingPeriodInstance.month}.${format}"
+			if (debug) { println "=> fileName: ${fileName}" }
 			
 			// Render to Format ------------------------------------------------
             
@@ -61,7 +63,6 @@ class ExportController {
 				
 				if (debug) { 
 					println "=> recordSet: ${recordSet}" 
-					println "=> fileName: ${fileName}"
 					println "=> response: ${response}" 
 				}				
 
@@ -95,7 +96,7 @@ class ExportController {
 			
 		} else {
             
-			if (debug) { println "=> if(reportsInstance && reportingPeriodInstance) = FALSE" }
+			if (debug) { println "=> if(reportsInstance && format && reportingPeriodInstance) = FALSE" }
 
 			flash.message = "Reporting Period ID: '${params?.id}' not found."
 			redirect(action:'list')

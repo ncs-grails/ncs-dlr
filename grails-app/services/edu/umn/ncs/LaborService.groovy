@@ -143,31 +143,53 @@ class LaborService {
     }
     
 	
-	def getReportingPeriodData(Reports reportsInstance, ReportingPeriod reportingPeriodInstance) {
+	def getReportingPeriodData(ReportType reportTypeInstance, ReportingPeriod reportingPeriodInstance) {
         
+		if (debug) { println "=> laborService.getReportingPeriodData.reportsInstance = ${reportsInstance}" }
+		if (debug) { println "=> laborService.getReportingPeriodData.reportsInstance.id = ${reportsInstance.id}" }
 		if (debug) { println "=> laborService.getReportingPeriodData.reportingPeriodInstance = ${reportingPeriodInstance}" }
 
 		def dataset = null
-        
-		if (reportingPeriodInstance) {
+		def hql = null
+		
+		if (reportTypeInstance && reportingPeriodInstance) {
 			
-			if (debug) { println "=> laborService.getReportingPeriodData.if(reportingPeriodInstance) = TRUE" }
+			if (debug) { println "=> laborService.getReportingPeriodData.if(reportsInstance&&reportingPeriodInstance) = TRUE" }
 			
-			dataset = []
-			def hql = """SELECT ae.fullNameLFM, lc.name as laborCategory, te.name as taskEtdlr, sum(re.percentEffort) as percentEffort
-			FROM AssignedEffort ae inner join
-				ae.reportingStaff s inner join
-				ae.laborCategory lc inner join
-				ae.reportedEffort re inner join
-				re.task t inner join
-				t.studyTaskEtdlr te
-			WHERE (ae.period.id = ?)
-			GROUP BY s.fullNameLFM, lc.name, te.name
-			ORDER BY s.fullNameLFM, sum(re.percentEffort) desc"""
+			dataset = []			
+			
+			// REPORT TYPE
+			// sfr
+			if (reportTypeInstance.id == 1) {
+				
+				
+							
+			// etdlr	
+			} else if (reportTypeInstance.id == 2)  {
+
+				hql = """SELECT s.lastName, 
+					lc.name as laborCategory, 
+					te.name as taskEtdlr, 
+					sum(re.percentEffort) as percentEffort
+				FROM AssignedEffort ae inner join
+					ae.reportingStaff s inner join
+					ae.laborCategory lc inner join
+					ae.reportedEffort re inner join
+					re.task t inner join
+					t.studyTaskEtdlr te
+				WHERE (ae.period.id = ?)
+				GROUP BY s.lastName, lc.name, te.name
+				ORDER BY s.lastName, sum(re.percentEffort) desc"""
+						
+			// ode
+			} else if (reportsInstance.id == 3) {
+			
+			
+			} //if (reportsInstance.id == 1			
+			//if (debug) { println "=> laborService.getReportingPeriodData.hql: ${hql}" }
 
 			dataset = AssignedEffort.executeQuery(hql, [reportingPeriodInstance.id] );
-
-			
+			if (debug) { println "=> laborService.getReportingPeriodData.dataset: ${dataset}" }
 			
 			// per row
 			dataset.each{ dataRow ->
@@ -175,16 +197,17 @@ class LaborService {
 				// create an empty row
 				def row = [:]
 				
-				row["Staff Name"] = dataRow.fullNameLFM
+				// assign data to each column per row
+				row["Staff Name"] = dataRow.lastname
 				row["Labor Category"] = laborCategory
 				row["Task"] = taskEtdlr
 				row["Blank 1"] = ''
 				row["Blank 2"] = ''
 				row["Percent Effort"] = percentEffort
 				
-				if (debug) { println "=> laborService.getReportingPeriodData.adding row ${it}: ${row}" }
-
+				// add row to data set
 				dataset.add(row)
+				if (debug) { println "=> laborService.getReportingPeriodData.adding row ${it}: ${row}" }				
 				
 			}
 			
