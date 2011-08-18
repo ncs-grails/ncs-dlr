@@ -1,4 +1,7 @@
 package edu.umn.ncs
+import java.math.BigDecimal;
+import java.util.Date;
+
 import org.joda.time.*
 
 class LaborService {
@@ -145,16 +148,20 @@ class LaborService {
 	
 	def getReportingPeriodData(ReportType reportTypeInstance, ReportingPeriod reportingPeriodInstance) {
         
-		if (debug) { println "=> laborService.getReportingPeriodData.reportsInstance = ${reportsInstance}" }
-		if (debug) { println "=> laborService.getReportingPeriodData.reportsInstance.id = ${reportsInstance.id}" }
-		if (debug) { println "=> laborService.getReportingPeriodData.reportingPeriodInstance = ${reportingPeriodInstance}" }
-
-		def dataset = null
+		if (debug) { 
+			println "=> laborService.getReportingPeriodData.reportTypeInstance.id = ${reportTypeInstance.id}" 
+			println "=> laborService.getReportingPeriodData.reportTypeInstance = ${reportTypeInstance}" 
+			println "=> laborService.getReportingPeriodData.reportingPeriodInstance.id = ${reportingPeriodInstance.id}" 
+			println "=> laborService.getReportingPeriodData.reportingPeriodInstance = ${reportingPeriodInstance}" 
+		}
+		
 		def hql = null
+		def resultSet
+		def dataset = null
 		
 		if (reportTypeInstance && reportingPeriodInstance) {
 			
-			if (debug) { println "=> laborService.getReportingPeriodData.if(reportsInstance&&reportingPeriodInstance) = TRUE" }
+			if (debug) { println "=> laborService.getReportingPeriodData.if(reportsInstance && reportingPeriodInstance) = TRUE" }
 			
 			dataset = []			
 			
@@ -162,11 +169,11 @@ class LaborService {
 			// sfr
 			if (reportTypeInstance.id == 1) {
 				
-				
+				//TODO: csv for sfr
 							
 			// etdlr	
 			} else if (reportTypeInstance.id == 2)  {
-
+				/*
 				hql = """SELECT s.lastName, 
 					lc.name as laborCategory, 
 					te.name as taskEtdlr, 
@@ -180,38 +187,67 @@ class LaborService {
 				WHERE (ae.period.id = ?)
 				GROUP BY s.lastName, lc.name, te.name
 				ORDER BY s.lastName, sum(re.percentEffort) desc"""
-						
+				*/
+			
+				hql = """SELECT CONCAT(s.lastName , ', ', s.firstName, ' ', s.middleInit) as fullName, 
+					lc.name as laborCategory,
+					t.name as Task, 
+					re.percentEffort as percentEffort
+				FROM AssignedEffort ae inner join
+					ae.reportingStaff s inner join
+					ae.laborCategory lc inner join
+					ae.reportedEffort re inner join
+					re.task t inner join
+					t.studyTaskEtdlr te
+				WHERE (ae.period.id = ?)
+				ORDER BY s.lastName, s.firstName, s.middleInit"""
+
 			// ode
 			} else if (reportsInstance.id == 3) {
-			
+						
+				//TODO: csv for ode
 			
 			} //if (reportsInstance.id == 1			
+			
 			//if (debug) { println "=> laborService.getReportingPeriodData.hql: ${hql}" }
 
-			dataset = AssignedEffort.executeQuery(hql, [reportingPeriodInstance.id] );
-			if (debug) { println "=> laborService.getReportingPeriodData.dataset: ${dataset}" }
+			resultSet = AssignedEffort.executeQuery(hql, [reportingPeriodInstance.id] );
+			//if (debug) { println "=> laborService.getReportingPeriodData.resultSet: ${resultSet}" }
 			
 			// per row
-			dataset.each{ dataRow ->
+			resultSet.each{ rowOfData ->
+				
+				if (debug) { 
+					//println "=> laborService.getReportingPeriodData.resultSet.each.each{ rowOfData ->" 
+					println "=> laborService.getReportingPeriodData.rowOfData: ${rowOfData}" 
+				}
 				
 				// create an empty row
 				def row = [:]
+							
+				// assign data to each column per row				
+				row["Staff Name"] = rowOfData[0]
+				row["Labor Category"] = rowOfData[1]
+				row["column 3"] = rowOfData[2]
+				row["column 4"] = rowOfData[3]
+				//if (debug) { println "=> laborService.getReportingPeriodData.row; ${row}" }
 				
-				// assign data to each column per row
+				/*
 				row["Staff Name"] = dataRow.lastname
 				row["Labor Category"] = laborCategory
 				row["Task"] = taskEtdlr
 				row["Blank 1"] = ''
 				row["Blank 2"] = ''
 				row["Percent Effort"] = percentEffort
+				*/
 				
 				// add row to data set
 				dataset.add(row)
-				if (debug) { println "=> laborService.getReportingPeriodData.adding row ${it}: ${row}" }				
+				//if (debug) { println "=> laborService.getReportingPeriodData.dataset: ${dataset}" }				
 				
-			}
+			} //dataset.each{ rowOfData ->
 			
-		}
+		} //if (reportTypeInstance && reportingPeriodInstance)
         
 		return dataset
         

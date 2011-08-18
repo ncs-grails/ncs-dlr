@@ -25,7 +25,10 @@ class ExportController {
 		
 		// REPORT TYPE
 		def reportsInstance = ReportType.read(params?.reports_id)
-		if (debug) { println "=> reportsInstance: ${reportsInstance}" }
+		if (debug) { 
+			println "=> reportsInstance.id: ${reportsInstance.id}" 
+			println "=> reportsInstance: ${reportsInstance}" 
+		}
 		
         // OUTPUT FORMAT
 		def format = params?.format
@@ -40,7 +43,10 @@ class ExportController {
 		
 		// REPORTING PERIOD
 		def reportingPeriodInstance = ReportingPeriod.read(params?.reporting_period_id)
-		if (debug) { println "=> reportingPeriodInstance: ${reportingPeriodInstance}" }
+		if (debug) { 
+			println "=> reportingPeriodInstance.id: ${reportingPeriodInstance.id}" 
+			println "=> reportingPeriodInstance: ${reportingPeriodInstance}" 
+		}
 		
 		// if Reporting Period exist in database
         if (reportsInstance && format && reportingPeriodInstance) {
@@ -62,8 +68,8 @@ class ExportController {
                 def recordSet = laborService.getReportingPeriodData(reportsInstance, reportingPeriodInstance)                
 				
 				if (debug) { 
-					println "=> recordSet: ${recordSet}" 
-					println "=> response: ${response}" 
+					//println "=> recordSet: ${recordSet}" 
+					//println "=> response: ${response}" 
 				}				
 
 				renderAsCsv recordSet, false, fileName, response
@@ -89,7 +95,7 @@ class ExportController {
 			} else {
                 
 				if (debug) { println "=> if (format == other?) = TRUE" }				
-				flash.message = "Unknown format: ${fmt}. Please choose from ${allowedFormats}"
+				flash.message = "Unknown format: ${formatDateTime}. Please choose from ${allowedFormats}"
 				redirect(action:'list')
                 
 			}
@@ -114,8 +120,8 @@ class ExportController {
 			println "params: ${params}"
         }
 		
-		def fmt = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm")
-		if (debug) { println "fmt: ${fmt}" }
+		def formatDateTime = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm")
+		if (debug) { println "formatDateTime: ${formatDateTime}" }
 		
 		response.setHeader("Content-disposition", "attachment; filename=\"${fileName}\"");
 		response.contentType = "text/csv"
@@ -123,7 +129,7 @@ class ExportController {
         // Render output data as CSV, if there is a recordset
 		if (recordset) {
             
-			if (debug) { println "START if(recordset)" }
+			if (debug) { println "if(recordset) = TRUE (START)" }
 		
 			// field list (row 1)
 			def firstRow = recordset[0]
@@ -132,13 +138,10 @@ class ExportController {
 			if (debug) { println "firstRow: ${firstRow}" }
 			if (debug) { println "columnNames: ${columnNames}" }
 			
-			if (debug) { 
-				columnNames.each{ 
-					println "columnNames.each.it: ${it}" 
-				} 
-			}
-
 			if (headerRow) {
+				
+				if (debug) { println "if (headerRow) = TRUE" }
+				
 				// write header column ("ID","FirstName","MiddleName","LastName","Suffix")
 				columnNames.eachWithIndex{ col, i ->
 					if (i > 0) {
@@ -151,70 +154,71 @@ class ExportController {
 				outputStream << "\r\n"
 				if (debug) { println "outputStream: ${outputStream}" }
 			}
+			
 			// write data
-			recordset.each{ row ->
+			recordset.each{ rowOfData ->
                 
-				if (debug) { println "START recordset.each{ row ->" }
+				//if (debug) { println "recordset.each{ rowOfData -> (START)" }
 				
 				columnNames.eachWithIndex{ col, i ->
 
-					if (debug) { println "START columnNames.eachWithIndex{ col, i ->" }
+					//if (debug) { println "START columnNames.eachWithIndex{ col, i ->" }
 				
 					// default content is empty
 					def columnValue = ""
                     
 					// if there's a non-null value
-					if (row[col] != null) {
+					if (rowOfData[col] != null) {
                         
-						if (debug) { println "if (row[col] != null)" }
+						//if (debug) { println "if (rowOfData[col] != null)" }
 
 						// take the content and escape the double quotes (")						
 						def columnContent = "" 
 
                         // if it's a date, then format it specifically
-						if (row[col].class == java.util.Date) {
+						if (rowOfData[col].class == java.util.Date) {
 							
-							if (debug) { println "if (row[col].class == java.util.Date) = TRUE" }							
-							Date refDate = row[col]
-							columnContent = fmt.print(refDate.time)
-							if (debug) { println "columnContent: ${columnContent}" }
+							//if (debug) { println "if (rowOfData[col].class == java.util.Date) = TRUE" }							
+							Date refDate = rowOfData[col]
+							columnContent = formatDateTime.print(refDate.time)
+							//if (debug) { println "columnContent: ${columnContent}" }
 							
                         // Otherwise use the default toString() method
 						} else {                            
                             
-							if (debug) { println "if (row[col].class == java.util.Date) = FALSE" }							
-							columnContent = row[col].toString().replace('"', '""')                            
-							if (debug) { println "columnContent: ${columnContent}" }
+							//if (debug) { println "if (rowOfData[col].class == java.util.Date) = FALSE" }							
+							columnContent = rowOfData[col].toString().replace('"', '""')                            
+							//if (debug) { println "columnContent: ${columnContent}" }
 							
 						}
 						
 						// then surround it with double quotes
 						columnValue = '"' + columnContent  + '"'
-						if (debug) { println "columnValue: ${columnValue}" }
+						//if (debug) { println "columnValue: ${columnValue}" }
 						
 						// print a comma if this is not the first field
 						if (i > 0) {
 							outputStream << ","
 						}
-						if (debug) { println "outputStream: ${outputStream}" }
+						//if (debug) { println "outputStream: ${outputStream}" }
 						
-					} //if (row[col] != null)
+					} //if (rowOfData[col] != null)
 
 					outputStream << columnValue
 					
-					if (debug) { println "outputStream: ${outputStream}" }
-					if (debug) { println "END columnNames.eachWithIndex{ col, i ->" }
+					//if (debug) { println "outputStream: ${outputStream}" }
+					//if (debug) { println "columnNames.eachWithIndex{ col, i -> (END)" }
 					
 				} //columnNames.eachWithIndex{ col, i -> 
                 
 				outputStream << "\r\n"
 				
-				if (debug) { println "outputStream: ${outputStream}" }
-				if (debug) { println "END recordset.each{ row ->" }
+				//if (debug) { println "outputStream: ${outputStream}" }
+				//if (debug) { println "recordset.each{ row -> (END)" }
 				
 			} //recordset.each{ row -> 
             
-			if (debug) { println "END if(recordset)" }
+			//if (debug) { println "if(recordset) (END)" }
 			
 		} //if (recordset)
         
