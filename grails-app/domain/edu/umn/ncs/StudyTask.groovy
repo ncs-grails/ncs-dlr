@@ -47,8 +47,6 @@ class StudyTask {
 		}        
 
 	} 
-
-	static belongsTo = [taskEtdlr: StudyTaskEtdlr, taskOde: StudyTaskOde]
 	
     String toString() {
         name

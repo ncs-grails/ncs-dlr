@@ -173,39 +173,29 @@ class LaborService {
 							
 			// etdlr	
 			} else if (reportTypeInstance.id == 2)  {
+			
 				/*
-				hql = """SELECT s.lastName, 
-					lc.name as laborCategory, 
-					te.name as taskEtdlr, 
+				hql = """SELECT TRIM(CONCAT(s.lastName , ', ', s.firstName, ' ', s.middleInit)), 
+					lc.name as laborCategory,
+					te.name as taskEtdlr,
 					sum(re.percentEffort) as percentEffort
 				FROM AssignedEffort ae inner join
 					ae.reportingStaff s inner join
 					ae.laborCategory lc inner join
 					ae.reportedEffort re inner join
-					re.task t inner join
-					t.studyTaskEtdlr te
+					re.task t left outer join
+					t.studyTaskEtdlr te 		
 				WHERE (ae.period.id = ?)
-				GROUP BY s.lastName, lc.name, te.name
-				ORDER BY s.lastName, sum(re.percentEffort) desc"""
+				GROUP BY s.lastName, s.firstName, s.middleInit, lc.name, te.id  
+				ORDER BY s.lastName, s.firstName, s.middleInit"""
 				*/
 			
-				hql = """SELECT CONCAT(s.lastName , ', ', s.firstName, ' ', s.middleInit) as fullName, 
-					lc.name as laborCategory,
-					t.name as Task, 
-					re.percentEffort as percentEffort
-				FROM AssignedEffort ae inner join
-					ae.reportingStaff s inner join
-					ae.laborCategory lc inner join
-					ae.reportedEffort re inner join
-					re.task t inner join
-					t.studyTaskEtdlr te
-				WHERE (ae.period.id = ?)
-				ORDER BY s.lastName, s.firstName, s.middleInit"""
-
 			// ode
 			} else if (reportsInstance.id == 3) {
 						
 				//TODO: csv for ode
+			
+			
 			
 			} //if (reportsInstance.id == 1			
 			
@@ -228,8 +218,8 @@ class LaborService {
 				// assign data to each column per row				
 				row["Staff Name"] = rowOfData[0]
 				row["Labor Category"] = rowOfData[1]
-				row["column 3"] = rowOfData[2]
-				row["column 4"] = rowOfData[3]
+				row["Task Etdlr"] = rowOfData[2]
+				//row["PercentEffort"] = rowOfData[3]
 				//if (debug) { println "=> laborService.getReportingPeriodData.row; ${row}" }
 				
 				/*

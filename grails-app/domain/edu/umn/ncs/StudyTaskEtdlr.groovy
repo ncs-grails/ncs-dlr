@@ -16,6 +16,22 @@ class StudyTaskEtdlr {
     String userCreated
     String appCreated = 'ncs-dlr'
 
+	static belongsTo = [task: StudyTask]
+	
+	String toString() {
+		name
+	}
+
+	static constraints = {
+		name(maxSize:1024)
+		obsolete()
+		dateCreated(blank:false)
+		userCreated(blank:false)
+		appCreated(blank:false)
+	}
+	
+	static mapping = { sort "name" }
+
 	def onDelete = { oldMap ->
 		
 		def now = new Date()
@@ -48,20 +64,4 @@ class StudyTaskEtdlr {
 
 	}
 	 
-	static belongsTo = [task: StudyTask]
-	
-    String toString() {
-        name
-    }
-
-    static constraints = {
-        name(maxSize:1024)
-        obsolete()
-        dateCreated(blank:false)
-        userCreated(blank:false)
-        appCreated(blank:false)
-    }
-    
-    static mapping = { sort "name" }
-
 }

@@ -121,9 +121,9 @@ class RunNcsDlrEtl {
 	    def db = [
 	        username : 'ncs-dlr',
 	        password : 'ang1ahXiedohsieng5sheThi',
-			/* local mysql database *************************/
+			/* LOCAL mysql database *************************/
 	        url : 'jdbc:mysql://localhost/ncs_dlr?noAccessToProcedureBodies=true&autoReconnect=true',
-			/* production mysql database *************************/
+			/* PRODUCTION mysql database *************************/
 			//url : 'jdbc:mysql://sql.ncs.umn.edu/ncs_dlr?useSSL=true&requireSSL=true&verifyServerCertificate=false&noAccessToProcedureBodies=true&autoReconnect=true',
 	        driver : 'com.mysql.jdbc.Driver'
 	    ]
@@ -148,8 +148,11 @@ class RunNcsDlrEtl {
 		//importOdeTasks()
 	    //importAssignedEfforts()
 	    //importReportedEfforts()
-		importReportSfr()
+		//importReportSfr()
 		//importNotificationEmail()
+		
+		//updateTaskEtDlr()
+		updateTaskOde()
 		
 	}
 	
@@ -398,7 +401,7 @@ class RunNcsDlrEtl {
 	}
 	
 	def getStudyTask(id) {
-	    def query = """SELECT id, version, name, obsolete, etdlr_code, ode_code, date_created, user_created, app_created
+	    def query = """SELECT id, version, name, obsolete, task_etdlr_id, task_ode_id, date_created, user_created, app_created
 	        FROM study_task
 	        WHERE (id = ?);"""
 	    return myConn.firstRow(query, [id])
@@ -406,7 +409,7 @@ class RunNcsDlrEtl {
 	
 	def newStudyTask(id, name, obsolete, etdlrCode, odeCode, dateCreated, userCreated, appCreated) {
 	    def statement = """INSERT INTO study_task 
-	    	(id, version, name, obsolete, etdlr_code, ode_code, date_created, user_created, app_created)
+	    	(id, version, name, obsolete, task_etdlr_id, task_ode_id, date_created, user_created, app_created)
 	        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);"""
 	    def params = [id, 0, name, obsolete, etdlrCode, odeCode, dateCreated, userCreated, appCreated]
 	    myConn.execute(statement, params)
@@ -826,6 +829,80 @@ class RunNcsDlrEtl {
 		myConn.execute(statement, params)
 		
 	}
+
+	
+	/* UPDATE ETDLR TASK SECTION ************************************************************/
+	
+	def updateTaskEtDlr() {
+		
+		def query = """SELECT TaskID, Description, etdlrCode FROM WebLookup.dbo.ncs_task WHERE NOT(etdlrCode IS NULL)"""
+		
+		msConn.eachRow(query) { row ->
+			
+			def taskId = row.TaskID
+			def name = row.Description
+			def etdlrCode = row.etdlrCode
+			
+			def taskEtdlr = taskEtdlrExists(taskId)
+			
+			if ( taskEtdlr) {
+				println "Found task (id: ${taskId}, name: ${name}"
+				def uddate = updateTaskEtdlr(etdlrCode, taskId)
+			} else {
+				println "Cannot find task (id: ${taskId}, name: ${name}"
+			}	
+					
+		}
+		
+	}
+	
+	def updateTaskEtdlr(etdlrCode, taskId) {
+		def statement = """UPDATE study_task SET task_etdlr_id = ? WHERE (id = ?);"""
+		def params = [etdlrCode, taskId]
+		myConn.execute(statement, params)
+	}
+				
+	def taskEtdlrExists(id) {
+	    def query = """SELECT id FROM study_task WHERE (id = ?);"""
+	    return myConn.firstRow(query, [id])
+	}
+
+	/* UPDATE ODE TASK SECTION ************************************************************/
+	
+	def updateTaskOde() {
+		
+		def query = """SELECT TaskID, Description, odeCode FROM WebLookup.dbo.ncs_task WHERE NOT(odeCode IS NULL)"""
+		
+		msConn.eachRow(query) { row ->
+			
+			def taskId = row.TaskID
+			def name = row.Description
+			def odeCode = row.odeCode
+			
+			def taskOde = taskOdeExists(taskId)
+			
+			if ( taskOde) {
+				println "Found task (id: ${taskId}, name: ${name}"
+				def uddate = updateTaskOde(odeCode, taskId)
+			} else {
+				println "Cannot find task (id: ${taskId}, name: ${name}"
+			}	
+					
+		}
+		
+	}
+	
+	def updateTaskOde(odeCode, taskId) {
+		def statement = """UPDATE study_task SET task_ode_id = ? WHERE (id = ?);"""
+		def params = [odeCode, taskId]
+		myConn.execute(statement, params)
+	}
+				
+	def taskOdeExists(id) {
+	    def query = """SELECT id FROM study_task WHERE (id = ?);"""
+	    return myConn.firstRow(query, [id])
+	}
+
 	
 } //class RunNcsDlrEtl
 
