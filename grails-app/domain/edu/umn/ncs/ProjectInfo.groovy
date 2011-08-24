@@ -5,12 +5,12 @@ class ProjectInfo {
 	
 	static auditable = true
 	
-    String principalInvestigator
     String contractNumber
+    String principalInvestigator
 
     static constraints = {
-        principalInvestigator(blank:false)
         contractNumber(blank:false)
+        principalInvestigator(blank:false)
     }
 	
 	def onDelete = { oldMap ->

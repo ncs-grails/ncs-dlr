@@ -165,18 +165,75 @@ class LaborService {
 			
 			dataset = []			
 			
-			// REPORT TYPE
-			
 			// sfr
 			if (reportTypeInstance.abbreviation == 'SFR') {
 				
-				//TODO: csv for sfr
+				if (debug) { println "=> laborService.getReportingPeriodData.(reportTypeInstance.abbreviation == 'SFR')" }
 				
+				def projectInfoInstance = ProjectInfo.findByPrincipalInvestigatorIsNotNull()				
+				def contractNumber = projectInfoInstance.contractNumber
+				def principalInvestigator = projectInfoInstance.principalInvestigator				
+				def contractPeriod = projectInfoInstance.contractPeriod
 				
+				def rin = reportingPeriodInstance.referenceInvoiceNumber
+				def reportingPeriodMonthYear = reportingPeriodInstance.periodDate
+				def datePrepared = reportingPeriodInstance.preparedDate
 				
-							
+				if (debug) { 
+					println "=> laborService.getReportingPeriodData.contractNumber: ${contractNumber}" 
+					println "=> laborService.getReportingPeriodData.rin: ${rin}"					
+					println "=> laborService.getReportingPeriodData.reportingPeriodMonthYear: ${reportingPeriodMonthYear}" 
+					println "=> laborService.getReportingPeriodData.contractPeriod: ${contractPeriod}" 
+					println "=> laborService.getReportingPeriodData.datePrepared: ${datePrepared}"					 
+					println "=> laborService.getReportingPeriodData.principalInvestigator: ${principalInvestigator}"  
+				}
+				
+				hql = """SELECT '${contractNumber}' as contractNumber,
+					CONCAT('SFR 2706 - ', ${rin}) as sfrRin, 
+					${reportingPeriodMonthYear} as reportingPeriod, 
+					${contractPeriod} as contractPeriod,  
+					${datePrepared} as datePrepared,
+					'${principalInvestigator}' as principalInvestigator, 
+					TRIM(CONCAT(s.lastName , ', ', s.firstName, ' ', s.middleInit)),
+					lc.name as laborCategory,
+					a.name as studyActivity, 
+					t.name as studyTask,
+					re.percentEffort as percentEffort
+				FROM AssignedEffort ae inner join
+					ae.reportingStaff s inner join
+					ae.laborCategory lc inner join
+					ae.reportedEffort re left outer join
+					re.activity a left outer join
+					re.task t 					 
+				WHERE (ae.period.id = ?)
+				ORDER BY s.lastName, s.firstName, s.middleInit, re.percentEffort desc, a.name, t.name"""
+				
+				resultSet = AssignedEffort.executeQuery(hql, [reportingPeriodInstance.id]);
+				//if (debug) { println "=> laborService.getReportingPeriodData.resultSet: ${resultSet}" }
+	
+				resultSet.each{ rowOfData ->
+					
+					def row = [:]
+					
+					if (debug) { println "=> laborService.getReportingPeriodData.rowOfData: ${rowOfData}" }
+					
+					row["Contract Number"] = rowOfData[0]
+					row["Principal Investigator"] = rowOfData[1]
+					row["Staff Name"] = rowOfData[2]
+					row["Labor Category"] = rowOfData[3]
+					row["StudyActivity"] = rowOfData[4]
+					row["Study Task"] = rowOfData[5]
+					row["PercentEffort"] = rowOfData[6]
+					//if (debug) { println "=> laborService.getReportingPeriodData.row; ${row}" }
+					
+					dataset.add(row)
+					
+				}
+
 			// etdlr	
 			} else if (reportTypeInstance.abbreviation == 'ETDLR')  {
+			
+				if (debug) { println "=> laborService.getReportingPeriodData.(reportTypeInstance.abbreviation == 'ETDLR')" }
 			
 				hql = """SELECT TRIM(CONCAT(s.lastName , ', ', s.firstName, ' ', s.middleInit)), 
 					lc.name as laborCategory,
@@ -191,57 +248,39 @@ class LaborService {
 				WHERE (ae.period.id = ?)
 				GROUP BY s.lastName, s.firstName, s.middleInit, lc.name, te.name 
 				ORDER BY s.lastName, s.firstName, s.middleInit, sum(re.percentEffort) desc, te.name"""
-			
+				
+				resultSet = AssignedEffort.executeQuery(hql, [reportingPeriodInstance.id] );
+				//if (debug) { println "=> laborService.getReportingPeriodData.resultSet: ${resultSet}" }
+				
+				resultSet.each{ rowOfData ->
+					
+					def row = [:]
+					
+					if (debug) { println "=> laborService.getReportingPeriodData.rowOfData: ${rowOfData}" }
+					
+					row["Staff Name"] = rowOfData[0]
+					row["Labor Category"] = rowOfData[1]
+					row["Task Etdlr"] = rowOfData[2]
+					row["PercentEffort"] = rowOfData[3]
+					//if (debug) { println "=> laborService.getReportingPeriodData.row; ${row}" }
+					
+					dataset.add(row)
+					
+				}
+
 			// ode
 			} else if (reportTypeInstance.abbreviation == 'ODE') {
 			
+				if (debug) { println "=> laborService.getReportingPeriodData.(reportTypeInstance.abbreviation == 'ODE')" }
 				//TODO: csv for ode
 
-			} //if (reportsInstance.id == 1			
-			
-			//if (debug) { println "=> laborService.getReportingPeriodData.hql: ${hql}" }
-
-			resultSet = AssignedEffort.executeQuery(hql, [reportingPeriodInstance.id] );
-			//if (debug) { println "=> laborService.getReportingPeriodData.resultSet: ${resultSet}" }
-			
-			// per row
-			resultSet.each{ rowOfData ->
-				
-				if (debug) { 
-					//println "=> laborService.getReportingPeriodData.resultSet.each.each{ rowOfData ->" 
-					println "=> laborService.getReportingPeriodData.rowOfData: ${rowOfData}" 
-				}
-				
-				// create an empty row
-				def row = [:]
-							
-				// assign data to each column per row				
-				row["Staff Name"] = rowOfData[0]
-				row["Labor Category"] = rowOfData[1]
-				row["Task Etdlr"] = rowOfData[2]
-				row["PercentEffort"] = rowOfData[3]
-				//if (debug) { println "=> laborService.getReportingPeriodData.row; ${row}" }
-				
-				/*
-				row["Staff Name"] = dataRow.lastname
-				row["Labor Category"] = laborCategory
-				row["Task"] = taskEtdlr
-				row["Blank 1"] = ''
-				row["Blank 2"] = ''
-				row["Percent Effort"] = percentEffort
-				*/
-				
-				// add row to data set
-				dataset.add(row)
-				//if (debug) { println "=> laborService.getReportingPeriodData.dataset: ${dataset}" }				
-				
-			} //dataset.each{ rowOfData ->
+			} //if (reportTypeInstance.abbreviation == 'SFR')
 			
 		} //if (reportTypeInstance && reportingPeriodInstance)
         
 		return dataset
         
-	}
+	} //def getReportingPeriodData(ReportType reportTypeInstance, ReportingPeriod reportingPeriodInstance) 
     
     
 	def getSumOfReportedPercentEffort(assignedEffortInstance) {

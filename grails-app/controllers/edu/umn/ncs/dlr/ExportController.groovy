@@ -60,30 +60,25 @@ class ExportController {
 			
 			// Render to Format ------------------------------------------------
             
-            // render CSV (use our own CVS renderer)
+            // CSV (use our own CVS renderer)
 			if (format == "csv") {
                 
 				if (debug) { println "=> if (format == csv) = TRUE" }				
 
-                def recordSet = laborService.getReportingPeriodData(reportsInstance, reportingPeriodInstance)                
+                def recordSet = laborService.getReportingPeriodData(reportsInstance, reportingPeriodInstance)
 				
-				if (debug) { 
-					//println "=> recordSet: ${recordSet}" 
-					//println "=> response: ${response}" 
-				}				
-
 				renderAsCsv recordSet, false, fileName, response
 				render ""
 				return
 				
-			// render PDF (use rendering plugin to generate a PDF)
+			// PDF (use rendering plugin to generate a PDF)
 			} else if (format == "pdf") {                
 				
 				if (debug) { println "=> if (format == pdf) = TRUE" }				
 				renderPdf(template: "/pdfs/reportingPeriod", model: [reportingPeriodInstance: reportingPeriodInstance], filename: fileName)
 				return
                 
-    		// render XML (use Grails Converter)
+    		// XML (use Grails Converter)
 			} else if (format == "xml") {
                 
 				if (debug) { println "=> if (format == xml) = TRUE" }				
@@ -110,7 +105,6 @@ class ExportController {
 		} 
         
     } 
-	
 	
 	// Convert list of maps to CSV
 	private void renderAsCsv(recordset, headerRow, fileName, outputStream) {

@@ -43,8 +43,10 @@ class BootStrap {
 				/*
 				// PROJECT INFORMATION
 				def project = new ProjectInfo(
-					principalInvestigator: 'Patricia M McGovern, Ph.D., MPH',
 					contractNumber: 'HHSN267200700022C'
+					principalInvestigator: 'Patricia M McGovern, Ph.D., MPH',
+					contractPeriod: '09/28/2007 - 09/27/2012'
+
 				).save()
 				*/
 
