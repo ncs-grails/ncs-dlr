@@ -7,22 +7,37 @@ class StudyTask {
 	
     String name
     Boolean obsolete = true
-	StudyTaskEtdlr studyTaskEtdlr
-	StudyTaskOde studyTaskOde
+	StudyTaskEtdlr taskEtdlr
+	StudyTaskOde taskOde
     Date dateCreated = new Date()
     String userCreated
     String appCreated = 'ncs-dlr'
-	
+		
+    String toString() {
+        name
+    }
+
+    static constraints = {
+        name(maxSize:1024)
+        obsolete()
+        taskEtdlr(nullable:true)
+        taskOde(nullable:true)
+        dateCreated()
+        userCreated(blank:false)
+        appCreated(blank:false)
+    }
+    
+    static mapping = { sort "name" }
 	
 	def onDelete = { oldMap ->
 		
 		def now = new Date()
 		
-        String oldValue = "Study Task"
+		String oldValue = "Study Task"
 			oldValue += ", name: ${oldMap.name}"
 			oldValue += ", obsolete: ${oldMap.obsolete}"
-			oldValue += ", etdlrCode: ${oldMap.etdlrCode}"
-			oldValue += ", odeCode: ${oldMap.odeCode} "
+			oldValue += ", taskEtdlr: ${oldMap.etdlrCode}"
+			oldValue += ", taskOde: ${oldMap.odeCode} "
 			oldValue += ", dateCreated: ${oldMap.dateCreated}"
 			oldValue += ", userCreated: ${oldMap.userCreated}"
 			oldValue += ", appCreated: ${oldMap.appCreated}"
@@ -31,37 +46,21 @@ class StudyTask {
 		String className = this.class.toString().replace('class ', '')
 		//println "${now}\tAudit:DELETE::\t${oldValue}"
 
-        def auditLogEventInstance = new AuditLogEvent(
+		def auditLogEventInstance = new AuditLogEvent(
 			className: className,
-            dateCreated: now,
-            eventName: 'DELETE',
-            lastUpdated: now,
-            oldValue: oldValue,
-            persistedObjectId: this.id,
-            persistedObjectVersion: this.version
+			dateCreated: now,
+			eventName: 'DELETE',
+			lastUpdated: now,
+			oldValue: oldValue,
+			persistedObjectId: this.id,
+			persistedObjectVersion: this.version
 		)
-        if ( ! auditLogEventInstance.save() ) {
+		if ( ! auditLogEventInstance.save() ) {
 			auditLogEventInstance.errors.each{
-                println "${now}\tError Transacting DELETE:: \t ${it}"
+				println "${now}\tError Transacting DELETE:: \t ${it}"
 			}
-		}        
+		}
 
-	} 
+	}
 	
-    String toString() {
-        name
-    }
-
-    static constraints = {
-        name(maxSize:1024)
-        obsolete()
-        studyTaskEtdlr(nullable:true)
-        studyTaskOde(nullable:true)
-        dateCreated()
-        userCreated(blank:false)
-        appCreated(blank:false)
-    }
-    
-    static mapping = { sort "name" }
-
 }

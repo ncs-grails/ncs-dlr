@@ -17,27 +17,37 @@ class BootStrap {
 				def reportsSfr = new ReportType(
 					name:'Sponsored Financial Reporting',
 					abbreviation:'SFR', 
-					obsolete:false
+					obsolete:false,
+					csv:true,
+					pdf:true,
+					xml:false
 				).save()
 				def reportsEtdlr = new ReportType(
 					name:'Electronic Technical Direct Labor Report', 
 					abbreviation:'ETDLR', 
-					obsolete:false, 
-
+					obsolete:false,
+					csv:true,
+					pdf:false,
+					xml:false 
 				).save()
 				def reportsOde = new ReportType(
 					name:'Operational Data Elements', 
 					abbreviation:'ODE', 
-					obsolete:false
+					obsolete:false,
+					csv:true,
+					pdf:false,
+					xml:false
 				).save()
+				*/
 				
+				/*
 				// PROJECT INFORMATION
 				def project = new ProjectInfo(
 					principalInvestigator: 'Patricia M McGovern, Ph.D., MPH',
 					contractNumber: 'HHSN267200700022C'
 				).save()
 				*/
-				                
+
                 if (false) {
 
                     /* Error checking for what was saved ***************************
@@ -46,7 +56,9 @@ class BootStrap {
                     }
                     */
 
-                    // Reporting Periods
+					
+					/*
+				    // Reporting Periods
                     //def reportingPeriodDecember = new ReportingPeriod(periodDate: '12/1/2010').save()
                     //def reportingPeriodJanuary = new ReportingPeriod(periodDate: '1/1/2011').save()
                     def reportingPeriodFebruary = new ReportingPeriod(
@@ -67,7 +79,9 @@ class BootStrap {
                         preparedDate:'', 
                         completedReportDate:''
                     ).save()
+                    */
 
+					/*					
                     // Labor Categories
                     def laborCategoryDataQualityStaff = new LaborCategory(name:'Data Quality Staff', userCreated:'sqv').save()
                     def laborCategoryItCoordinator = new LaborCategory(name:'IT Coordinator', userCreated:'sqv').save()
@@ -80,6 +94,7 @@ class BootStrap {
                     def studyActivityUlnarMeasurementFormative = new StudyActivity(name:'WA 03 (Ulnar Measurement Formative)', obsolete:false, userCreated:'sqv').save()
                     def studyActivityStressAndCortisolFormative = new StudyActivity(name:'WA 04 (Stress & Cortisol Formative)', obsolete:false, userCreated:'sqv').save()
                     def studyActivityBirthVisitQuestionnairesFormative = new StudyActivity(name:'WA 05 (Birth Visit Questionnaires Formative)', obsolete:false, userCreated:'sqv').save()
+					*/
 
                     // Study Task
                     /* run in ms sql to get list
@@ -90,10 +105,11 @@ class BootStrap {
                         FROM WebLookup.dbo.ncs_task
                         WHERE Obsolete = 0                
                      */
-
+					
                     //def studyTaskDataManagement = new StudyTask(name:'Data Management', obsolete:false, userCreated:'sqv').save()
                     //def studyTaskOther = new StudyTask(name:'Other', obsolete:false, userCreated:'sqv').save()
 
+					/*										
                     def studyTaskAdministrativeTasks = new StudyTask(name:'AdministrativeTasks', obsolete:false, userCreated:'sqv').save()
                     def studyTaskCommunityEngagementOther = new StudyTask(name:'CommunityEngagement-Other', obsolete:false, userCreated:'sqv').save()
                     def studyTaskCommunityEngagementDevelopingPlans = new StudyTask(name:'CommunityEngagement-DevelopingPlans', obsolete:false, userCreated:'sqv').save()
@@ -132,7 +148,9 @@ class BootStrap {
                     def studyTaskDataCollection2ndPregnancyVisit = new StudyTask(name:'DataCollection-2ndPregnancyVisit', obsolete:false, userCreated:'sqv').save()
                     def studyTaskDataCollectionBirthVisit = new StudyTask(name:'DataCollection-BirthVisit', obsolete:false, userCreated:'sqv').save()
                     def studyTaskProviderEngagement = new StudyTask(name:'ProviderEngagement', obsolete:false, userCreated:'sqv').save()
+                     */
 
+                    /*
                     // Reporting Staff 
                     def reportingStaffNgp = new ReportingStaff(
                         username:'ngp', 
@@ -170,6 +188,8 @@ class BootStrap {
                         userCreated:'sqv', 
                         appCreated:'ncs-dlr'
                     ).save()
+                    */
+					
                     /*
                     def reportingStaffSxv = new ReportingStaff(
                         username:'sxv', 
@@ -186,6 +206,7 @@ class BootStrap {
                     ).save()
                     */
 
+                    /*
                     // Assigned Effort 
                     def assignedEffortMarchNgp = new AssignedEffort(
                         reportingStaff:reportingStaffNgp,
@@ -257,7 +278,9 @@ class BootStrap {
                         dateCommitted:'', 
                         commitingStaff:''
                     ).save()
+                    */
 
+                    /*
                     // Effort Reported
                     def reportedEffortAprilNgp1 = new ReportedEffort(
                         assignedEffort:assignedEffortlAprilNgp, 
@@ -322,8 +345,6 @@ class BootStrap {
                         userCreated:reportingStaffSqv.username, 
                         appCreated:'ncs-dlr'
                     ).save()
-
-
                     def reportedEffortAprilSqv1 = new ReportedEffort(
                         assignedEffort:assignedEffortlAprilSqv, 
                         activity:studyActivityHighLowRecruitmentVanguard, 
@@ -333,7 +354,6 @@ class BootStrap {
                         userCreated:reportingStaffSqv.username, 
                         appCreated:'ncs-dlr'
                     ).save()
-                    /*
                     def reportedEffortAprilSqv2 = new ReportedEffort(
                         assignedEffort:assignedEffortlAprilSqv, 
                         activity:studyActivityHighLowRecruitmentVanguard, 
@@ -345,6 +365,7 @@ class BootStrap {
                     ).save()
                     */
 
+                    /*
                     // email notification sent
                     def emailNotificationAprilNgp1 = new NotificationEmail(
                         assignedEffort:assignedEffortlAprilNgp, 
@@ -361,7 +382,8 @@ class BootStrap {
                         dateSent:'5/5/2011', 
                         userSent:'sqv'
                     ).save()
-                    
+					*/
+					
                 }
               
             }//development

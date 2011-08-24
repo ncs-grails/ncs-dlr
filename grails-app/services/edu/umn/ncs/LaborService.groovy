@@ -166,37 +166,37 @@ class LaborService {
 			dataset = []			
 			
 			// REPORT TYPE
+			
 			// sfr
-			if (reportTypeInstance.id == 1) {
+			if (reportTypeInstance.abbreviation == 'SFR') {
 				
 				//TODO: csv for sfr
+				
+				
+				
 							
 			// etdlr	
-			} else if (reportTypeInstance.id == 2)  {
+			} else if (reportTypeInstance.abbreviation == 'ETDLR')  {
 			
-				/*
 				hql = """SELECT TRIM(CONCAT(s.lastName , ', ', s.firstName, ' ', s.middleInit)), 
 					lc.name as laborCategory,
-					te.name as taskEtdlr,
+					te.name as taskEtdlr, 							
 					sum(re.percentEffort) as percentEffort
 				FROM AssignedEffort ae inner join
 					ae.reportingStaff s inner join
 					ae.laborCategory lc inner join
 					ae.reportedEffort re inner join
 					re.task t left outer join
-					t.studyTaskEtdlr te 		
+					t.taskEtdlr te 		
 				WHERE (ae.period.id = ?)
-				GROUP BY s.lastName, s.firstName, s.middleInit, lc.name, te.id  
-				ORDER BY s.lastName, s.firstName, s.middleInit"""
-				*/
+				GROUP BY s.lastName, s.firstName, s.middleInit, lc.name, te.name 
+				ORDER BY s.lastName, s.firstName, s.middleInit, sum(re.percentEffort) desc, te.name"""
 			
 			// ode
-			} else if (reportsInstance.id == 3) {
-						
+			} else if (reportTypeInstance.abbreviation == 'ODE') {
+			
 				//TODO: csv for ode
-			
-			
-			
+
 			} //if (reportsInstance.id == 1			
 			
 			//if (debug) { println "=> laborService.getReportingPeriodData.hql: ${hql}" }
@@ -219,7 +219,7 @@ class LaborService {
 				row["Staff Name"] = rowOfData[0]
 				row["Labor Category"] = rowOfData[1]
 				row["Task Etdlr"] = rowOfData[2]
-				//row["PercentEffort"] = rowOfData[3]
+				row["PercentEffort"] = rowOfData[3]
 				//if (debug) { println "=> laborService.getReportingPeriodData.row; ${row}" }
 				
 				/*

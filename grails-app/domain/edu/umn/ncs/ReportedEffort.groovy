@@ -12,40 +12,6 @@ class ReportedEffort {
     String userCreated
     String appCreated  = 'ncs-dlr'
 
-    def onDelete = { oldMap ->
-        
-		def now = new Date()		
-		
-        String oldValue = "Reported Effort associated with"
-			oldValue += " assignedEffort.id ${oldMap.assignedEffort.id}"
-			oldValue += ", activity.id: ${oldMap.activity.id}"
-			oldValue += ", task.id: ${oldMap.task.id}"
-			oldValue += ", percentEffort: ${oldMap.percentEffort}"
-			oldValue += ", dateCreated: ${oldMap.dateCreated}"
-			oldValue += ", userCreated: ${oldMap.userCreated}"
-			oldValue += ", appCreated: ${oldMap.appCreated} "
-		//println "PRINTLN ReportedEffortDomain.onDelete.oldValue: ${oldValue}"
-			
-        String className = this.class.toString().replace('class ', '')
-        //println "${now}\tAudit:DELETE::\t${oldValue}"
-		
-        def auditLogEventInstance = new AuditLogEvent(
-			className: className,
-            dateCreated: now,
-            eventName: 'DELETE',
-            lastUpdated: now,
-            oldValue: oldValue,
-            persistedObjectId: this.id,
-            persistedObjectVersion: this.version
-		)
-        if ( ! auditLogEventInstance.save() ) {
-			auditLogEventInstance.errors.each{
-                println "${now}\tError Transacting DELETE:: \t ${it}"
-			}
-		}        
-
-	} //def onDelete
-
     static belongsTo = [assignedEffort: AssignedEffort]
     static transients = ['percentEffortConverted']
 
@@ -82,5 +48,39 @@ class ReportedEffort {
         userCreated(blank:false)
         appCreated(blank:false)
     }
+	
+	def onDelete = { oldMap ->
+		
+		def now = new Date()
+		
+		String oldValue = "Reported Effort associated with"
+			oldValue += " assignedEffort.id ${oldMap.assignedEffort.id}"
+			oldValue += ", activity.id: ${oldMap.activity.id}"
+			oldValue += ", task.id: ${oldMap.task.id}"
+			oldValue += ", percentEffort: ${oldMap.percentEffort}"
+			oldValue += ", dateCreated: ${oldMap.dateCreated}"
+			oldValue += ", userCreated: ${oldMap.userCreated}"
+			oldValue += ", appCreated: ${oldMap.appCreated} "
+		//println "PRINTLN ReportedEffortDomain.onDelete.oldValue: ${oldValue}"
+			
+		String className = this.class.toString().replace('class ', '')
+		//println "${now}\tAudit:DELETE::\t${oldValue}"
+		
+		def auditLogEventInstance = new AuditLogEvent(
+			className: className,
+			dateCreated: now,
+			eventName: 'DELETE',
+			lastUpdated: now,
+			oldValue: oldValue,
+			persistedObjectId: this.id,
+			persistedObjectVersion: this.version
+		)
+		if ( ! auditLogEventInstance.save() ) {
+			auditLogEventInstance.errors.each{
+				println "${now}\tError Transacting DELETE:: \t ${it}"
+			}
+		}
+
+	} //def onDelete
 
 }

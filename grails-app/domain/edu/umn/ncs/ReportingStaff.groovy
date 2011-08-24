@@ -18,44 +18,6 @@ class ReportingStaff {
     String userCreated
     String appCreated = 'ncs-dlr'
 
-	def onDelete = { oldMap ->
-		
-		def now = new Date()
-		
-		String oldValue = "Reporting Staff"
-			oldValue += ", username: ${oldMap.username}"
-			oldValue += ", lastName: ${oldMap.lastName}"
-			oldValue += ", firstName: ${oldMap.firstName}"
-			oldValue += ", middleInit: ${oldMap.middleInit}"
-			oldValue += ", laborCategory.id: ${oldMap.laborCategory.id}"
-			oldValue += ", email: ${oldMap.email}"			
-			oldValue += ", isTestAccount: ${oldMap.isTestAccount}"			
-			oldValue += ", reportsEffort: ${oldMap.reportsEffort}"
-			oldValue += ", dateCreated: ${oldMap.dateCreated}"
-			oldValue += ", userCreated: ${oldMap.userCreated}"
-			oldValue += ", appCreated: ${oldMap.appCreated} "
-		//println "PRINTLN ReportingStaffDomain.onDelete.oldValue: ${oldValue}"
-			
-		String className = this.class.toString().replace('class ', '')
-		//println "${now}\tAudit:DELETE::\t${oldValue}"
-
-        def auditLogEventInstance = new AuditLogEvent(
-			className: className,
-            dateCreated: now,
-            eventName: 'DELETE',
-            lastUpdated: now,
-            oldValue: oldValue,
-            persistedObjectId: this.id,
-            persistedObjectVersion: this.version
-		)
-        if ( ! auditLogEventInstance.save() ) {
-			auditLogEventInstance.errors.each{
-                println "${now}\tError Transacting DELETE:: \t ${it}"
-			}
-		}        
-
-	} //def onDelete
-
     static hasMany = [assignedEfforts: AssignedEffort]
     static transients = ['fullNameLFM', 'fullNameFML']
 
@@ -85,5 +47,43 @@ class ReportingStaff {
         userCreated(blank:false)
         appCreated(blank:false)
     }
-    
+
+	def onDelete = { oldMap ->
+		
+		def now = new Date()
+		
+		String oldValue = "Reporting Staff"
+			oldValue += ", username: ${oldMap.username}"
+			oldValue += ", lastName: ${oldMap.lastName}"
+			oldValue += ", firstName: ${oldMap.firstName}"
+			oldValue += ", middleInit: ${oldMap.middleInit}"
+			oldValue += ", laborCategory.id: ${oldMap.laborCategory.id}"
+			oldValue += ", email: ${oldMap.email}"
+			oldValue += ", isTestAccount: ${oldMap.isTestAccount}"
+			oldValue += ", reportsEffort: ${oldMap.reportsEffort}"
+			oldValue += ", dateCreated: ${oldMap.dateCreated}"
+			oldValue += ", userCreated: ${oldMap.userCreated}"
+			oldValue += ", appCreated: ${oldMap.appCreated} "
+		//println "PRINTLN ReportingStaffDomain.onDelete.oldValue: ${oldValue}"
+			
+		String className = this.class.toString().replace('class ', '')
+		//println "${now}\tAudit:DELETE::\t${oldValue}"
+
+		def auditLogEventInstance = new AuditLogEvent(
+			className: className,
+			dateCreated: now,
+			eventName: 'DELETE',
+			lastUpdated: now,
+			oldValue: oldValue,
+			persistedObjectId: this.id,
+			persistedObjectVersion: this.version
+		)
+		if ( ! auditLogEventInstance.save() ) {
+			auditLogEventInstance.errors.each{
+				println "${now}\tError Transacting DELETE:: \t ${it}"
+			}
+		}
+
+	} //def onDelete
+
 }

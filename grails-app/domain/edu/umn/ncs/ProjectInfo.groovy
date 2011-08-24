@@ -8,6 +8,11 @@ class ProjectInfo {
     String principalInvestigator
     String contractNumber
 
+    static constraints = {
+        principalInvestigator(blank:false)
+        contractNumber(blank:false)
+    }
+	
 	def onDelete = { oldMap ->
 		
 		def now = new Date()
@@ -20,26 +25,21 @@ class ProjectInfo {
 		String className = this.class.toString().replace('class ', '')
 		//println "${now}\tAudit:DELETE::\t${oldValue}"
 
-        def auditLogEventInstance = new AuditLogEvent(
+		def auditLogEventInstance = new AuditLogEvent(
 			className: className,
-            dateCreated: now,
-            eventName: 'DELETE',
-            lastUpdated: now,
-            oldValue: oldValue,
-            persistedObjectId: this.id,
-            persistedObjectVersion: this.version
+			dateCreated: now,
+			eventName: 'DELETE',
+			lastUpdated: now,
+			oldValue: oldValue,
+			persistedObjectId: this.id,
+			persistedObjectVersion: this.version
 		)
-        if ( ! auditLogEventInstance.save() ) {
+		if ( ! auditLogEventInstance.save() ) {
 			auditLogEventInstance.errors.each{
-                println "${now}\tError Transacting DELETE:: \t ${it}"
+				println "${now}\tError Transacting DELETE:: \t ${it}"
 			}
-		}        
+		}
 
-	} 
-
-    static constraints = {
-        principalInvestigator(blank:false)
-        contractNumber(blank:false)
-    }
+	} //def onDelete
 
 }

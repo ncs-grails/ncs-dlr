@@ -16,8 +16,6 @@ class StudyTaskEtdlr {
     String userCreated
     String appCreated = 'ncs-dlr'
 
-	static belongsTo = [task: StudyTask]
-	
 	String toString() {
 		name
 	}

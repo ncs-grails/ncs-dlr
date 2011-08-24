@@ -11,6 +11,18 @@ class LaborCategory {
     String userCreated
     String appCreated = 'ncs-dlr'
 
+    String toString() {
+        name
+    }
+
+    static constraints = {
+        name(blank:false, maxSize:1024)
+        obsolete()
+        dateCreated()
+        userCreated(blank:false)
+        appCreated(blank:false)
+    }
+	
 	def onDelete = { oldMap ->
 		
 		def now = new Date()
@@ -26,33 +38,21 @@ class LaborCategory {
 		String className = this.class.toString().replace('class ', '')
 		//println "${now}\tAudit:DELETE::\t${oldValue}"
 
-        def auditLogEventInstance = new AuditLogEvent(
+		def auditLogEventInstance = new AuditLogEvent(
 			className: className,
-            dateCreated: now,
-            eventName: 'DELETE',
-            lastUpdated: now,
-            oldValue: oldValue,
-            persistedObjectId: this.id,
-            persistedObjectVersion: this.version
+			dateCreated: now,
+			eventName: 'DELETE',
+			lastUpdated: now,
+			oldValue: oldValue,
+			persistedObjectId: this.id,
+			persistedObjectVersion: this.version
 		)
-        if ( ! auditLogEventInstance.save() ) {
+		if ( ! auditLogEventInstance.save() ) {
 			auditLogEventInstance.errors.each{
-                println "${now}\tError Transacting DELETE:: \t ${it}"
+				println "${now}\tError Transacting DELETE:: \t ${it}"
 			}
-		}        
+		}
 
 	} //def onDelete
-
-    String toString() {
-        name
-    }
-
-    static constraints = {
-        name(blank:false, maxSize:1024)
-        obsolete()
-        dateCreated()
-        userCreated(blank:false)
-        appCreated(blank:false)
-    }
 
 }

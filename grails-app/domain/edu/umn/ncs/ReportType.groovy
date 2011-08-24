@@ -10,17 +10,34 @@ class ReportType {
 	String name
 	String abbreviation
 	Boolean obsolete = true
-	Boolean pdf = false
 	Boolean csv = false
+	Boolean pdf = false
 	Boolean xml = false
+
+	String toString() {
+		name
+	}
+
+    static constraints = {
+        name(blank:false, maxSize:256)
+		abbreviation(blank:false, maxSize:16)
+        obsolete()
+		csv()
+		pdf()
+		xml()
+    }
 
 	def onDelete = { oldMap ->
 		
 		def now = new Date()
 		
-		String oldValue = "Reports"
+		String oldValue = "ReportType"
 			oldValue += ", name: ${oldMap.name}"
+			oldValue += ", abbreviation: ${oldMap.abbreviation}"
 			oldValue += ", obsolete: ${oldMap.obsolete}"
+			oldValue += ", csv: ${oldMap.csv}"
+			oldValue += ", pdf: ${oldMap.pdf}"
+			oldValue += ", xml: ${oldMap.xml}"
 		//println "PRINTLN ReportsDomain.onDelete.oldValue: ${oldValue}"
 			
 		String className = this.class.toString().replace('class ', '')
@@ -41,16 +58,6 @@ class ReportType {
 			}
 		}
 
-	} 
-
-	String toString() {
-		name
 	}
 
-    static constraints = {
-        name(blank:false, maxSize:256)
-		abbreviation(blank:false, maxSize:16)
-        obsolete()
-    }
-    
 }
