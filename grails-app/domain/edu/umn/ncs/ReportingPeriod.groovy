@@ -11,37 +11,6 @@ class ReportingPeriod {
     Date preparedDate
     Date completedReportDate
 
-	def onDelete = { oldMap ->
-		
-		def now = new Date()
-		
-		String oldValue = "ReportingPeriod"
-			oldValue += ", referenceInvoiceNumber: ${oldMap.referenceInvoiceNumber}"
-			oldValue += ", periodDate: ${oldMap.periodDate}"
-			oldValue += ", preparedDate: ${oldMap.preparedDate}"
-			oldValue += ", completedReportDate: ${oldMap.completedReportDate} "
-		//println "PRINTLN ReportingPeriodDomain.onDelete.oldValue: ${oldValue}"
-			
-		String className = this.class.toString().replace('class ', '')
-		//println "${now}\tAudit:DELETE::\t${oldValue}"
-
-        def auditLogEventInstance = new AuditLogEvent(
-			className: className,
-            dateCreated: now,
-            eventName: 'DELETE',
-            lastUpdated: now,
-            oldValue: oldValue,
-            persistedObjectId: this.id,
-            persistedObjectVersion: this.version
-		)
-        if ( ! auditLogEventInstance.save() ) {
-			auditLogEventInstance.errors.each{
-                println "${now}\tError Transacting DELETE:: \t ${it}"
-			}
-		}        
-
-	} //def onDelete
-	
     static hasMany = [assignedEfforts: AssignedEffort]
     static transients = ['year', 'month', 'previousPeriod', 'nextPeriod']
 
@@ -85,4 +54,35 @@ class ReportingPeriod {
         completedReportDate(nullable:true)
     }
 
+	def onDelete = { oldMap ->
+		
+		def now = new Date()
+		
+		String oldValue = "ReportingPeriod"
+			oldValue += ", referenceInvoiceNumber: ${oldMap.referenceInvoiceNumber}"
+			oldValue += ", periodDate: ${oldMap.periodDate}"
+			oldValue += ", preparedDate: ${oldMap.preparedDate}"
+			oldValue += ", completedReportDate: ${oldMap.completedReportDate} "
+		//println "PRINTLN ReportingPeriodDomain.onDelete.oldValue: ${oldValue}"
+			
+		String className = this.class.toString().replace('class ', '')
+		//println "${now}\tAudit:DELETE::\t${oldValue}"
+
+		def auditLogEventInstance = new AuditLogEvent(
+			className: className,
+			dateCreated: now,
+			eventName: 'DELETE',
+			lastUpdated: now,
+			oldValue: oldValue,
+			persistedObjectId: this.id,
+			persistedObjectVersion: this.version
+		)
+		if ( ! auditLogEventInstance.save() ) {
+			auditLogEventInstance.errors.each{
+				println "${now}\tError Transacting DELETE:: \t ${it}"
+			}
+		}
+
+	} //def onDelete
+	
 }

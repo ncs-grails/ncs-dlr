@@ -3,91 +3,76 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 
-  <head>
+	<head>
   
-      <title>NCS Study Center Technical Direct Labor Form </title>
+		<title>NCS Study Center Technical Direct Labor Form </title>
       
-      <style type="text/css">
-        body { font-size: 9pt; }
-        table { border-collapse: collapse; }
-        td {
-          border: .05em solid black;
-          padding: 0.25em;
-          vertical-align: top;
-        }
-        h1 { text-align: center; }
-        h2 { text-align: center; }
-        #periodDetails {
-            font-size: 12pt;
-        }
-        @page {
-            size: 11in 8.5in;
-        }
-      </style>
-  </head>
-  <body>
+		<style type="text/css">
+        	body { font-size: 8pt; }
+			h1 { text-align: center; }
+			h2 { text-align: center; }
+        	table { border-collapse: collapse; }
+        	th td { border:.05em solid black; padding:0.25em; vertical-align:top; }
+        	@page { size: 11in 8.5in; }
+        </style>
+      
+	</head>
   
-    <h1>NCS Study Center Technical Direct Labor Form for ${reportingPeriodInstance.periodDate}</h1>
-    <h2>University of Minnesota - Ramsey County</h2>
-    
+	<body>
   
-    <hr/>
-  
-    <div id="periodDetails">
-      <dl>
-        <dt>Contract Number:</dt>
-          <dd>${reportingPeriodInstance}</dd>
-        <dt>Contract Period:</dt>
-          <dd>${reportingPeriodInstance}</dd>
-        <dt>Date Prepared:</dt>
-          <dd>${referenceInvoiceNumber}</dd>
-        <dt>Reference Invoice Number:</dt>
-          <dd>${preparedDate}</dd>
-        <dt>Principal Investigator:</dt>
-          <dd>${completedReportDate}</dd>
-      </dl>
-    </div>
+		<h2>NCS Study Center Technical Direct Labor Form for <g:formatDate date="${reportingPeriodInstance.periodDate}" format="MMMM yyyy" /></h2>
+		<h2>University of Minnesota - Ramsey County</h2>
 
-      <table>
+    	<hr/>
   
-        <thead>
-          <tr>
-            <th>Staff</th>
-            <th>Assigned</th>
-            <th>Category</th>
-            <th>Committed</th>
-            <th>Activity</th>
-            <th>Task</th>
-            <th>Percent</th>
-          </tr>
-        </thead>
-  
-        <tbody>
-          <g:each var="ae" in="${reportingPeriodInstance?.assignedEfforts.sort{ it.reportingStaff.lastName }}">
-            <tr>
-              <td rowspan="${ae.reportedEffort.size()}">${ae.reportingStaff}</td>
-              <td rowspan="${ae.reportedEffort.size()}"><g:formatNumber number="${ae.assignedEffort}" type="percent" /></td>
-              <td rowspan="${ae.reportedEffort.size()}">${ae.laborCategory}</td>
-              <td rowspan="${ae.reportedEffort.size()}"><g:formatDate date="${ae.dateCommitted}" format="M/d/yyyy" /></td>
-              <g:each status="i" var="re" in="${ae.reportedEffort}">
-                <g:if test="${i > 0}">
-                    <!-- If this is the second row, let's shift it in. -->
-                    ${"</tr><tr>"}
-                </g:if>
-                <td>${fieldValue(bean: re, field: "activity")}</td>
-                <td>${fieldValue(bean: re, field: "task")}</td>
-                <td><g:formatNumber number="${re.percentEffort}" type="percent" /></td>
-              </g:each>
-              <g:if test="${ ! ae.reportedEffort}">
-                <td/><td/><td/>
-              </g:if>
-            </tr>
-          </g:each>
-        </tbody>
-  
-      </table>
-
-
-  </body>
+			<dl>
+			
+				<!-- CONTRACT INFO -->
+				<dt>1. Contract Information</dt>
+					<dd>1.1. Contract Number: <strong>${projectInfoInstance.contractNumber}</strong></dd>
+					<dd>1.2. Contract Period: <strong>${projectInfoInstance.contractPeriod}</strong></dd>
+					<dd>1.3. Date Prepared: <strong>${reportingPeriodInstance.preparedDate}</strong></dd>
+					<dd>1.4. Reference Invoice Number: <strong>SFR 2706 - ${reportingPeriodInstance.referenceInvoiceNumber}</strong></dd>
+					<dd>1.5. Principal Investigator: <strong>${projectInfoInstance.principalInvestigator}</strong></dd>
+					
+				<!-- STAFF DETAIL -->
+				<dt>2. Staff Detail</dt>
+					<table>
+						<thead>
+							<tr>
+								<th></th>
+								<th>Staff Name</th>
+								<th>Labor Category</th>
+								<th>Study Activity</th>
+								<th>Task (specify))</th>
+								<th>Percent Effort Applied</th>
+							</tr>
+						</thead>
+						<tbody>
+							<g:each status="d" var="ae" in="${assignedEffortInstanceList}">
+								<tr>
+									<td rowspan="${ae.reportedEffort.size()}">2.${d + 1}</td>
+									<td rowspan="${ae.reportedEffort.size()}">${ae.reportingStaff}</td>
+									<td rowspan="${ae.reportedEffort.size()}">${ae.laborCategory}</td>
+									<g:each status="i" var="re" in="${ae.reportedEffort}">
+										<g:if test="${i > 0}">
+											<!-- If this is the second row, let's shift it in. -->
+											${"</tr><tr>"}
+										</g:if>
+										<td>${fieldValue(bean: re, field: "activity")}</td>
+										<td>${fieldValue(bean: re, field: "task")}</td>
+										<td align="right"><g:formatNumber number="${re.percentEffort}" type="percent" /></td>
+									</g:each>
+									<g:if test="${ ! ae.reportedEffort}">
+										<td/><td/><td/>
+									</g:if>
+								</tr>
+							</g:each>
+						</tbody>
+					</table>
+					
+			</dl>
+			
+	</body>
   
 </html>

@@ -1,7 +1,6 @@
 package edu.umn.ncs
 import java.math.BigDecimal;
 import java.util.Date;
-
 import org.joda.time.*
 
 class LaborService {
@@ -146,15 +145,8 @@ class LaborService {
     }
     
 	
-	def getReportingPeriodData(ReportType reportTypeInstance, ReportingPeriod reportingPeriodInstance) {
+	def getReportingPeriodDataForCsv(ReportType reportTypeInstance, ReportingPeriod reportingPeriodInstance) {
         
-		if (debug) { 
-			println "=> laborService.getReportingPeriodData.reportTypeInstance.id = ${reportTypeInstance.id}" 
-			println "=> laborService.getReportingPeriodData.reportTypeInstance = ${reportTypeInstance}" 
-			println "=> laborService.getReportingPeriodData.reportingPeriodInstance.id = ${reportingPeriodInstance.id}" 
-			println "=> laborService.getReportingPeriodData.reportingPeriodInstance = ${reportingPeriodInstance}" 
-		}
-		
 		def hql = null
 		def resultSet
 		def dataset = null
@@ -169,32 +161,25 @@ class LaborService {
 			if (reportTypeInstance.abbreviation == 'SFR') {
 				
 				if (debug) { println "=> laborService.getReportingPeriodData.(reportTypeInstance.abbreviation == 'SFR')" }
-				
+												
 				def projectInfoInstance = ProjectInfo.findByPrincipalInvestigatorIsNotNull()				
 				def contractNumber = projectInfoInstance.contractNumber
-				def principalInvestigator = projectInfoInstance.principalInvestigator				
 				def contractPeriod = projectInfoInstance.contractPeriod
-				
+				DateTime datePrepared = new DateTime(reportingPeriodInstance.preparedDate)
 				def rin = reportingPeriodInstance.referenceInvoiceNumber
-				def reportingPeriodMonthYear = reportingPeriodInstance.periodDate
-				def datePrepared = reportingPeriodInstance.preparedDate
-				
+				def principalInvestigator = projectInfoInstance.principalInvestigator
+				DateTime reportingPeriodDate = new DateTime(reportingPeriodInstance.periodDate)
+								
 				if (debug) { 
-					println "=> laborService.getReportingPeriodData.contractNumber: ${contractNumber}" 
-					println "=> laborService.getReportingPeriodData.rin: ${rin}"					
-					println "=> laborService.getReportingPeriodData.reportingPeriodMonthYear: ${reportingPeriodMonthYear}" 
-					println "=> laborService.getReportingPeriodData.contractPeriod: ${contractPeriod}" 
-					println "=> laborService.getReportingPeriodData.datePrepared: ${datePrepared}"					 
+					println "=> laborService.getReportingPeriodData.contractNumber: ${contractNumber}"
+					println "=> laborService.getReportingPeriodData.contractPeriod: ${contractPeriod}"
+					println "=> laborService.getReportingPeriodData.datePrepared: ${datePrepared}"					
+					println "=> laborService.getReportingPeriodData.rin: ${rin}"										
 					println "=> laborService.getReportingPeriodData.principalInvestigator: ${principalInvestigator}"  
+					println "=> laborService.getReportingPeriodData.reportingPeriodDate: ${reportingPeriodDate}" 
 				}
 				
-				hql = """SELECT '${contractNumber}' as contractNumber,
-					CONCAT('SFR 2706 - ', ${rin}) as sfrRin, 
-					${reportingPeriodMonthYear} as reportingPeriod, 
-					${contractPeriod} as contractPeriod,  
-					${datePrepared} as datePrepared,
-					'${principalInvestigator}' as principalInvestigator, 
-					TRIM(CONCAT(s.lastName , ', ', s.firstName, ' ', s.middleInit)),
+				hql = """SELECT TRIM(CONCAT(s.lastName , ', ', s.firstName, ' ', s.middleInit)),
 					lc.name as laborCategory,
 					a.name as studyActivity, 
 					t.name as studyTask,
@@ -215,16 +200,20 @@ class LaborService {
 					
 					def row = [:]
 					
-					if (debug) { println "=> laborService.getReportingPeriodData.rowOfData: ${rowOfData}" }
+					//if (debug) { println "=> laborService.getReportingPeriodData.rowOfData: ${rowOfData}" }
 					
-					row["Contract Number"] = rowOfData[0]
-					row["Principal Investigator"] = rowOfData[1]
-					row["Staff Name"] = rowOfData[2]
-					row["Labor Category"] = rowOfData[3]
-					row["StudyActivity"] = rowOfData[4]
-					row["Study Task"] = rowOfData[5]
-					row["PercentEffort"] = rowOfData[6]
-					//if (debug) { println "=> laborService.getReportingPeriodData.row; ${row}" }
+					row["Contract Number"] = contractNumber
+					row["Reference Invoice Number"] = 'SFR 2706 - ' + rin
+					row["Reporting Period"] = reportingPeriodDate.toString("MMMM yyyy")					
+					row["Contract Period"] = contractPeriod					
+					row["Date Prepared"] = datePrepared.toString("MM/dd/yyyy")
+					row["Principal Investigator"] = principalInvestigator
+					row["Staff Name"] = rowOfData[0]
+					row["Labor Category"] = rowOfData[1]
+					row["StudyActivity"] = rowOfData[2]
+					row["Study Task"] = rowOfData[3]
+					row["PercentEffort"] = rowOfData[4]
+					if (debug) { println "=> laborService.getReportingPeriodData.row; ${row}" }
 					
 					dataset.add(row)
 					

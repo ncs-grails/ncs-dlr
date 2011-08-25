@@ -3,6 +3,7 @@ package edu.umn.ncs.dlr
 import org.codehaus.groovy.grails.plugins.springsecurity.Secured
 import edu.umn.ncs.ReportingPeriod
 import edu.umn.ncs.ReportType
+import edu.umn.ncs.AssignedEffort
 import org.joda.time.format.DateTimeFormat
 import grails.converters.*
 
@@ -24,10 +25,10 @@ class ExportController {
 		}
 		
 		// REPORT TYPE
-		def reportsInstance = ReportType.read(params?.reports_id)
+		def reportTypeInstance = ReportType.read(params?.reports_id)
 		if (debug) { 
-			println "=> reportsInstance.id: ${reportsInstance.id}" 
-			println "=> reportsInstance: ${reportsInstance}" 
+			println "=> reportTypeInstance.id: ${reportTypeInstance.id}" 
+			println "=> reportTypeInstance: ${reportTypeInstance}" 
 		}
 		
         // OUTPUT FORMAT
@@ -35,9 +36,7 @@ class ExportController {
         //if (debug) { println "=> format: ${format}" }
         
 		if ( !format ) {
-			//if (debug) { println "=> if(!format) = TRUE" }
 			format = defaultFormat
-			//if (debug) { println "=> format: ${format}" }
 		}
 		if (debug) { println "=> format: ${format}" }
 		
@@ -49,9 +48,9 @@ class ExportController {
 		}
 		
 		// if Reporting Period exist in database
-        if (reportsInstance && format && reportingPeriodInstance) {
+        if (reportTypeInstance && format && reportingPeriodInstance) {
 			
-			if (debug) { println "=> if(reportsInstance && format && reportingPeriodInstance) = TRUE" }
+			if (debug) { println "=> if(reportTypeInstance && format && reportingPeriodInstance) = TRUE" }
 			
 			// file name
 			//def fileName = "reporting-period_${reportingPeriodInstance.year}-${reportingPeriodInstance.month}.${format}"
@@ -64,9 +63,7 @@ class ExportController {
 			if (format == "csv") {
                 
 				if (debug) { println "=> if (format == csv) = TRUE" }				
-
-                def recordSet = laborService.getReportingPeriodData(reportsInstance, reportingPeriodInstance)
-				
+                def recordSet = laborService.getReportingPeriodDataForCsv(reportTypeInstance, reportingPeriodInstance)				
 				renderAsCsv recordSet, false, fileName, response
 				render ""
 				return
@@ -74,8 +71,33 @@ class ExportController {
 			// PDF (use rendering plugin to generate a PDF)
 			} else if (format == "pdf") {                
 				
-				if (debug) { println "=> if (format == pdf) = TRUE" }				
-				renderPdf(template: "/pdfs/reportingPeriod", model: [reportingPeriodInstance: reportingPeriodInstance], filename: fileName)
+				if (debug) { println "=> if (format == pdf) = TRUE" }
+				
+				if (reportTypeInstance.abbreviation == 'SFR') {
+					
+					// PROJECT INFO
+					def projectInfoInstance = edu.umn.ncs.ProjectInfo.findByPrincipalInvestigatorIsNotNull()
+					println "=> projectInfoInstance: ${projectInfoInstance}"
+															
+					// ASSIGNED EFFORT list
+					// First get the assigned efforts sorted by task
+					def assignedEffortInstanceList = reportingPeriodInstance?.assignedEfforts.sort{ it.reportingStaff.fullNameLFM }
+					//assignedEffortInstanceList = assignedEffortInstanceList.sort{ it.reportedEffort.activity.name }
+					//assignedEffortInstanceList = assignedEffortInstanceList.sort{ it.reportedEffort.percentEffort }
+					//assignedEffortInstanceList = assignedEffortInstanceList.sort{ it.reportingStaff.fullNameLFM }
+					if (debug) { println "=> assignedEffortList: ${assignedEffortInstanceList}" }
+					
+					renderPdf(template: "/pdfs/reportingPeriod",
+						model: [
+							projectInfoInstance: projectInfoInstance,
+							reportingPeriodInstance: reportingPeriodInstance,
+							assignedEffortInstanceList: assignedEffortInstanceList
+						],
+						filename: fileName
+					)
+					
+				}
+				
 				return
                 
     		// XML (use Grails Converter)
@@ -97,7 +119,7 @@ class ExportController {
 			
 		} else {
             
-			if (debug) { println "=> if(reportsInstance && format && reportingPeriodInstance) = FALSE" }
+			if (debug) { println "=> if(reportTypeInstance && format && reportingPeriodInstance) = FALSE" }
 
 			flash.message = "Reporting Period ID: '${params?.id}' not found."
 			redirect(action:'list')

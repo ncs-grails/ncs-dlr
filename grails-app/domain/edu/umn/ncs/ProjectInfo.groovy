@@ -7,10 +7,12 @@ class ProjectInfo {
 	
     String contractNumber
     String principalInvestigator
+	String contractPeriod
 
     static constraints = {
         contractNumber(blank:false)
         principalInvestigator(blank:false)
+		contractPeriod(blank:false)
     }
 	
 	def onDelete = { oldMap ->
