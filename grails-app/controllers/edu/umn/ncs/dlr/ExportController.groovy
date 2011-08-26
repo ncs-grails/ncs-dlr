@@ -1,6 +1,7 @@
 package edu.umn.ncs.dlr
 
 import org.codehaus.groovy.grails.plugins.springsecurity.Secured
+import edu.umn.ncs.ProjectInfo
 import edu.umn.ncs.ReportingPeriod
 import edu.umn.ncs.ReportType
 import edu.umn.ncs.AssignedEffort
@@ -24,6 +25,7 @@ class ExportController {
 			println "=> params: ${params}"
 		}
 		
+		
 		// REPORT TYPE
 		def reportTypeInstance = ReportType.read(params?.reports_id)
 		if (debug) { 
@@ -33,8 +35,6 @@ class ExportController {
 		
         // OUTPUT FORMAT
 		def format = params?.format
-        //if (debug) { println "=> format: ${format}" }
-        
 		if ( !format ) {
 			format = defaultFormat
 		}
@@ -53,7 +53,6 @@ class ExportController {
 			if (debug) { println "=> if(reportTypeInstance && format && reportingPeriodInstance) = TRUE" }
 			
 			// file name
-			//def fileName = "reporting-period_${reportingPeriodInstance.year}-${reportingPeriodInstance.month}.${format}"
 			def fileName = "${reportingPeriodInstance.year}-${reportingPeriodInstance.month}.${format}"
 			if (debug) { println "=> fileName: ${fileName}" }
 			
@@ -75,26 +74,28 @@ class ExportController {
 				
 				if (reportTypeInstance.abbreviation == 'SFR') {
 					
+					if (debug) { println "=> if (reportTypeInstance.abbreviation == 'SFR') = TRUE" }
+				
 					// PROJECT INFO
-					def projectInfoInstance = edu.umn.ncs.ProjectInfo.findByPrincipalInvestigatorIsNotNull()
+					def projectInfoInstance = ProjectInfo.findByPrincipalInvestigatorIsNotNull()
 					println "=> projectInfoInstance: ${projectInfoInstance}"
 															
 					// ASSIGNED EFFORT list
-					// First get the assigned efforts sorted by task
 					def assignedEffortInstanceList = reportingPeriodInstance?.assignedEfforts.sort{ it.reportingStaff.fullNameLFM }
 					//assignedEffortInstanceList = assignedEffortInstanceList.sort{ it.reportedEffort.activity.name }
 					//assignedEffortInstanceList = assignedEffortInstanceList.sort{ it.reportedEffort.percentEffort }
 					//assignedEffortInstanceList = assignedEffortInstanceList.sort{ it.reportingStaff.fullNameLFM }
 					if (debug) { println "=> assignedEffortList: ${assignedEffortInstanceList}" }
 					
-					renderPdf(template: "/pdfs/reportingPeriod",
-						model: [
+					def model = [
 							projectInfoInstance: projectInfoInstance,
 							reportingPeriodInstance: reportingPeriodInstance,
 							assignedEffortInstanceList: assignedEffortInstanceList
-						],
-						filename: fileName
-					)
+					] 
+					
+					def templatePath = "/pdfs/reportingPeriod"
+					
+					renderPdf(template: templatePath, model: model, filename: fileName)
 					
 				}
 				
