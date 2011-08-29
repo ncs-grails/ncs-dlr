@@ -4,7 +4,7 @@ class ReportingPeriodController {
 
     static allowedMethods = [save: "POST", update: "POST", delete: "POST"]
 
-	def debug = true
+	def debug = false
 	
     def index = {
 		

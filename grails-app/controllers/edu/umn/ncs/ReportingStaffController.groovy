@@ -5,7 +5,7 @@ import org.codehaus.groovy.grails.plugins.springsecurity.Secured
 class ReportingStaffController {
 
     def authenticateService
-	def debug = true
+	def debug = false
 	
 	static allowedMethods = [save: "POST", update: "POST", delete: "POST"]
 

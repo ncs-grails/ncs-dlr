@@ -8,8 +8,7 @@ class ApplicationManagementController {
 
     def authenticateService
     def laborService
-	def debug = true
-	
+	def debug = false
 
     def index = {
 		
@@ -44,7 +43,8 @@ class ApplicationManagementController {
 			
 		def c = ReportingPeriod.createCriteria()
 		def periodList = c.list {		
-			lt("periodDate",currentReportingPeriodIsntance.periodDate)
+			le("periodDate",currentReportingPeriodIsntance.periodDate)
+			isNotNull("preparedDate")
 			order("periodDate", "desc")
 		} 
         //if (debug) { println "=> periodList: ${periodList}" }

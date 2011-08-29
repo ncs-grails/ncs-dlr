@@ -7,7 +7,7 @@ class MainController {
 
     def authenticateService
     def laborService
-	def debug = true
+	def debug = false
 
     def index = {
         

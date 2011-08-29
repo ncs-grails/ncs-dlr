@@ -7,7 +7,7 @@ class AssignedEffortController {
 
     def authenticateService
     def laborService
-	def debug = true
+	def debug = false
 
 	def index = {
 		
@@ -236,23 +236,11 @@ class AssignedEffortController {
 
 			if ( sumOfReportedPercentEffort ) {
 
-				// total reported effort does not equal assigned effort, cannot commit
-				if ( sumOfReportedPercentEffort.toBigDecimal() != assignedPercentEffort.toBigDecimal() ) {
-					
-					// total reported effort is less than what is assigned
-					if ( sumOfReportedPercentEffort.toBigDecimal() < assignedPercentEffort.toBigDecimal() ) {
-						errMessage = "Cannot COMMIT your reported effort because it is less than what has been assigned to you."
-					// total reported effort is greater than what is assigned
-					} else if ( sumOfReportedPercentEffort.toBigDecimal() > assignedPercentEffort.toBigDecimal() ) {
-						errMessage = "Cannot COMMIT your reported effort because it is greater than what has been assigned to you."
-					}
-					if (debug) { println "=> errMessage: ${errMessage}" }
-					
-					render(view: "show", model: [assignedEffortInstance: assignedEffortInstance, errMessage: errMessage])
-						
 				// total reported effort equals assigned effort, attempt to commit
-				} else {
-				
+				if ( sumOfReportedPercentEffort.toBigDecimal() == assignedPercentEffort.toBigDecimal() ) {
+					
+					if (debug) { println "=> if ( sumOfReportedPercentEffort.toBigDecimal() == assignedPercentEffort.toBigDecimal() = TRUE)" }
+			
 					def principal = authenticateService.principal()
 					def reportingStaffInstance = laborService.getReportingStaff(principal)
 					if (debug) { println "=> reportingStaffInstance: ${reportingStaffInstance}" }
@@ -263,18 +251,27 @@ class AssignedEffortController {
 						println "=> assignedEffortInstance.dateCommitted: ${assignedEffortInstance.dateCommitted}"
 						println "=> assignedEffortInstance.commitingStaff: ${assignedEffortInstance.commitingStaff}"
 					}
-													
+					
 					if ( assignedEffortInstance.validate() && !assignedEffortInstance.hasErrors() && assignedEffortInstance.save(flush: true)) {
 		
-						if (debug) { println "COMMIT SUCCESSFULLY" }
-											
-						// TODO: if all assigned effort, for this period, is committed, send email alerting to all administrators
+						if (debug) { println "=> COMMIT SUCCESSFULLY" }
+						
+						// if all assigned effort, for this period, is committed, send email alerting to all administrators
 						def countOfNotCommittedAssignedEffort = laborService.countNotCommittedAssignedEffort(assignedEffortInstance.period)
 						if (debug) { println "=> countOfNotCommittedAssignedEffort: ${countOfNotCommittedAssignedEffort}" }
 			
-						if (debug) { println "=> RUN generateReportEmail" }
 						if ( !countOfNotCommittedAssignedEffort) {
-							def message = laborService.sendAllAssignedEffortIsCommittedEmailAlert(assignedEffortInstance.period)
+							
+							if (debug) { println "=> if ( !countOfNotCommittedAssignedEffort) = TRUE" }
+							
+							def message = laborService.sendReportEmail(assignedEffortInstance)							
+							if (debug) { println "=> message: ${message}" }
+							
+							def reportingPeriodInstance = assignedEffortInstance.period
+							
+							reportingPeriodInstance.preparedDate = assignedEffortInstance.dateCommitted
+							reportingPeriodInstance.completedReportDate = assignedEffortInstance.dateCommitted
+							
 						}
 						
 						def reportingPeriodInstance = laborService.getCurrentReportingPeriod()
@@ -294,14 +291,30 @@ class AssignedEffortController {
 						
 						render(view: "show", model: [ assignedEffortInstance: assignedEffortInstance, errMessage: errMessage ])
 						
-					} 
-	
-				} //( sumOfReportedPercentEffort.toBigDecimal() !== assignedPercentEffort.toBigDecimal() )
+					}
+
+				// total reported effort does not equal assigned effort, cannot commit
+				} else {
+				
+					if (debug) { println "=> if ( sumOfReportedPercentEffort.toBigDecimal() == assignedPercentEffort.toBigDecimal() = FALSE)" }
+					
+					// total reported effort is less than what is assigned
+					if ( sumOfReportedPercentEffort.toBigDecimal() < assignedPercentEffort.toBigDecimal() ) {
+						errMessage = "Cannot COMMIT your reported effort because it is less than what has been assigned to you."
+					// total reported effort is greater than what is assigned
+					} else if ( sumOfReportedPercentEffort.toBigDecimal() > assignedPercentEffort.toBigDecimal() ) {
+						errMessage = "Cannot COMMIT your reported effort because it is greater than what has been assigned to you."
+					}
+					if (debug) { println "=> errMessage: ${errMessage}" }
+					
+					render(view: "show", model: [assignedEffortInstance: assignedEffortInstance, errMessage: errMessage])
+
+				} //( sumOfReportedPercentEffort.toBigDecimal() == assignedPercentEffort.toBigDecimal() )
 				
 			} //if ( !sumOfReportedPercentEffort )
 							
         } //if ( assignedEffortInstance )
-
+		
     } //def commit 
 	
 	def committed = {

@@ -11,7 +11,7 @@ class AssignEffortController {
     def authenticateService
     def laborService
     def mailService
-	def debug = true
+	def debug = false
    
     def index = {
         

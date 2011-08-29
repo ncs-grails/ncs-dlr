@@ -16,7 +16,7 @@ class ExportController {
 	//static def allowedFormats = [ 'csv', 'pdf', 'xml' ] as Set
 	static def allowedFormats = [ 'csv', 'pdf'] as Set
 	static def defaultFormat = "csv"	
-	static def debug = true
+	static def debug = false
 	
 	//GENERATE REPORTS (csv, pdf, xml)
     def generateReport = {
@@ -25,7 +25,6 @@ class ExportController {
 			println "EXPORT CONTROLLER > GENERATE REPORT _----------------------" 
 			println "=> params: ${params}"
 		}
-		
 		
 		// REPORT TYPE
 		def reportTypeInstance = ReportType.read(params?.reports_id)

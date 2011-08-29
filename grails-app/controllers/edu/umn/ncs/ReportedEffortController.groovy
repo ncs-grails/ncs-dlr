@@ -6,7 +6,7 @@ class ReportedEffortController {
 
     def authenticateService
     def laborService
-	def debug = true
+	def debug = false
 
 	static allowedMethods = [save: "POST", update: "POST", delete: "POST"]
 

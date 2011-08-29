@@ -10,7 +10,7 @@ class LaborService {
     def authenticateService
     def mailService
 
-	def debug = true
+	def debug = false
 	
     def getReportingStaff(principal) {
 
@@ -249,6 +249,8 @@ class LaborService {
 					row["Staff Name"] = rowOfData[0]
 					row["Labor Category"] = rowOfData[1]
 					row["Task Etdlr"] = rowOfData[2]
+					row["blank1"] = ''
+					row["blank2"] = ''
 					row["PercentEffort"] = rowOfData[3]
 					//if (debug) { println "=> laborService.getReportingPeriodData.row; ${row}" }
 					
@@ -371,6 +373,10 @@ class LaborService {
 	
     def sendEmailNotification (periodId, staffId) {
         
+		if (debug) { println "laborService.sendEmailNotification.periodId = ${periodId}" }
+		if (debug) { println "laborService.sendEmailNotification.staffId = ${staffId}" }
+		
+		
         // LOG-IN USER (SENDER)
         def principal = authenticateService.principal()
         def username = principal.getUsername()
@@ -487,21 +493,22 @@ class LaborService {
     } 
 
 	
-	def generateReportEmail (periodId) {
+	def sendReportEmail (AssignedEffort assignedEffortInstance) {
 
 		// REPORTING PERIOD
-		def reportingPeriodInstance = ReportingPeriod.read(periodId)		
-		if (debug) { println "=> laborService.generateReportEmail.reportingPeriodInstance.id: ${reportingPeriodInstance.id}" } 
-		if (debug) { println "=> laborService.generateReportEmail.reportingPeriodInstance: ${reportingPeriodInstance}" }
+		if (debug) {
+			println "=> laborService.generateReportEmail.assignedEffortInstance.id: ${assignedEffortInstance.id}"
+			println "=> laborService.generateReportEmail.assignedEffortInstance: ${assignedEffortInstance}"
+		}
+
+		def reportingPeriodInstance = assignedEffortInstance.period		
+		if (debug) { 
+			println "=> laborService.generateReportEmail.reportingPeriodInstance.id: ${reportingPeriodInstance.id}"
+			println "=> laborService.generateReportEmail.reportingPeriodInstance: ${reportingPeriodInstance}"
+		} 
 		
-		def reportingPeriodMonthName = reportingPeriodInstance.month.toString('MMMM')
-		if (debug) { println "=> laborService.generateReportEmail.reportingDueDateMonthName = ${reportingDueDateMonthName}" }
-		
-		def reportingPeriodYear = reportingDueDate.year.toString('yyyy')		
-		if (debug) { println "=> laborService.generateReportEmail.reportingPeriodYear = ${reportingPeriodYear}" }
-		
-		def reportingPeriodString = g.formatDate(date:reportingPeriodInstance.periodDate, format:'MMMM yyyy')
-		//periodSelectiontList.add([id:it.id, name: g.formatDate(date:it.periodDate, format:'MMMM yyyy')])
+		Date periodDate = new Date(reportingPeriodInstance.periodDate.time)
+		def reportingPeriodString = periodDate.format('MMMM yyyy') 
 		if (debug) { println "=> laborService.generateReportEmail.reportingPeriodString = ${reportingPeriodString}" }
 		
 		// email SUBJECT
@@ -510,17 +517,17 @@ class LaborService {
 		
 		// email TO list
 		//def toEmailList = "sqv@cccs.umn.edu, gdw@cccs.umn.edu, jaf@cccs.umn.edu, will1945@umn.edu, bsteward@umn.edu"
-		def toEmailList = "sqv@cccs.umn.edu, sqv@umn.edu" 
-		if (debug) { println "=> laborService.generateReportEmail.toEmailList = ${toEmailList}" }
+		//def toEmailList = "sqv@cccs.umn.edu, sqv@umn.edu" 
+		//if (debug) { println "=> laborService.generateReportEmail.toEmailList = ${toEmailList}" }
 		
 		// email FROM list
 		def fromEmailList = "sqv@cccs.umn.edu"
-		if (debug) { println "=> laborService.generateReportEmail.fromEmailList = ${fromEmailList}" }
+		//if (debug) { println "=> laborService.generateReportEmail.fromEmailList = ${fromEmailList}" }
 		
 		// send email
 		mailService.sendMail {
-			to toEmail
-			from fromEmail
+			to "sqv@cccs.umn.edu", "gdw@cccs.umn.edu", "jaf@cccs.umn.edu", "will1945@umn.edu"
+			from fromEmailList
 			subject emailSubjectTitle
 			body(
 				view:"/assignEffort/generateReportEmail",
