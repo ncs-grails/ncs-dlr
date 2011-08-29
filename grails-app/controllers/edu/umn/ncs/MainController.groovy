@@ -27,21 +27,26 @@ class MainController {
 			println "=> params: ${params}"
         }        
         
-        // create REPORTING STAFF, REPORTING PERIOD, & ASSIGNED EFFORT instance
+        // REPORTING STAFF
         def principal = authenticateService.principal()                         
-        //if (debug) {  println "=> principal: ${principal}" }
+        if (debug) {  println "=> principal: ${principal}" }
 		            
         def reportingStaffInstance = laborService.getReportingStaff(principal)
 		if (debug) { println "=> reportingStaffInstance: ${reportingStaffInstance}" }
 
+        // REPORTING PERIOD
         def reportingPeriodInstance = laborService.getCurrentReportingPeriod()
         if (debug) { println "=> reportingPeriodInstance: ${reportingPeriodInstance}" }            
 
+        // ASSIGNED EFFORT instance
 		def assignedEffortInstance = AssignedEffort.findByReportingStaffAndPeriod(reportingStaffInstance, reportingPeriodInstance)
 		if (debug) {  println "=> assignedEffortInstance: ${assignedEffortInstance}"
+			
 			if ( assignedEffortInstance ) {
+				println "=> if ( assignedEffortInstance ) = TRUE"
 				println "=> assignedEffortInstance.dateCommitted: ${assignedEffortInstance.dateCommitted}"
 			}
+			
 		}
 
         [

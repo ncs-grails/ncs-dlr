@@ -6,14 +6,50 @@ class BootStrap {
         
         environments {
             
-			production {				
+			production {
+				
+				/*
+				// PROJECT INFORMATION				
+				def project = new ProjectInfo(
+					contractNumber: 'HHSN267200700022C',
+					principalInvestigator: 'Patricia M McGovern, Ph.D., MPH',
+					contractPeriod: '09/28/2007 - 09/27/2012'
+				).save()
+				*/
+
+				/*
+				//REPORT TYPE
+				def reportsSfr = new ReportType(
+					name:'Sponsored Financial Reporting',
+					abbreviation:'SFR',
+					obsolete:false,
+					csv:true,
+					pdf:true,
+					xml:false
+				).save()
+				def reportsEtdlr = new ReportType(
+					name:'Electronic Technical Direct Labor Report',
+					abbreviation:'ETDLR',
+					obsolete:false,
+					csv:true,
+					pdf:false,
+					xml:false
+				).save()
+				def reportsOde = new ReportType(
+					name:'Operational Data Elements',
+					abbreviation:'ODE',
+					obsolete:false,
+					csv:true,
+					pdf:false,
+					xml:false
+				).save()
+			*/
 			}
-			
 						
             development {				
 				
 				/*
-				// REPORTS
+				//REPORTS
 				def reportsSfr = new ReportType(
 					name:'Sponsored Financial Reporting',
 					abbreviation:'SFR', 
@@ -46,7 +82,6 @@ class BootStrap {
 					contractNumber: 'HHSN267200700022C',
 					principalInvestigator: 'Patricia M McGovern, Ph.D., MPH',
 					contractPeriod: '09/28/2007 - 09/27/2012'
-
 				).save()
 				*/
 				

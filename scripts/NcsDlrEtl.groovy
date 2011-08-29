@@ -122,9 +122,9 @@ class RunNcsDlrEtl {
 	        username : 'ncs-dlr',
 	        password : 'ang1ahXiedohsieng5sheThi',
 			/* LOCAL mysql database *************************/
-	        url : 'jdbc:mysql://localhost/ncs_dlr?noAccessToProcedureBodies=true&autoReconnect=true',
+	        //url : 'jdbc:mysql://localhost/ncs_dlr?noAccessToProcedureBodies=true&autoReconnect=true',
 			/* PRODUCTION mysql database *************************/
-			//url : 'jdbc:mysql://sql.ncs.umn.edu/ncs_dlr?useSSL=true&requireSSL=true&verifyServerCertificate=false&noAccessToProcedureBodies=true&autoReconnect=true',
+			url : 'jdbc:mysql://sql.ncs.umn.edu/ncs_dlr?useSSL=true&requireSSL=true&verifyServerCertificate=false&noAccessToProcedureBodies=true&autoReconnect=true',
 	        driver : 'com.mysql.jdbc.Driver'
 	    ]
 	    

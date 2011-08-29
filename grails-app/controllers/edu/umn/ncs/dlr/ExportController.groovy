@@ -18,6 +18,7 @@ class ExportController {
 	static def defaultFormat = "csv"	
 	static def debug = true
 	
+	//GENERATE REPORTS (csv, pdf, xml)
     def generateReport = {
 
         if (debug) { 

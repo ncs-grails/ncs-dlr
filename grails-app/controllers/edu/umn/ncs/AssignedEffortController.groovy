@@ -22,13 +22,13 @@ class AssignedEffortController {
         
 		if (debug) {
 	        println "ASSIGNED EFFORT CONTROLLER > SHOW -----------------------------"                
-	        println "=> AssignedEffortController.show.params: ${params}"
+	        println "=> params: ${params}"
 		}
         
         def assignedEffortInstance = AssignedEffort.read(params?.id)
 		if ( assignedEffortInstance ) {
-	        println "=> AssignedEffortController.show.assignedEffortInstance: ${assignedEffortInstance}"
-			println "=> AssignedEffortController.show.assignedEffortInstance.id: ${assignedEffortInstance.id}"
+	        println "=> assignedEffortInstance: ${assignedEffortInstance}"
+			println "=> assignedEffortInstance.id: ${assignedEffortInstance.id}"
 		}
 		
 		[ assignedEffortInstance: assignedEffortInstance ]        
@@ -39,7 +39,7 @@ class AssignedEffortController {
 
 		if (debug) {
 	        println "ASSIGNED EFFORT CONTROLLER > SHOW CURRENT ---------------------"                
-	        println "=> AssignedEffortController.showCurrent.params: ${params}"
+	        println "=> params: ${params}"
 		}
 
         // get perameters
@@ -53,28 +53,27 @@ class AssignedEffortController {
             reportingPeriodInstance = assignedEffortInstance.period
         }
         if (debug) { 
-			println "=> AssignedEffortController.showCurrent.assignedEffortInstance: ${assignedEffortInstance}"
-			println "=> AssignedEffortController.showCurrent.reportingStaffInstance: ${reportingStaffInstance}"
-			println "=> AssignedEffortController.showCurrent.reportingPeriodInstance: ${reportingPeriodInstance}"
+			println "=> assignedEffortInstance: ${assignedEffortInstance}"
+			println "=> reportingStaffInstance: ${reportingStaffInstance}"
+			println "=> reportingPeriodInstance: ${reportingPeriodInstance}"
         }
         
         // Get REPORTED EFFORT total
 		
 		def reportedEffortTotal = laborService.getSumOfReportedPercentEffort(assignedEffortInstance)
-		if (debug) { println "=> ReportedEffortController.addSave.reportedEffortTotal: ${reportedEffortTotal}" }
+		if (debug) { println "=> reportedEffortTotal: ${reportedEffortTotal}" }
 
 		def reportedEffortTotalConverted
 		if ( reportedEffortTotal ) {
 			reportedEffortTotalConverted = reportedEffortTotal * 100
 		}
-		if (debug) { println "=> ReportedEffortController.addSave.reportedEffortTotalConverted: ${reportedEffortTotalConverted}" }
+		if (debug) { println "=> reportedEffortTotalConverted: ${reportedEffortTotalConverted}" }
         
 		def notReportedEffortConverted
 		if ( assignedEffortInstance.assignedEffortConverted && reportedEffortTotalConverted ) {
 			notReportedEffortConverted = assignedEffortInstance.assignedEffortConverted - reportedEffortTotalConverted
 		} 
-			
-		if (debug) { println "=> ReportedEffortController.addSave.notReportedEffortConverted: ${notReportedEffortConverted}" }
+		if (debug) { println "=> notReportedEffortConverted: ${notReportedEffortConverted}" }
 		
         // Get list of REPORTED EFFORT
         def c2 = ReportedEffort.createCriteria()        
@@ -83,8 +82,8 @@ class AssignedEffortController {
             order("activity", "asc")
             order("task", "asc")
         }
-        if (debug) { println "=> AssignedEffortController.showCurrent.reportingEffortInstanceList: ${reportingEffortInstanceList}" }
-
+        if (debug) { println "=> reportingEffortInstanceList: ${reportingEffortInstanceList}" }
+		
         // Add records to Reported Effort Instance
         def reportedEffortList = []
 
@@ -92,33 +91,35 @@ class AssignedEffortController {
             
             // Create record map
             def record = [:]
-            
+			
+			if (debug) { println "=> rs: ${rs}" }
+			if (debug) { println "=> i: ${i}" }
+			
             // Get effort id
             record.reportedEffortId = rs.id
-            //if (debug) { println "=> AssignedEffortController.showCurrent.record.reportedEffortId: ${record.reportedEffortId}" }            
+            //if (debug) { println "=> record.reportedEffortId: ${record.reportedEffortId}" }            
             
             // Get study activity
             record.studyActivity = rs.activity
-            //if (debug) { println "=> AssignedEffortController.showCurrent.record.studyActivity: ${record.studyActivity}" }
+            //if (debug) { println "=> record.studyActivity: ${record.studyActivity}" }
             
             // Get study task
             record.studyTask = rs.task
-            //if (debug) { println "=> AssignedEffortController.showCurrent.record.studyTask: ${record.studyTask}" }
+            if (debug) { println "=> record.studyTask: ${record.studyTask}" }
             
             // Get percentEffort
             record.percentEffortConverted = rs.percentEffortConverted
-            //if (debug) { println "=> AssignedEffortController.showCurrent.record.percentEffortConverted: ${record.percentEffortConverted}" }
+            //if (debug) { println "=> record.percentEffortConverted: ${record.percentEffortConverted}" }
             
             //Get DateCreated
             record.dateCreated = rs.dateCreated
-            //if (debug) { println "=> AssignedEffortController.showCurrent.record.dateCreated: ${record.dateCreated}" }
+            //if (debug) { println "=> record.dateCreated: ${record.dateCreated}" }
             
             reportedEffortList.add(record)
             
-        } //reportingStaffInstanceList.eachWithIndex{ rs, i ->        
-        
-            
-        if (debug) { println "=> AssignedEffortController.showCurrent.assignedEffortInstance.dateCommitted: ${assignedEffortInstance.dateCommitted}" }            
+        } 
+                    
+        if (debug) { println "=> assignedEffortInstance.dateCommitted: ${assignedEffortInstance.dateCommitted}" }            
 
         [
             reportingPeriodInstance:reportingPeriodInstance, 
@@ -211,24 +212,24 @@ class AssignedEffortController {
 
 		if (debug) {
 	        println "ASSIGNED EFFORT CONTROLLER > COMMIT ---------------------------"                
-	        println "=> AssignedEffortController.commit.params: ${params}"
+	        println "=> params: ${params}"
 		}
         
         def assignedEffortInstance = AssignedEffort.read(params?.id)        
-		if (debug) { println "=> AssignedEffortController.commit.assignedEffortInstance: ${assignedEffortInstance}" }
+		if (debug) {println "=> assignedEffortInstance: ${assignedEffortInstance}" }
 		
         if ( assignedEffortInstance ) {
             
+			println "=> if ( assignedEffortInstance ) = TRUE"
+			if (debug) { println "=> assignedEffortInstance.id: ${assignedEffortInstance.id}" }
+
 			// ASSIGNED EFFORT
             def assignedPercentEffort = assignedEffortInstance.assignedEffort
-			if (debug) {
-				println "=> AssignedEffortController.commit.assignedEffortInstance.id: ${assignedEffortInstance.id}"     
-				println "=> AssignedEffortController.commit.assignedEffortInstance.period: ${assignedEffortInstance.period}"
-			}
+			if (debug) { println "=> assignedPercentEffort: ${assignedPercentEffort}" }
 			
 			// sum of REPORTED EFFORT
             def sumOfReportedPercentEffort = laborService.getSumOfReportedPercentEffort(assignedEffortInstance)
-            if (debug) { println "=> AssignedEffortController.commit.sumOfReportedPercentEffort: ${sumOfReportedPercentEffort}" }
+            if (debug) { println "=> sumOfReportedPercentEffort: ${sumOfReportedPercentEffort}" }
                         
 			// commit REPORTED EFFORT validation			
 			def errMessage
@@ -245,7 +246,7 @@ class AssignedEffortController {
 					} else if ( sumOfReportedPercentEffort.toBigDecimal() > assignedPercentEffort.toBigDecimal() ) {
 						errMessage = "Cannot COMMIT your reported effort because it is greater than what has been assigned to you."
 					}
-					if (debug) { println "=> AssignedEffortController.commit.errMessage: ${errMessage}" }
+					if (debug) { println "=> errMessage: ${errMessage}" }
 					
 					render(view: "show", model: [assignedEffortInstance: assignedEffortInstance, errMessage: errMessage])
 						
@@ -254,13 +255,13 @@ class AssignedEffortController {
 				
 					def principal = authenticateService.principal()
 					def reportingStaffInstance = laborService.getReportingStaff(principal)
-					if (debug) { println "=> AssignedEffortController.commit.reportingStaffInstance: ${reportingStaffInstance}" }
+					if (debug) { println "=> reportingStaffInstance: ${reportingStaffInstance}" }
 		
 					assignedEffortInstance.dateCommitted = new Date()
 					assignedEffortInstance.commitingStaff = reportingStaffInstance
 					if (debug) {
-						println "=> AssignedEffortController.commit.assignedEffortInstance.dateCommitted: ${assignedEffortInstance.dateCommitted}"
-						println "=> AssignedEffortController.commit.assignedEffortInstance.commitingStaff: ${assignedEffortInstance.commitingStaff}"
+						println "=> assignedEffortInstance.dateCommitted: ${assignedEffortInstance.dateCommitted}"
+						println "=> assignedEffortInstance.commitingStaff: ${assignedEffortInstance.commitingStaff}"
 					}
 													
 					if ( assignedEffortInstance.validate() && !assignedEffortInstance.hasErrors() && assignedEffortInstance.save(flush: true)) {
@@ -269,7 +270,7 @@ class AssignedEffortController {
 											
 						// TODO: if all assigned effort, for this period, is committed, send email alerting to all administrators
 						def countOfNotCommittedAssignedEffort = laborService.countNotCommittedAssignedEffort(assignedEffortInstance.period)
-						if (debug) { println "=> AssignedEffortController.commit.countOfNotCommittedAssignedEffort: ${countOfNotCommittedAssignedEffort}" }
+						if (debug) { println "=> countOfNotCommittedAssignedEffort: ${countOfNotCommittedAssignedEffort}" }
 			
 						if (debug) { println "=> RUN generateReportEmail" }
 						if ( !countOfNotCommittedAssignedEffort) {
@@ -307,7 +308,7 @@ class AssignedEffortController {
 		
 		if (debug) {
 	        println "ASSIGNED EFFORT CONTROLLER > COMMITTED-------------------------"                
-	        println "=> AssignedEffortController.commit.params: ${params}"
+	        println "=> params: ${params}"
 		}
 
 		def reportingPeriodInstance = laborService.getCurrentReportingPeriod()
