@@ -35,13 +35,13 @@
 	          			<span class="controlBackground">              
 	
 							<!--  REPORT TYPE -->
-						  	<label for="reports_id">Report</label>          
+						  	<label for="report_type_id">Report</label>          
 						  	<g:select 
 						 		class="basic" 
-						   		name="reports_id"
-						   		optionKey="reports_id"
+						   		name="report_type_id"
+						   		optionKey="report_type_id"
 						   		optionValue="name"  
-						   		from="${reportsInstanceList}"
+						   		from="${reportTypeInstanceList}"
 						 	/>                
 
 							<!--  OUTPUT FORMAT -->
@@ -49,7 +49,7 @@
 						  	<g:select 
 						 		class="basic" 
 						   		name="format" 
-						   		from="${reportFormats}" 
+						   		from="${reportFormatList}" 
 						 	/>
 
 							<!--  REPORTING PERIOD -->

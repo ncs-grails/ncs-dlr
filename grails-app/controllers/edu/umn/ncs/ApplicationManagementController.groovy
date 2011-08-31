@@ -8,7 +8,7 @@ class ApplicationManagementController {
 
     def authenticateService
     def laborService
-	def debug = false
+	def debug = true
 
     def index = {
 		
@@ -38,16 +38,16 @@ class ApplicationManagementController {
 		}
 
 		// REPORTING PERIOD
-		def currentReportingPeriodIsntance = laborService.getCurrentReportingPeriod()
-		if (debug) {println "=> currentReportingPeriodIsntance: ${currentReportingPeriodIsntance}"}
+		def currentReportingPeriodInstance = laborService.getCurrentReportingPeriod()
+		if (debug) {println "=> currentReportingPeriodInstance: ${currentReportingPeriodInstance}"}
 			
 		def c = ReportingPeriod.createCriteria()
 		def periodList = c.list {		
-			le("periodDate",currentReportingPeriodIsntance.periodDate)
+			le("periodDate",currentReportingPeriodInstance.periodDate)
 			isNotNull("preparedDate")
 			order("periodDate", "desc")
 		} 
-        //if (debug) { println "=> periodList: ${periodList}" }
+        if (debug) { println "=> periodList: ${periodList}" }
 		
 		def reportingPeriodInstanceList = []
         periodList.each{
@@ -57,26 +57,26 @@ class ApplicationManagementController {
 		
 		// REPORT TYPES
 		def cR = ReportType.createCriteria()
-		def reportsList = cR.list {
+		def reportTypeList = cR.list {
 			eq("obsolete", false)
 			order("name", "desc")
 		}
-		//if (debug) { println "=> reportsList: ${reportsList}" }
+		if (debug) { println "=> reportTypeList: ${reportTypeList}" }
 		
-		def reportsInstanceList = []
-		reportsList.each{
-			reportsInstanceList.add(['reports_id':it.id, name:it.name] )
+		def reportTypeInstanceList = []
+		reportTypeList.each{
+			reportTypeInstanceList.add(['report_type_id':it.id, name:it.name] )
 		}
-		if (debug) { println "=> reportsInstanceList: ${reportsInstanceList}" }
+		if (debug) { println "=> reportTypeInstanceList: ${reportTypeInstanceList}" }
 
 		// REPORT FORMAT		
-		def reportFormats = ExportController.allowedFormats
-        if (debug) { println "=> reportFormats: ${reportFormats}" }
+		def reportFormatList = ExportController.allowedFormats
+        if (debug) { println "=> reportFormatList: ${reportFormatList}" }
 		
 		[ 
             reportingPeriodInstanceList: reportingPeriodInstanceList,
-			reportsInstanceList: reportsInstanceList,
-			reportFormats: reportFormats 
+			reportTypeInstanceList: reportTypeInstanceList,
+			reportFormatList: reportFormatList 
         ]
 		
 	} 

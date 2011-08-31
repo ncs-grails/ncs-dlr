@@ -10,7 +10,7 @@ class LaborService {
     def authenticateService
     def mailService
 
-	def debug = false
+	def debug = true
 	
     def getReportingStaff(principal) {
 
@@ -152,7 +152,7 @@ class LaborService {
 		
 		if (reportTypeInstance && reportingPeriodInstance) {
 			
-			if (debug) { println "=> laborService.getReportingPeriodData.if(reportsInstance && reportingPeriodInstance) = TRUE" }
+			if (debug) { println "=> laborService.getReportingPeriodDataForCsv.if(reportTypeInstance && reportingPeriodInstance) = TRUE" }
 			
 			dataset = []			
 			
@@ -170,14 +170,15 @@ class LaborService {
 				DateTime reportingPeriodDate = new DateTime(reportingPeriodInstance.periodDate)
 								
 				if (debug) { 
-					println "=> laborService.getReportingPeriodData.contractNumber: ${contractNumber}"
-					println "=> laborService.getReportingPeriodData.contractPeriod: ${contractPeriod}"
-					println "=> laborService.getReportingPeriodData.datePrepared: ${datePrepared}"					
-					println "=> laborService.getReportingPeriodData.rin: ${rin}"										
-					println "=> laborService.getReportingPeriodData.principalInvestigator: ${principalInvestigator}"  
-					println "=> laborService.getReportingPeriodData.reportingPeriodDate: ${reportingPeriodDate}" 
+					println "=> laborService.getReportingPeriodDataForCsv.contractNumber: ${contractNumber}"
+					println "=> laborService.getReportingPeriodDataForCsv.contractPeriod: ${contractPeriod}"
+					println "=> laborService.getReportingPeriodDataForCsv.datePrepared: ${datePrepared}"					
+					println "=> laborService.getReportingPeriodDataForCsv.rin: ${rin}"										
+					println "=> laborService.getReportingPeriodDataForCsv.principalInvestigator: ${principalInvestigator}"  
+					println "=> laborService.getReportingPeriodDataForCsv.reportingPeriodDate: ${reportingPeriodDate}" 
 				}
 				
+				/*
 				hql = """SELECT TRIM(CONCAT(s.lastName , ', ', s.firstName, ' ', s.middleInit)),
 					lc.name as laborCategory,
 					a.name as studyActivity, 
@@ -191,28 +192,41 @@ class LaborService {
 					re.task t 					 
 				WHERE (ae.period.id = ?)
 				ORDER BY s.lastName, s.firstName, s.middleInit, re.percentEffort desc, a.name, t.name"""
+				*/
+				
+				hql = """SELECT TRIM(CONCAT(s.lastName , ', ', s.firstName, ' ', s.middleInit)),
+					re.percentEffort as percentEffort
+				FROM AssignedEffort ae inner join
+					ae.reportingStaff s inner join
+					ae.laborCategory lc inner join
+					ae.reportedEffort re left outer join
+					re.activity a left outer join
+					re.task t
+				WHERE (ae.period.id = ?)
+				ORDER BY s.lastName, s.firstName, s.middleInit, re.percentEffort desc, a.name, t.name"""
+
 				
 				resultSet = AssignedEffort.executeQuery(hql, [reportingPeriodInstance.id]);
-				//if (debug) { println "=> laborService.getReportingPeriodData.resultSet: ${resultSet}" }
+				//if (debug) { println "=> laborService.getReportingPeriodDataForCsv.resultSet: ${resultSet}" }
 	
 				resultSet.each{ rowOfData ->
 					
-					//if (debug) { println "=> laborService.getReportingPeriodData.rowOfData: ${rowOfData}" }
+					//if (debug) { println "=> laborService.getReportingPeriodDataForCsv.rowOfData: ${rowOfData}" }
 
 					def row = [:]
 					
-					row["Contract Number"] = contractNumber
-					row["Reference Invoice Number"] = 'SFR 2706 - ' + rin
-					row["Reporting Period"] = reportingPeriodDate.toString("MMMM yyyy")					
-					row["Contract Period"] = contractPeriod					
-					row["Date Prepared"] = datePrepared.toString("MM/dd/yyyy")
-					row["Principal Investigator"] = principalInvestigator
+					//row["Contract Number"] = contractNumber
+					//row["Reference Invoice Number"] = 'SFR 2706 - ' + rin
+					//row["Reporting Period"] = reportingPeriodDate.toString("MMMM yyyy")					
+					//row["Contract Period"] = contractPeriod					
+					//row["Date Prepared"] = datePrepared.toString("MM/dd/yyyy")
+					//row["Principal Investigator"] = principalInvestigator
 					row["Staff Name"] = rowOfData[0]
-					row["Labor Category"] = rowOfData[1]
-					row["StudyActivity"] = rowOfData[2]
-					row["Study Task"] = rowOfData[3]
-					row["PercentEffort"] = rowOfData[4]
-					if (debug) { println "=> laborService.getReportingPeriodData.row; ${row}" }
+					//row["Labor Category"] = rowOfData[1]
+					//row["StudyActivity"] = rowOfData[2]
+					//row["Study Task"] = rowOfData[3]
+					row["PercentEffort"] = rowOfData[1]
+					if (debug) { println "=> laborService.getReportingPeriodDataForCsv.row; ${row}" }
 					
 					dataset.add(row)
 					

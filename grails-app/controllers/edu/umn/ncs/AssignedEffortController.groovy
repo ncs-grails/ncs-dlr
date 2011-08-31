@@ -7,7 +7,7 @@ class AssignedEffortController {
 
     def authenticateService
     def laborService
-	def debug = false
+	def debug = true
 
 	def index = {
 		

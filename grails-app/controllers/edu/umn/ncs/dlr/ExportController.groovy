@@ -16,7 +16,7 @@ class ExportController {
 	//static def allowedFormats = [ 'csv', 'pdf', 'xml' ] as Set
 	static def allowedFormats = [ 'csv', 'pdf'] as Set
 	static def defaultFormat = "csv"	
-	static def debug = false
+	static def debug = true
 	
 	//GENERATE REPORTS (csv, pdf, xml)
     def generateReport = {
@@ -27,7 +27,7 @@ class ExportController {
 		}
 		
 		// REPORT TYPE
-		def reportTypeInstance = ReportType.read(params?.reports_id)
+		def reportTypeInstance = ReportType.read(params?.report_type_id)
 		if (debug) { 
 			println "=> reportTypeInstance.id: ${reportTypeInstance.id}" 
 			println "=> reportTypeInstance: ${reportTypeInstance}" 
@@ -61,7 +61,8 @@ class ExportController {
             // CSV (use our own CVS renderer)
 			if (format == "csv") {
                 
-				if (debug) { println "=> if (format == csv) = TRUE" }				
+				if (debug) { println "=> if (format == csv) = TRUE" }	
+							
                 def recordSet = laborService.getReportingPeriodDataForCsv(reportTypeInstance, reportingPeriodInstance)				
 				renderAsCsv recordSet, false, fileName, response
 				render ""
@@ -134,30 +135,39 @@ class ExportController {
         
         if (debug) { 
 			println "EXPORT CONTROLLER > renderAsCsv METHOD ----------------"
-			println "params: ${params}"
+			println "=> params: ${params}"
         }
 		
+		/*
+		if (debug) {
+			println "=> recordset: ${recordset}"
+			println "=> headerRow: ${headerRow}"
+			println "=> fileName: ${fileName}"			
+			println "=> outputStream: ${outputStream}"
+		}
+		*/
+		
 		def formatDateTime = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm")
-		if (debug) { println "formatDateTime: ${formatDateTime}" }
+		//if (debug) { println "=> formatDateTime: ${formatDateTime}" }
 		
 		response.setHeader("Content-disposition", "attachment; filename=\"${fileName}\"");
 		response.contentType = "text/csv"
-
+		
         // Render output data as CSV, if there is a recordset
 		if (recordset) {
             
-			if (debug) { println "if(recordset) = TRUE (START)" }
+			//if (debug) { println "=> if(recordset) = TRUE (START)" }
 		
 			// field list (row 1)
 			def firstRow = recordset[0]
 			def columnNames = firstRow.collect{ it.key }
 
-			if (debug) { println "firstRow: ${firstRow}" }
-			if (debug) { println "columnNames: ${columnNames}" }
+			//if (debug) { println "=> firstRow: ${firstRow}" }
+			//if (debug) { println "=> columnNames: ${columnNames}" }
 			
 			if (headerRow) {
 				
-				if (debug) { println "if (headerRow) = TRUE" }
+				//if (debug) { println "=> if (headerRow) = TRUE" }
 				
 				// write header column ("ID","FirstName","MiddleName","LastName","Suffix")
 				columnNames.eachWithIndex{ col, i ->
@@ -169,47 +179,44 @@ class ExportController {
 	            
 				// Using \r\n for MS Windows
 				outputStream << "\r\n"
-				if (debug) { println "outputStream: ${outputStream}" }
+				//if (debug) { println "=> outputStream: ${outputStream}" }
 			}
 			
 			// write data
 			recordset.each{ rowOfData ->
                 
-				//if (debug) { println "recordset.each{ rowOfData -> (START)" }
+				//if (debug) { println "recordset.each{ rowOfData -> (BEGIN)" }
 				
 				columnNames.eachWithIndex{ col, i ->
 
-					//if (debug) { println "START columnNames.eachWithIndex{ col, i ->" }
+					//if (debug) { println "columnNames.eachWithIndex{ col, i -> (BEGIN)" }
 				
-					// default content is empty
 					def columnValue = ""
                     
-					// if there's a non-null value
 					if (rowOfData[col] != null) {
                         
-						//if (debug) { println "if (rowOfData[col] != null)" }
+						//if (debug) { println "if (rowOfData[col] != null) = TRUE" }
 
-						// take the content and escape the double quotes (")						
 						def columnContent = "" 
 
-                        // if it's a date, then format it specifically
 						if (rowOfData[col].class == java.util.Date) {
 							
-							//if (debug) { println "if (rowOfData[col].class == java.util.Date) = TRUE" }							
+							//if (debug) { println "if (rowOfData[col].class == java.util.Date) = TRUE" }
+														
 							Date refDate = rowOfData[col]
 							columnContent = formatDateTime.print(refDate.time)
-							//if (debug) { println "columnContent: ${columnContent}" }
+							//if (debug) {println "refDate: ${refDate}" }
+							if (debug) {println "columnContent: ${columnContent}" }
 							
-                        // Otherwise use the default toString() method
-						} else {                            
+ 						} else {                            
                             
-							//if (debug) { println "if (rowOfData[col].class == java.util.Date) = FALSE" }							
+							//if (debug) { println "if (rowOfData[col].class == java.util.Date) = FALSE" }
+														
 							columnContent = rowOfData[col].toString().replace('"', '""')                            
-							//if (debug) { println "columnContent: ${columnContent}" }
+							if (debug) { println "columnContent: ${columnContent}" }
 							
 						}
-						
-						// then surround it with double quotes
+												 
 						columnValue = '"' + columnContent  + '"'
 						//if (debug) { println "columnValue: ${columnValue}" }
 						
