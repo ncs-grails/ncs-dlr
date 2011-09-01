@@ -178,33 +178,19 @@ class LaborService {
 					println "=> laborService.getReportingPeriodDataForCsv.reportingPeriodDate: ${reportingPeriodDate}" 
 				}
 				
-				/*
 				hql = """SELECT TRIM(CONCAT(s.lastName , ', ', s.firstName, ' ', s.middleInit)),
 					lc.name as laborCategory,
 					a.name as studyActivity, 
 					t.name as studyTask,
 					re.percentEffort as percentEffort
-				FROM AssignedEffort ae inner join
-					ae.reportingStaff s inner join
-					ae.laborCategory lc inner join
+				FROM AssignedEffort ae left outer join
+					ae.reportingStaff s left outer join
+					ae.laborCategory lc left outer join
 					ae.reportedEffort re left outer join
 					re.activity a left outer join
 					re.task t 					 
 				WHERE (ae.period.id = ?)
 				ORDER BY s.lastName, s.firstName, s.middleInit, re.percentEffort desc, a.name, t.name"""
-				*/
-				
-				hql = """SELECT TRIM(CONCAT(s.lastName , ', ', s.firstName, ' ', s.middleInit)),
-					re.percentEffort as percentEffort
-				FROM AssignedEffort ae inner join
-					ae.reportingStaff s inner join
-					ae.laborCategory lc inner join
-					ae.reportedEffort re left outer join
-					re.activity a left outer join
-					re.task t
-				WHERE (ae.period.id = ?)
-				ORDER BY s.lastName, s.firstName, s.middleInit, re.percentEffort desc, a.name, t.name"""
-
 				
 				resultSet = AssignedEffort.executeQuery(hql, [reportingPeriodInstance.id]);
 				//if (debug) { println "=> laborService.getReportingPeriodDataForCsv.resultSet: ${resultSet}" }
@@ -215,17 +201,17 @@ class LaborService {
 
 					def row = [:]
 					
-					//row["Contract Number"] = contractNumber
-					//row["Reference Invoice Number"] = 'SFR 2706 - ' + rin
-					//row["Reporting Period"] = reportingPeriodDate.toString("MMMM yyyy")					
-					//row["Contract Period"] = contractPeriod					
-					//row["Date Prepared"] = datePrepared.toString("MM/dd/yyyy")
-					//row["Principal Investigator"] = principalInvestigator
+					row["Contract Number"] = contractNumber
+					row["Reference Invoice Number"] = 'SFR 2706 - ' + rin
+					row["Reporting Period"] = reportingPeriodDate.toString("MMMM yyyy")					
+					row["Contract Period"] = contractPeriod					
+					row["Date Prepared"] = datePrepared.toString("MM/dd/yyyy")
+					row["Principal Investigator"] = principalInvestigator
 					row["Staff Name"] = rowOfData[0]
-					//row["Labor Category"] = rowOfData[1]
-					//row["StudyActivity"] = rowOfData[2]
-					//row["Study Task"] = rowOfData[3]
-					row["PercentEffort"] = rowOfData[1]
+					row["Labor Category"] = rowOfData[1]
+					row["StudyActivity"] = rowOfData[2]
+					row["Study Task"] = rowOfData[3]
+					row["PercentEffort"] = rowOfData[4]
 					if (debug) { println "=> laborService.getReportingPeriodDataForCsv.row; ${row}" }
 					
 					dataset.add(row)
@@ -292,8 +278,7 @@ class LaborService {
 					t.taskOde to   
 				WHERE (ae.period.id = ? AND a.id = 54)
 				GROUP BY s.lastName, s.firstName, s.middleInit, lc.name, to.name  
-				ORDER BY s.lastName, s.firstName, s.middleInit, sum(re.percentEffort), to.name
-				"""
+				ORDER BY s.lastName, s.firstName, s.middleInit, sum(re.percentEffort) desc, to.name"""
 				
 				resultSet = AssignedEffort.executeQuery(hql, [reportingPeriodInstance.id] );
 				//if (debug) { println "=> laborService.getReportingPeriodData.resultSet: ${resultSet}" }

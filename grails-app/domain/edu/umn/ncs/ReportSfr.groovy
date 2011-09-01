@@ -28,6 +28,24 @@ class ReportSfr {
 	String userCreated
 	String appCreated = 'ncs-dlr'
 
+	static constraints = {
+		effortId(nullable:true)
+		contractNumber(blank:false)
+		referenceInvoiceNumber(blank:false)
+		contractPeriodTitle(blank:false)
+		contractPeriodDesc(blank:false)
+		principalInvestigator(blank:false)
+		staffName(blank:false)
+		laborCategoryName(blank:false)
+		studyActivityName(blank:false)
+		studyTaskName(blank:false)
+		percentEffort(blank:false)
+		datePrepared(blank:false)
+		dateCreated(blank:false)
+		userCreated(blank:false)
+		appCreated(blank:false)
+	}
+		
 	def onDelete = { oldMap ->
 		
 		def now = new Date()
@@ -69,25 +87,5 @@ class ReportSfr {
 		}
 
 	} //def onDelete
-
-	static constraints = {
-		effortId(nullable:true)
-		contractNumber(blank:false)
-		referenceInvoiceNumber(blank:false)
-		contractPeriodTitle(blank:false)
-		contractPeriodDesc(blank:false)
-		principalInvestigator(blank:false)
-		staffName(blank:false)
-		laborCategoryName(blank:false)
-		studyActivityName(blank:false)
-		studyTaskName(blank:false)
-		percentEffort(blank:false)
-		datePrepared(blank:false)
-		dateCreated(blank:false)
-		userCreated(blank:false)
-		appCreated(blank:false)
-	}
-	
-	static mapping = {}
 
 }
