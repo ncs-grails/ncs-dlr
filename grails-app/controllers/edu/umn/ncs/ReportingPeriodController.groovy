@@ -4,8 +4,8 @@ class ReportingPeriodController {
 
     static allowedMethods = [save: "POST", update: "POST", delete: "POST"]
 
-	def debug = true
-	
+	def debug = grailsApplication.config.console.debugging
+		
     def index = {
 		
 		if (debug) { 

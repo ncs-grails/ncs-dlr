@@ -12,12 +12,12 @@ import grails.converters.*
 class ExportController {
 	
 	def laborService
-
+	def debug = grailsApplication.config.console.debugging
+	
 	//static def allowedFormats = [ 'csv', 'pdf', 'xml' ] as Set
 	static def allowedFormats = [ 'csv', 'pdf'] as Set
-	static def defaultFormat = "csv"	
-	static def debug = true
-	
+	static def defaultFormat = "csv"
+		
 	//GENERATE REPORTS (csv, pdf, xml)
     def generateReport = {
 

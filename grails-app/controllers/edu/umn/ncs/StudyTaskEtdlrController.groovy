@@ -2,7 +2,7 @@ package edu.umn.ncs
 
 class StudyTaskEtdlrController {
 
-	def debug = true
+	def debug = grailsApplication.config.console.debugging	
 	
     static allowedMethods = [save: "POST", update: "POST", delete: "POST"]
 

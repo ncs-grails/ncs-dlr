@@ -8,8 +8,8 @@ class ApplicationManagementController {
 
     def authenticateService
     def laborService
-	def debug = true
-
+	def debug = grailsApplication.config.console.debugging
+	
     def index = {
 		
 		if (debug) {

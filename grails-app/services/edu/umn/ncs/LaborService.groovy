@@ -9,9 +9,8 @@ class LaborService {
 
     def authenticateService
     def mailService
-
-	def debug = true
-	
+	def debug = grailsApplication.config.console.debugging
+		
     def getReportingStaff(principal) {
 
 		def uname = principal.getUsername()          
