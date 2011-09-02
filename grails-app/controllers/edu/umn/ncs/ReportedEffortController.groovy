@@ -7,7 +7,8 @@ class ReportedEffortController {
     def authenticateService
     def laborService
 	def debug = grailsApplication.config.console.debugging
-	
+	//def debug = true
+		
 	static allowedMethods = [save: "POST", update: "POST", delete: "POST"]
 
     def index = {

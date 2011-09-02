@@ -12,7 +12,8 @@ class AssignEffortController {
     def laborService
     def mailService
 	def debug = grailsApplication.config.console.debugging
-	   
+	//def debug = true
+		   
     def index = {
         
         if (debug) {

@@ -5,7 +5,8 @@ class StudyActivityController {
     static allowedMethods = [save: "POST", update: "POST", delete: "POST"]
 
     def scaffold = true
-	def debug = grailsApplication.config.console.debugging	
+	//def debug = grailsApplication.config.console.debugging
+	def debug = true
 
     def index = {
         if (debug) { println "=> StudyActivityController.index.params: ${params}}" }

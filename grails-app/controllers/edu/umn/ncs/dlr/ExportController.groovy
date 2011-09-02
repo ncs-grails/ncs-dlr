@@ -13,7 +13,8 @@ class ExportController {
 	
 	def laborService
 	def debug = grailsApplication.config.console.debugging
-	
+	//def debug = true
+		
 	//static def allowedFormats = [ 'csv', 'pdf', 'xml' ] as Set
 	static def allowedFormats = [ 'csv', 'pdf'] as Set
 	static def defaultFormat = "csv"

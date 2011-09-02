@@ -2,7 +2,8 @@ package edu.umn.ncs
 
 class StudyTaskOdeController {
 
-	def debug = grailsApplication.config.console.debugging	
+	def debug = grailsApplication.config.console.debugging
+	//def debug = true
 	
     static allowedMethods = [save: "POST", update: "POST", delete: "POST"]
 

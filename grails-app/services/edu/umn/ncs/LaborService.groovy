@@ -2,6 +2,8 @@ package edu.umn.ncs
 import java.math.BigDecimal;
 import java.util.Date;
 import org.joda.time.*
+import org.codehaus.groovy.grails.commons.*
+
 
 class LaborService {
 
@@ -9,10 +11,12 @@ class LaborService {
 
     def authenticateService
     def mailService
-	def debug = grailsApplication.config.console.debugging
-		
+	def debug = false
+	
     def getReportingStaff(principal) {
 
+		debug = ConfigurationHolder.config.console.debugging
+	
 		def uname = principal.getUsername()          
         if (debug) { println "=> laborService.getReportingStaff.uname: ${uname}" }
 

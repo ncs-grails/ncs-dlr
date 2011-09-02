@@ -11,7 +11,7 @@ class MainController {
 	
     def index = {
         
-        if (debug) { 
+		if (debug) { 
 			println "MAIN CONTROLLER > INDEX ---------------------------------------"        
 			println "=> params: ${params}"
         }        
@@ -21,7 +21,7 @@ class MainController {
     }    
     
     def show = {
-        
+		
         if (debug) { 
 			println "MAIN CONTROLLER > SHOW ----------------------------------------"        
 			println "=> params: ${params}"

@@ -8,7 +8,8 @@ class AssignedEffortController {
     def authenticateService
     def laborService
 	def debug = grailsApplication.config.console.debugging
-	
+	//def debug = true
+		
 	def index = {
 		
 		if (debug) { 

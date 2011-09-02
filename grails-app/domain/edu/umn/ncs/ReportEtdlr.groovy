@@ -8,21 +8,21 @@ class ReportEtdlr {
 
 	static auditable = true
 	
+	Integer period_id
 	String staffFullName
 	String staffLaborCategory
 	String taskEtdlr
 	BigDecimal percentEffort
-	Date datePrepared
 	Date dateCreated = new Date()
 	String userCreated
 	String appCreated = 'ncs-dlr'
 	
 	static constraints = {
+		period_id(nullable:false)
 		staffFullName(blank:false)
 		staffLaborCategory(blank:false)
 		taskEtdlr(blank:false)
 		percentEffort(blank:false)
-		datePrepared(blank:false)
 		dateCreated(blank:false)
 		userCreated(blank:false)
 		appCreated(blank:false)
@@ -37,7 +37,6 @@ class ReportEtdlr {
 			oldValue += ", staffLaborCategory: ${oldMap.staffLaborCategory}"
 			oldValue += ", taskEtdlr: ${oldMap.taskEtdlr}"
 			oldValue += ", percentEffort: ${oldMap.percentEffort}"
-			oldValue += ", datePrepared: ${oldMap.datePrepared}"			
 			oldValue += ", dateCreated: ${oldMap.dateCreated}"
 			oldValue += ", userCreated: ${oldMap.userCreated}"
 			oldValue += ", appCreated: ${oldMap.appCreated}"

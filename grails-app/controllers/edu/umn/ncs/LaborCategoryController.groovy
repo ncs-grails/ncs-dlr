@@ -6,6 +6,7 @@ class LaborCategoryController {
 
     //def scaffold = true
 	def debug = grailsApplication.config.console.debugging
+	//def debug = true
 
     def index = {
         redirect(action: "list", params: params)

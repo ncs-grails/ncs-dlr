@@ -8,25 +8,25 @@ class ReportOde {
 
 	static auditable = true
 	
+	Integer period_id
 	String staffFullName
 	String staffLaborCategory
 	String taskOde
 	BigDecimal effortForMonth
 	BigDecimal hoursForMonth
 	BigDecimal weeklyHours
-	Date datePrepared
 	Date dateCreated = new Date()
 	String userCreated
 	String appCreated = 'ncs-dlr'
 
 	static constraints = {
+		period_id(nullable:false)
 		staffFullName(blank:false)
 		staffLaborCategory(blank:false)
 		taskOde(blank:false)
 		effortForMonth(blank:false)
 		hoursForMonth(blank:false)
 		weeklyHours(blank:false)
-		datePrepared(blank:false)
 		dateCreated(blank:false)
 		userCreated(blank:false)
 		appCreated(blank:false)
@@ -43,7 +43,6 @@ class ReportOde {
 			oldValue += ", effortForMonth: ${oldMap.effortForMonth}"
 			oldValue += ", hoursForMonth: ${oldMap.hoursForMonth}"
 			oldValue += ", weeklyHours: ${oldMap.weeklyHours}"
-			oldValue += ", datePrepared: ${oldMap.datePrepared}"
 			oldValue += ", dateCreated: ${oldMap.dateCreated}"
 			oldValue += ", userCreated: ${oldMap.userCreated}"
 			oldValue += ", appCreated: ${oldMap.appCreated}"
