@@ -36,7 +36,7 @@ class ReportingStaff {
     static constraints = {
         username(blank:false, unique:true)
         firstName(blank:false)
-        middleInit(blank:false)
+        middleInit(blank:true)
         lastName(blank:false)
 		fullName(nullable:true)
         laborCategory(nullable:false)
