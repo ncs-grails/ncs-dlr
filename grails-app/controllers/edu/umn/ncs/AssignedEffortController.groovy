@@ -221,7 +221,6 @@ class AssignedEffortController {
 		
         if ( assignedEffortInstance ) {
             
-			println "=> if ( assignedEffortInstance ) = TRUE"
 			if (debug) { println "=> assignedEffortInstance.id: ${assignedEffortInstance.id}" }
 
 			// ASSIGNED EFFORT

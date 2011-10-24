@@ -146,7 +146,7 @@ class ReportingStaffController {
 			
 		} else {
 		
-			println "=> SAVE FAILED"
+			if (debug) { println "=> SAVE FAILED" }
 			render(view: "create", model: [reportingStaffInstance: reportingStaffInstance])
 			
 		}

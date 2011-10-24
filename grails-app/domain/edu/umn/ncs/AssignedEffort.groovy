@@ -65,11 +65,9 @@ class AssignedEffort {
 			oldValue += ", dateCommitted: ${oldMap.dateCommitted}"
 			oldValue += ", commitingStaff.id: "
 			oldValue += "${oldMap.commitingStaff}" ? "${null} " : "${oldMap.commitingStaff.id} "
-				//oldValue += ", commitingStaff.id: ${oldMap.commitingStaff.id} "
-			println "AssignedEffortDomain.onDelete.oldValue: ${oldValue}"
+			//oldValue += ", commitingStaff.id: ${oldMap.commitingStaff.id} "
 			
 		String className = this.class.toString().replace('class ', '')
-		//println "${now}\tAudit:DELETE::\t${oldValue}"
 
 		def auditLogEventInstance = new AuditLogEvent(
 			className: className,

@@ -150,9 +150,11 @@ class ReportedEffortController {
         // save fails
         } else {
 
-            if (debug) { println "SAVE FAILED" }        
-            reportedEffortInstance.errors.each{ 
-				println it 
+            if (debug) { 
+				println "SAVE FAILED"         
+            	reportedEffortInstance.errors.each{ 
+					println it 
+				}
 			}
                         
             render(view: "create", model: [reportedEffortInstance: reportedEffortInstance, errMessage: errMessage])
@@ -184,10 +186,10 @@ class ReportedEffortController {
 			if (debug) { println "=> ReportedEffortController.delete.if(reportedEffortInstance)=TRUE" }        
             try {
                 reportedEffortInstance.delete(flush: true)
-				println "=> DELETE SUCCESSFUL"        
+				if (debug) { println "=> DELETE SUCCESSFUL" }
             }
             catch (org.springframework.dao.DataIntegrityViolationException e) {				
-				println "=> DELETE FAILED"        
+				if (debug) { println "=> DELETE FAILED" }
                 errMessage = "Reported Effort could not be deleted"
             }
 			

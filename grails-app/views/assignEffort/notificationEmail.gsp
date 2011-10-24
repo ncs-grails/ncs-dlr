@@ -22,8 +22,8 @@
     </ol>
     
     USER SUPPORT<br/>
-    phone: 612-625.3453<br/>
-    email: ncs_user_support@ncs.umn.edu<br/>
+	phone: 612-626-8160, Ask for NCS IT support.
+    email: help@ncs.umn.edu<br/>
         
   </body>
 

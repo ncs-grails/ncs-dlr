@@ -80,7 +80,8 @@ class ExportController {
 				
 					// PROJECT INFO
 					def projectInfoInstance = ProjectInfo.findByPrincipalInvestigatorIsNotNull()
-					println "=> projectInfoInstance: ${projectInfoInstance}"
+					if (debug) { println "=> projectInfoInstance: ${projectInfoInstance}" }
+					
 															
 					// ASSIGNED EFFORT list
 					def assignedEffortInstanceList = reportingPeriodInstance?.assignedEfforts.sort{ it.reportingStaff.fullNameLFM }
