@@ -4,9 +4,7 @@ class StudyTaskController {
 
     static allowedMethods = [save: "POST", update: "POST", delete: "POST"]
 
-    def scaffold = true
-	//def debug = grailsApplication.config.console.debugging
-	//def debug = true
+	def debug = grailsApplication.config.console.debugging
 	
     def index = {
         redirect(action: "list", params: params)
