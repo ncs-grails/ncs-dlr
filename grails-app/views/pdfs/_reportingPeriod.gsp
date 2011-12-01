@@ -64,7 +64,7 @@
 										</g:if>
 										<td>${fieldValue(bean: re, field: "activity")}</td>
 										<td>${fieldValue(bean: re, field: "task")}</td>
-										<td align="right"><g:formatNumber number="${re.percentEffort}" type="percent" /></td>
+										<td align="right"><g:formatNumber number="${re.percentEffort}" type="percent" maxFractionDigits="2"/></td>
 									</g:each>
 									<g:if test="${ ! ae.reportedEffort}">
 										<td/><td/><td/>

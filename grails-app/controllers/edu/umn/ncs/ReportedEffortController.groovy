@@ -44,7 +44,12 @@ class ReportedEffortController {
  
         def assignedEffortInstance = AssignedEffort.read(params?.id)        
         if (debug) { println "=> ReportedEffortController.create.assignedEffortInstance: ${assignedEffortInstance}" }
-
+		
+		// ABOVE CODE SHOULD READ AS FOLLOWS
+		// def assignedEffortInstance = AssignedEffort.read(params?.assignedEffort?.id)
+		
+		
+		
         def reportedEffortInstance
         if ( assignedEffortInstance ) {            
             reportedEffortInstance = new ReportedEffort()
@@ -214,7 +219,13 @@ class ReportedEffortController {
         
         // ASSIGNED EFFORT
         def assignedEffortInstance = AssignedEffort.read(params?.id)        
-        if (debug) { println "=> ReportedEffortController.edit.assignedEffortInstance: ${assignedEffortInstance}" }     
+        if (debug) { println "=> ReportedEffortController.edit.assignedEffortInstance: ${assignedEffortInstance}" }
+		
+		// CHANGE ABOVE CODE
+		// def assignedEffortInstance = AssignedEffort.read(params?.id)
+		// TO THIS        
+		// def reportedEffortInstance = ReportedEffort.get(params?.id)
+		     
         
         // REPORTED EFFORT 
         def reportedEffortInstance
@@ -233,7 +244,6 @@ class ReportedEffortController {
             
             def model = [
                 assignedEffortInstance: assignedEffortInstance, 
-                reportedEffortInstance: reportedEffortInstance,
                 errMessage: errMessage
             ]
             
