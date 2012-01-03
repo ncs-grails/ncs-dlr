@@ -31,7 +31,7 @@ class StudyTask {
 	/** Non-default constraints for this class 
 	<dl>
 		<dt>name</dt>
-			<dd>maximum length of 1024 characters</dd>
+			<dd>cannot be blank, maximum length of 1024 characters</dd>
 		<dt>taskEtdlr</dt>
 			<dd>optional (or nullable)</dd>
 		<dt>taskOde</dt>
@@ -43,7 +43,7 @@ class StudyTask {
 	</dl>	
 	*/
     	static constraints = {
-        	name(maxSize:1024)
+        	name(blank:false, maxSize:1024)
         	obsolete()
         	taskEtdlr(nullable:true)
         	taskOde(nullable:true)

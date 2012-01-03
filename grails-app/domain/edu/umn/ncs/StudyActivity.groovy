@@ -1,21 +1,54 @@
 package edu.umn.ncs
 import org.codehaus.groovy.grails.plugins.orm.auditable.AuditLogEvent
 
+/**
+This class represents the funding group staff are assigned to and report on the DLR.
+*/
 class StudyActivity {
 
-    static auditable = true
-
+	/** Flags this domain for auditing, on all updates and changes, using the auditable plugin */
+	static auditable = true
+	/** Description of Study Activity */
 	String name
-    Boolean obsolete = true
-    Date dateCreated = new Date()
-    String userCreated
-    String appCreated= 'ncs-dlr'
+	/** Indicates whether this specific activity is still made available, in the DLR application, for staff to report. */
+    	Boolean obsolete = true
+	/** Date activity was added to database */
+    	Date dateCreated = new Date()
+	/** User account of person that added activity to database */
+    	String userCreated
+	/** Application, used by person, to add activity to database */
+    	String appCreated= 'ncs-dlr'
 
-    def onDelete = { oldMap ->
+	/** Sets default string for this domain to activity "name" (description) */	
+	String toString() { name }
+
+	/** Non-default constraints for this class 
+	<dl>
+		<dt>name</dt>
+			<dd>cannot be blank, maximum length of 1024 characters</dd>
+		<dt>userCreated</dt>
+			<dd>cannot be blank</dd>
+		<dt>appCreated</dt>
+			<dd>cannot be blank</dd>
+	</dl>	
+	*/
+    	static constraints = {
+        	name(blank:false, maxSize:1024)
+        	obsolete()
+        	dateCreated()
+        	userCreated(blank:false)
+        	appCreated(blank:false)
+    	}		
+
+	/** Sets the default sorting, for this domain, by "name," in ascending order. */
+    	static mapping = { sort "name" }
+
+	/** Trigger that saves old activity information to an auditLog instance, for tracking all changes to this class */
+    	def onDelete = { oldMap ->
         
-        def now = new Date()
+        	def now = new Date()
 		
-        String oldValue = "Study Activity"
+        	String oldValue = "Study Activity"
 			oldValue += ", name: ${oldMap.name}"
 			oldValue += ", obsolete: ${oldMap.obsolete}"
 			oldValue += ", dateCreated: ${oldMap.dateCreated}"
@@ -23,39 +56,24 @@ class StudyActivity {
 			oldValue += ", appCreated: ${oldMap.appCreated} "
 		//println "PRINTLN StudyActivityDomain.onDelete.oldValue: ${oldValue}"
 			
-        String className = this.class.toString().replace('class ', '')
-        //println "${now}\tAudit:DELETE::\t${oldValue}"
+        	String className = this.class.toString().replace('class ', '')
+        	//println "${now}\tAudit:DELETE::\t${oldValue}"
 
-        def auditLogEventInstance = new AuditLogEvent(
+        	def auditLogEventInstance = new AuditLogEvent(
 			className: className,
-            dateCreated: now,
-            eventName: 'DELETE',
-            lastUpdated: now,
-            oldValue: oldValue,
-            persistedObjectId: this.id,
-            persistedObjectVersion: this.version
+            		dateCreated: now,
+            		eventName: 'DELETE',
+            		lastUpdated: now,
+           		oldValue: oldValue,
+            		persistedObjectId: this.id,
+            		persistedObjectVersion: this.version
 		)
-        if ( ! auditLogEventInstance.save() ) {
+        	if ( ! auditLogEventInstance.save() ) {
 			auditLogEventInstance.errors.each{
-                println "${now}\tError Transacting DELETE:: \t ${it}"
+                		println "${now}\tError Transacting DELETE:: \t ${it}"
 			}
 		}        
 
-	} //def onDelete
-
-	String toString() {
-        name
-    }
-
-    static constraints = {
-        name(blank:false, maxSize:1024)
-        obsolete()
-        dateCreated()
-        userCreated(blank:false)
-        appCreated(blank:false)
-    }
+	} 
     
-    static mapping = { sort "name" }
-
-
 }

@@ -2,7 +2,7 @@ package edu.umn.ncs
 import java.util.Date;
 import org.codehaus.groovy.grails.plugins.orm.auditable.AuditLogEvent
 
-/** This class represents tasks eqivalent to those reported in the "Sponsored Financial Reporting" report that is used for the "Electronic Technical Direct Labor Report" (ETDLR) */
+/** This class represents tasks eqivalent to those reported in the "Sponsored Financial Reporting" (SFR) report  used for the "Electronic Technical Direct Labor Report" (ETDLR) */
 class StudyTaskEtdlr {
 
 	/** Flags this domain for auditing, on all updates and changes, using the auditable plugin */
@@ -19,10 +19,13 @@ class StudyTaskEtdlr {
 	/** Application, used by person, to add task to database */
     	String appCreated = 'ncs-dlr'
 
+	/** Variable "task" for ETDLR is mapped to "StudyTask," which is the task for SFR   */
+	static belongsTo = [task: StudyTask]	
+
 	/** Non-default constraints for this class 
 	<dl>
 		<dt>name</dt>
-			<dd>maximum length of 1024 characters</dd>
+			<dd>>cannot be blank, maximum length of 1024 characters</dd>
 		<dt>dateCreated</dt>
 			<dd>cannot be blank</dd>
 		<dt>userCreated</dt>
@@ -32,7 +35,7 @@ class StudyTaskEtdlr {
 	</dl>	
 	*/
 	static constraints = {
-		name(maxSize:1024)
+		name(blank:false, maxSize:1024)
 		obsolete()
 		dateCreated(blank:false)
 		userCreated(blank:false)
