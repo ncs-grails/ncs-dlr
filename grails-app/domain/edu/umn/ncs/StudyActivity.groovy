@@ -2,13 +2,14 @@ package edu.umn.ncs
 import org.codehaus.groovy.grails.plugins.orm.auditable.AuditLogEvent
 
 /**
-This class represents the funding group staff are assigned to and report on the DLR.
+This class represents the contract type study staff are assigned to and also report on the DLR via the Study Activity category.
 */
 class StudyActivity {
 
 	/** Flags this domain for auditing, on all updates and changes, using the auditable plugin */
 	static auditable = true
-	/** Description of Study Activity */
+
+	/** Description of Study Activity (i.e., conract type) */
 	String name
 	/** Indicates whether this specific activity is still made available, in the DLR application, for staff to report. */
     	Boolean obsolete = true
