@@ -3,56 +3,56 @@ import org.codehaus.groovy.grails.plugins.orm.auditable.AuditLogEvent
 
 class ReportedEffort {
 
-    static auditable = true
+	static auditable = true
 
-    StudyActivity activity
-    StudyTask task
-    BigDecimal percentEffort
-    Date dateCreated = new Date()
-    String userCreated
-    String appCreated  = 'ncs-dlr'
+	StudyActivity activity
+	StudyTask task
+	BigDecimal percentEffort
+	Date dateCreated = new Date()
+	String userCreated
+	String appCreated  = 'ncs-dlr'
 
-    static belongsTo = [assignedEffort: AssignedEffort]
-    static transients = ['percentEffortConverted']
+	static belongsTo = [assignedEffort: AssignedEffort]
+	static transients = ['percentEffortConverted']
 
-    BigDecimal getPercentEffortConverted() {
-        if (percentEffort != null) {
-            return percentEffort * 100.00
-        } else {
-            percentEffort
-        }
-    }
-    
-    void setPercentEffortConverted(BigDecimal percentEffortConverted) {
-        if (percentEffortConverted != null) {
-            percentEffort = percentEffortConverted / 100.00
-        } else {
-            percentEffort = null
-        }
-    }
+	BigDecimal getPercentEffortConverted() {
+		if (percentEffort != null) {
+			return percentEffort * 100.00
+		} else {
+			percentEffort
+		}
+	}
 
-    void setPercentEffortConverted(String percentEffortConvertedString) {
-        try {
-            percentEffortConverted = percentEffortConvertedString.toBigDecimal()
-        } finally {
-            percentEffort = percentEffortConverted / 100.00
-        }
-    }
-    
-    static constraints = {
-        assignedEffort()
-        activity()
-        task()
-        percentEffort(max:1.0, scale:5)
-        dateCreated()
-        userCreated(blank:false)
-        appCreated(blank:false)
-    }
-	
+	void setPercentEffortConverted(BigDecimal percentEffortConverted) {
+		if (percentEffortConverted != null) {
+			percentEffort = percentEffortConverted / 100.00
+		} else {
+			percentEffort = null
+		}
+	}
+
+	void setPercentEffortConverted(String percentEffortConvertedString) {
+		try {
+			percentEffortConverted = percentEffortConvertedString.toBigDecimal()
+		} finally {
+			percentEffort = percentEffortConverted / 100.00
+		}
+	}
+
+	static constraints = {
+		assignedEffort()
+		activity()
+		task()
+		percentEffort(max:1.0, scale:5)
+		dateCreated()
+		userCreated(blank:false)
+		appCreated(blank:false)
+	}
+
 	def onDelete = { oldMap ->
-		
+
 		def now = new Date()
-		
+
 		String oldValue = "Reported Effort associated with"
 			oldValue += " assignedEffort.id ${oldMap.assignedEffort.id}"
 			oldValue += ", activity.id: ${oldMap.activity.id}"
@@ -62,10 +62,10 @@ class ReportedEffort {
 			oldValue += ", userCreated: ${oldMap.userCreated}"
 			oldValue += ", appCreated: ${oldMap.appCreated} "
 		//println "PRINTLN ReportedEffortDomain.onDelete.oldValue: ${oldValue}"
-			
+
 		String className = this.class.toString().replace('class ', '')
 		//println "${now}\tAudit:DELETE::\t${oldValue}"
-		
+
 		def auditLogEventInstance = new AuditLogEvent(
 			className: className,
 			dateCreated: now,
@@ -81,6 +81,6 @@ class ReportedEffort {
 			}
 		}
 
-	} //def onDelete
+	} 
 
 }

@@ -6,7 +6,7 @@ import org.codehaus.groovy.grails.plugins.orm.auditable.AuditLogEvent
 
 class ReportEtdlr {
 
-	static auditable = true
+static auditable = true
 	
 	Integer period_id
 	String staffFullName
@@ -26,7 +26,7 @@ class ReportEtdlr {
 		dateCreated(blank:false)
 		userCreated(blank:false)
 		appCreated(blank:false)
-    }
+	}
 	
 	def onDelete = { oldMap ->
 		
@@ -60,6 +60,6 @@ class ReportEtdlr {
 			}
 		}
 
-	} //def onDelete
+	} 
 	
 }

@@ -66,6 +66,6 @@ class ReportOde {
 			}
 		}
 
-	} //def onDelete
+	} 
 	
 }

@@ -86,6 +86,6 @@ class ReportSfr {
 			}
 		}
 
-	} //def onDelete
+	} 
 
 }
