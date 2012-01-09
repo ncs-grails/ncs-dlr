@@ -9,6 +9,7 @@ class NotificationEmail {
 	Date dateSent = new Date()
 	String userSent
 
+	/** Trigger that saves old activity information to an auditLog instance, for tracking all changes to this class */
 	def onDelete = { oldMap ->
 
 		def now = new Date()

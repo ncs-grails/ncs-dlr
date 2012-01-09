@@ -7,7 +7,7 @@ import org.codehaus.groovy.grails.plugins.orm.auditable.AuditLogEvent
 class ReportOde {
 
 	static auditable = true
-	
+
 	Integer period_id
 	String staffFullName
 	String staffLaborCategory
@@ -30,12 +30,13 @@ class ReportOde {
 		dateCreated(blank:false)
 		userCreated(blank:false)
 		appCreated(blank:false)
-    }
+	}
 
+	/** Trigger that saves old activity information to an auditLog instance, for tracking all changes to this class */
 	def onDelete = { oldMap ->
-		
+
 		def now = new Date()
-		
+
 		String oldValue = "ODE file"
 			oldValue += ", staffFullName: ${oldMap.staffFullName}"
 			oldValue += ", staffLaborCategory: ${oldMap.staffLaborCategory}"
@@ -47,7 +48,7 @@ class ReportOde {
 			oldValue += ", userCreated: ${oldMap.userCreated}"
 			oldValue += ", appCreated: ${oldMap.appCreated}"
 		//println "PRINTLN SfrReportDomain.onDelete.oldValue: ${oldValue}"
-			
+
 		String className = this.class.toString().replace('class ', '')
 		//println "${now}\tAudit:DELETE::\t${oldValue}"
 
@@ -67,5 +68,5 @@ class ReportOde {
 		}
 
 	} 
-	
+
 }
