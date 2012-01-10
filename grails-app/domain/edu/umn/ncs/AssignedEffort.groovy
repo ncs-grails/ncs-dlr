@@ -1,31 +1,54 @@
 package edu.umn.ncs
 import org.codehaus.groovy.grails.plugins.orm.auditable.AuditLogEvent
 
+/**
+This class represents the total amount of work effort assigned to staff, for a given period.
+*/
 class AssignedEffort {
 
+	/** Flags this domain for auditing, on all updates and changes, using the auditable plugin */
 	static auditable = true
 
+	/** Staff's labor category (title in study), per reporting period. This is reported per period in case a staff's study title changes over time.*/
 	LaborCategory laborCategory
+
+	/** Total effort assigned to staff at a given period. It is the total amount of effort staff must report for that period. */
 	BigDecimal assignedEffort
+
+	/** Date in which effort was assigned to staff */
 	Date dateAssigned = new Date()
+
+	/** The staff to whom was assigned the effort at a given periode.  */
 	ReportingStaff assigningStaff
+
+	/** Application used to commit effort. By default, this is set to ncs-dlr.  */
 	String appCreated = 'ncs-dlr'       
+
+	/** Date the reported effort was committed  */
 	Date dateCommitted
+
+	/** The staff who committed the reported effort.  Usually, this is the reporting staff.  */
 	ReportingStaff commitingStaff
 
+	/**   */
 	static belongsTo = [reportingStaff: ReportingStaff, period: ReportingPeriod]
+	/**   */
 	static hasMany = [emails: NotificationEmail, reportedEffort: ReportedEffort]
 
+	/**   */
 	def transients = ['assignedEffortConverted']
 
+	/**   */
 	BigDecimal getAssignedEffortConverted() {        
 		return assignedEffort * 100
 	}
 
+	/**   */
 	void setAssignedEffortConverted(BigDecimal assignedEffortConverted) {        
 		percentEffort = assignedEffortConverted / 100.00
 	}
 
+	/**   */
 	void setAssignedEffortConverted(String assignedEffortConvertedString) {
 		try {
 			assignedEffortConverted = assignedEffortConvertedString.toBigDecimal()
@@ -34,6 +57,7 @@ class AssignedEffort {
 		}
 	}
 
+	/**   */
 	String toString() { assignedEffort }
 
 	static constraints = {

@@ -20,7 +20,7 @@ class ReportOde {
 	String appCreated = 'ncs-dlr'
 
 	static constraints = {
-		period_id(nullable:false)
+		period_id()
 		staffFullName(blank:false)
 		staffLaborCategory(blank:false)
 		taskOde(blank:false)

@@ -1,16 +1,32 @@
 package edu.umn.ncs
 import org.codehaus.groovy.grails.plugins.orm.auditable.AuditLogEvent
 
+/**
+This class represents some informtion about the DLR to be pulled into reports.
+*/
 class ProjectInfo {
 
 	/** Flags this domain for auditing, on all updates and changes, using the auditable plugin */
 	static auditable = true
 
+	/** This is the study contract number. */
 	String contractNumber
+	/** Name of the principle investigator for the study.  */
 	String principalInvestigator
+	/** This is the study contract period. The period represents fiscal year. */
 	String contractPeriod
 
-	static constraints = {
+	/** Non-default constraints for this class 
+	<dl>
+		<dt>contractNumber(</dt>
+			<dd>cannot be blank</dd>
+		<dt>principalInvestigator(</dt>
+			<dd>cannot be blank</dd>
+		<dt>contractPeriod(</dt>
+			<dd>cannot be blank</dd>
+	</dl>	
+	*/
+ 	static constraints = {
 		contractNumber(blank:false)
 		principalInvestigator(blank:false)
 		contractPeriod(blank:false)
@@ -22,8 +38,8 @@ class ProjectInfo {
 		def now = new Date()
 
 		String oldValue = "Project Info"
-		oldValue += ", principalInvestigator: ${oldMap.principalInvestigator}"
-		oldValue += ", contractNumber: ${oldMap.contractNumber}"
+			oldValue += ", principalInvestigator: ${oldMap.principalInvestigator}"
+			oldValue += ", contractNumber: ${oldMap.contractNumber}"
 		//println "ProjectInfoDomain.onDelete.oldValue: ${oldValue}"
 
 		String className = this.class.toString().replace('class ', '')
@@ -38,6 +54,7 @@ class ProjectInfo {
 			persistedObjectId: this.id,
 			persistedObjectVersion: this.version
 		)
+
 		if ( ! auditLogEventInstance.save() ) {
 			auditLogEventInstance.errors.each{
 				println "${now}\tError Transacting DELETE:: \t ${it}"

@@ -2,7 +2,7 @@ package edu.umn.ncs
 import org.codehaus.groovy.grails.plugins.orm.auditable.AuditLogEvent
 
 /**
-This class represents the contract type study staff are assigned to and also report on the DLR via the Study Activity category.
+This class represents the contract type that study staff are assigned to and also report on the DLR via the Study Activity category.
 */
 class StudyActivity {
 

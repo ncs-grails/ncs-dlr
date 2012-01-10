@@ -1,24 +1,40 @@
 package edu.umn.ncs
 import org.codehaus.groovy.grails.plugins.orm.auditable.AuditLogEvent
 
+/** 
+This class represents study staff labor categories (job titles).
+*/
 class LaborCategory {
 
 	/** Flags this domain for auditing, on all updates and changes, using the auditable plugin */
 	static auditable = true
 
+	/** Description of the labor category) */
 	String name
+	/** Indicates whether this specific labor category is active. */
 	Boolean obsolete = true
+	/** Date this labor category was added to database */
 	Date dateCreated = new Date()
+	/** User account of person that added this labor category to the database */
 	String userCreated
+	/** Application, used by person, to add the labor category to the database. */
 	String appCreated = 'ncs-dlr'
 
-	/** Sets default string for this domain to LaborCategory "name" (description) */	
+	/** Sets default string, for this domain, to LaborCategory "name." */	
 	String toString() { name }
 
+	/** Non-default constraints for this class 
+	<dl>
+		<dt>name</dt>
+			<dd>cannot be blank, maximum length of 128 characters</dd>
+		<dt>userCreated</dt>
+			<dd>cannot be blank</dd>
+		<dt>appCreated</dt>
+			<dd>cannot be blank</dd>
+	</dl>	
+	*/	
 	static constraints = {
-		name(blank:false, maxSize:1024)
-		obsolete()
-		dateCreated()
+		name(blank:false, maxSize:128)
 		userCreated(blank:false)
 		appCreated(blank:false)
 	}

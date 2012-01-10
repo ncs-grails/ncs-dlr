@@ -4,26 +4,54 @@ import java.util.Date;
 
 import org.codehaus.groovy.grails.plugins.orm.auditable.AuditLogEvent
 
+/**
+This class represents the "Electronic Technical Direct Labor Report" (ETDLR). 
+*/
 class ReportEtdlr {
 
-static auditable = true
+	/** Flags this domain for auditing, on all updates and changes, using the auditable plugin */
+	static auditable = true
 	
+	/** The Id of the reporting period the report is for.  */
 	Integer period_id
+	/** Full name of the staff reporting effort.  */
 	String staffFullName
+	/** Labor category of the staff reporting effort  */
 	String staffLaborCategory
+	/** Code of the ETDLR task, translated from the standard task which used for the "Sponsored Financial Reporting" (SFR) report.  */
 	String taskEtdlr
+	/** Staff's reported percent effort for the particular ETDLR task.  */
 	BigDecimal percentEffort
+	/** This is an arbitary date when the ETDLR was completed. It is the date when the last effort, for the given period, was committed. */
 	Date dateCreated = new Date()
+	/** This is an arbitary ser account that completed ETDLR.  It is the last person to commit his/her reported effort for the given period. */
 	String userCreated
+	/** This is the applicaiton, used to record the date the ETDLR was completed. */
 	String appCreated = 'ncs-dlr'
 	
+	/** Non-default constraints for this class 
+	<dl>
+		<dt>staffFullName</dt>
+			<dd>cannot be blank</dd>
+		<dt>staffLaborCategory</dt>
+			<dd>cannot be blank</dd>
+		<dt>taskEtdlr(</dt>
+			<dd>cannot be blank</dd>
+		<dt>percentEffort</dt>
+			<dd>cannot be blank</dd>
+		<dt>userCreated</dt>
+			<dd>cannot be blank</dd>
+		<dt>appCreated</dt>
+			<dd>cannot be blank</dd>
+	</dl>	
+	*/
 	static constraints = {
-		period_id(nullable:false)
+		period_id()
 		staffFullName(blank:false)
 		staffLaborCategory(blank:false)
 		taskEtdlr(blank:false)
 		percentEffort(blank:false)
-		dateCreated(blank:false)
+		dateCreated()
 		userCreated(blank:false)
 		appCreated(blank:false)
 	}
@@ -55,6 +83,7 @@ static auditable = true
 			persistedObjectId: this.id,
 			persistedObjectVersion: this.version
 		)
+
 		if ( ! auditLogEventInstance.save() ) {
 			auditLogEventInstance.errors.each{
 				println "${now}\tError Transacting DELETE:: \t ${it}"
