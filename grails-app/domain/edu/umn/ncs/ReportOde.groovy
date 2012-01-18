@@ -4,8 +4,13 @@ import java.util.Date;
 
 import org.codehaus.groovy.grails.plugins.orm.auditable.AuditLogEvent
 
+
+/**
+This class represents the "Operational Data Elements" (ODE) report. 
+*/
 class ReportOde {
 
+	/** Flags this domain for auditing, on all updates and changes, using the auditable plugin */
 	static auditable = true
 
 	Integer period_id
@@ -61,6 +66,7 @@ class ReportOde {
 			persistedObjectId: this.id,
 			persistedObjectVersion: this.version
 		)
+
 		if ( ! auditLogEventInstance.save() ) {
 			auditLogEventInstance.errors.each{
 				println "${now}\tError Transacting DELETE:: \t ${it}"

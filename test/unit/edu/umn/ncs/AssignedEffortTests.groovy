@@ -18,5 +18,4 @@ class AssignedEffortTests extends GrailsUnitTestCase {
     void testSomething() {
     }
 	
-	void 
 }
