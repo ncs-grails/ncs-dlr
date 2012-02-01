@@ -4,24 +4,24 @@ class StudyActivityController {
 
     static allowedMethods = [save: "POST", update: "POST", delete: "POST"]
 
-	def debug = grailsApplication.config.console.debugging
+	def debug = true
 
     def index = {
-        if (debug) { println "=> StudyActivityController.index.params: ${params}}" }
+        if (debug) { log.debug "=> StudyActivityController.index.params: ${params}}" }
         redirect(action: "list", params: params)
     }
 
     def list = {
         
-        if (debug) { println "=> StudyActivityController.list.params: ${params}}" }
-        if (debug) { println "=> StudyActivityController.list.params.max: ${params.max}" }        
+        if (debug) { log.debug "=> StudyActivityController.list.params: ${params}}" }
+        if (debug) { log.debug "=> StudyActivityController.list.params.max: ${params.max}" }        
         params.max = Math.min(params.max ? params.int('max') : 10, 100)
-        if (debug) { println "=> StudyActivityController.list.params.max: ${params.max}" }
+        if (debug) { log.debug "=> StudyActivityController.list.params.max: ${params.max}" }
                 
-        if (debug) { println "=> StudyActivityController.list.StudyActivity.list(): ${StudyActivity.list()}" }
-        if (debug) { println "=> StudyActivityController.list.StudyActivity.list(params): ${StudyActivity.list(params)}" }
+        if (debug) { log.debug "=> StudyActivityController.list.StudyActivity.list(): ${StudyActivity.list()}" }
+        if (debug) { log.debug "=> StudyActivityController.list.StudyActivity.list(params): ${StudyActivity.list(params)}" }
 
-        if (debug) { println "=> StudyActivityController.list.StudyActivity.count(): ${StudyActivity.count()}" }
+        if (debug) { log.debug "=> StudyActivityController.list.StudyActivity.count(): ${StudyActivity.count()}" }
 
         [
             studyActivityInstanceList: StudyActivity.list(params), 
@@ -31,15 +31,15 @@ class StudyActivityController {
 
     def create = {
                 
-        if (debug) { println "=> StudyActivityController.create.params: ${params}" }
+        if (debug) { log.debug "=> StudyActivityController.create.params: ${params}" }
         
         def studyActivityInstance = new StudyActivity()
-        //if (debug) { println "=> StudyActivityController.create.studyActivityInstance.properties: ${studyActivityInstance.properties}" }        
-        if (debug) { println "=> StudyActivityController.create.studyActivityInstance: ${studyActivityInstance}" }
+        //if (debug) { log.debug "=> StudyActivityController.create.studyActivityInstance.properties: ${studyActivityInstance.properties}" }        
+        if (debug) { log.debug "=> StudyActivityController.create.studyActivityInstance: ${studyActivityInstance}" }
 
         studyActivityInstance.properties = params
-        //if (debug) { println "=> StudyActivityController.create.studyActivityInstance.properties: ${studyActivityInstance.properties}" }
-        if (debug) { println "=> StudyActivityController.create.studyActivityInstance: ${studyActivityInstance}" }
+        //if (debug) { log.debug "=> StudyActivityController.create.studyActivityInstance.properties: ${studyActivityInstance.properties}" }
+        if (debug) { log.debug "=> StudyActivityController.create.studyActivityInstance: ${studyActivityInstance}" }
         
         return [studyActivityInstance: studyActivityInstance]
         
@@ -47,13 +47,13 @@ class StudyActivityController {
 
     def save = {
                 
-        if (debug) { println "=> StudyActivityController.save.params: ${params}" }
+        if (debug) { log.debug "=> StudyActivityController.save.params: ${params}" }
         
         def studyActivityInstance = new StudyActivity(params)
-        if (debug) { println "=> StudyActivityController.save.new studyActivityInstance: ${studyActivityInstance}" }
+        if (debug) { log.debug "=> StudyActivityController.save.new studyActivityInstance: ${studyActivityInstance}" }
         
         if (studyActivityInstance.save(flush: true)) {
-            if (debug) { println "=> StudyActivityController.save.studyActivityInstance.save = true" }
+            if (debug) { log.debug "=> StudyActivityController.save.studyActivityInstance.save = true" }
             
             flash.message = "${message(code: 'default.created.message', args: [message(code: 'studyActivity.label', default: 'StudyActivity'), studyActivityInstance.id])}"
             redirect(
@@ -62,8 +62,8 @@ class StudyActivityController {
             )
         }
         else {
-            if (debug) { println "=> StudyActivityController.save.studyActivityInstance.save = false" }
-            if (debug) { println "=> StudyActivityController.save.studyActivityInstance: ${studyActivityInstance}" }
+            if (debug) { log.debug "=> StudyActivityController.save.studyActivityInstance.save = false" }
+            if (debug) { log.debug "=> StudyActivityController.save.studyActivityInstance: ${studyActivityInstance}" }
             render(view: "create", model: [studyActivityInstance: studyActivityInstance])
         }
         
@@ -71,20 +71,20 @@ class StudyActivityController {
 
     def show = {
 
-        if (debug) { println "=> StudyActivityController.show.params: ${params}}" }
-        if (debug) { println "=> StudyActivityController.show.params.id: ${params.id}}" }
+        if (debug) { log.debug "=> StudyActivityController.show.params: ${params}}" }
+        if (debug) { log.debug "=> StudyActivityController.show.params.id: ${params.id}}" }
         
         def studyActivityInstance = StudyActivity.get(params.id)
-        if (debug) { println "=> StudyActivityController.show.studyActivityInstance: ${studyActivityInstance}" }
+        if (debug) { log.debug "=> StudyActivityController.show.studyActivityInstance: ${studyActivityInstance}" }
                 
         if (!studyActivityInstance) {
-            if (debug) { println "=> StudyActivityController.show.(!studyActivityInstance) = true" }
+            if (debug) { log.debug "=> StudyActivityController.show.(!studyActivityInstance) = true" }
             
             flash.message = "${message(code: 'default.not.found.message', args: [message(code: 'studyActivity.label', default: 'StudyActivity'), params.id])}"
             redirect(action: "list")
         }
         else {
-            if (debug) { println "=> StudyActivityController.show.(!studyActivityInstance) = false" }
+            if (debug) { log.debug "=> StudyActivityController.show.(!studyActivityInstance) = false" }
             [studyActivityInstance: studyActivityInstance]
         }
         
@@ -92,19 +92,19 @@ class StudyActivityController {
 
     def edit = {
         
-        if (debug) { println "=> StudyActivityController.edit.params: ${params}}" }
-        if (debug) { println "=> StudyActivityController.edit.params.id: ${params.id}}" }
+        if (debug) { log.debug "=> StudyActivityController.edit.params: ${params}}" }
+        if (debug) { log.debug "=> StudyActivityController.edit.params.id: ${params.id}}" }
 
         def studyActivityInstance = StudyActivity.get(params.id)
-        if (debug) { println "=> StudyActivityController.edit.studyActivityInstance: ${studyActivityInstance}" }
+        if (debug) { log.debug "=> StudyActivityController.edit.studyActivityInstance: ${studyActivityInstance}" }
         
         if (!studyActivityInstance) {
-            if (debug) { println "=> StudyActivityController.show.(!studyActivityInstance) = true" } 
+            if (debug) { log.debug "=> StudyActivityController.show.(!studyActivityInstance) = true" } 
             flash.message = "${message(code: 'default.not.found.message', args: [message(code: 'studyActivity.label', default: 'StudyActivity'), params.id])}"
             redirect(action: "list")
         }
         else {
-            if (debug) { println "=> StudyActivityController.show.(!studyActivityInstance) = false" }
+            if (debug) { log.debug "=> StudyActivityController.show.(!studyActivityInstance) = false" }
             return [studyActivityInstance: studyActivityInstance]
         }
         

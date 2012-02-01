@@ -8,13 +8,13 @@ class ApplicationManagementController {
 
     def authenticateService
     def laborService
-	def debug = grailsApplication.config.console.debugging
+	def debug = true
 		
     def index = {
 		
 		if (debug) {
-	        println "APPLICATION MANAGEMENT CONTROLLER > INDEX ---------------------"
-	        println "=> params: ${params}"
+	        log.debug "APPLICATION MANAGEMENT CONTROLLER > INDEX ---------------------"
+	        log.debug "=> params: ${params}"
 		}
 		
 		redirect(action: "list", params: params)
@@ -24,8 +24,8 @@ class ApplicationManagementController {
     def list = {    
 		 
 		if (debug) {
-	        println "APPLICATION MANAGEMENT CONTROLLER > LIST ----------------------"
-	        println "=> params: ${params}"
+	        log.debug "APPLICATION MANAGEMENT CONTROLLER > LIST ----------------------"
+	        log.debug "=> params: ${params}"
 		}
 		                
     }
@@ -33,13 +33,13 @@ class ApplicationManagementController {
 	def report = {
         
 		if (debug) {
-		    println "APPLICATION MANAGEMENT CONTROLLER > REPORT ---------------------"
-	        println "=> params: ${params}"
+		    log.debug "APPLICATION MANAGEMENT CONTROLLER > REPORT ---------------------"
+	        log.debug "=> params: ${params}"
 		}
 
 		// REPORTING PERIOD
 		def currentReportingPeriodInstance = laborService.getCurrentReportingPeriod()
-		if (debug) {println "=> currentReportingPeriodInstance: ${currentReportingPeriodInstance}"}
+		if (debug) {log.debug "=> currentReportingPeriodInstance: ${currentReportingPeriodInstance}"}
 			
 		def c = ReportingPeriod.createCriteria()
 		def periodList = c.list {		
@@ -47,13 +47,13 @@ class ApplicationManagementController {
 			isNotNull("preparedDate")
 			order("periodDate", "desc")
 		} 
-        if (debug) { println "=> periodList: ${periodList}" }
+        if (debug) { log.debug "=> periodList: ${periodList}" }
 		
 		def reportingPeriodInstanceList = []
         periodList.each{
             reportingPeriodInstanceList.add(['reporting_period_id':it.id, name:g.formatDate(date:it.periodDate, format:'MMMM yyyy')] )
         }
-		//if (debug) { println "=> reportingPeriodInstanceList: ${reportingPeriodInstanceList}" }
+		//if (debug) { log.debug "=> reportingPeriodInstanceList: ${reportingPeriodInstanceList}" }
 		
 		// REPORT TYPES
 		def cR = ReportType.createCriteria()
@@ -61,17 +61,17 @@ class ApplicationManagementController {
 			eq("obsolete", false)
 			order("name", "desc")
 		}
-		if (debug) { println "=> reportTypeList: ${reportTypeList}" }
+		if (debug) { log.debug "=> reportTypeList: ${reportTypeList}" }
 		
 		def reportTypeInstanceList = []
 		reportTypeList.each{
 			reportTypeInstanceList.add(['report_type_id':it.id, name:it.name] )
 		}
-		if (debug) { println "=> reportTypeInstanceList: ${reportTypeInstanceList}" }
+		if (debug) { log.debug "=> reportTypeInstanceList: ${reportTypeInstanceList}" }
 
 		// REPORT FORMAT		
 		def reportFormatList = ExportController.allowedFormats
-        if (debug) { println "=> reportFormatList: ${reportFormatList}" }
+        if (debug) { log.debug "=> reportFormatList: ${reportFormatList}" }
 		
 		[ 
             reportingPeriodInstanceList: reportingPeriodInstanceList,

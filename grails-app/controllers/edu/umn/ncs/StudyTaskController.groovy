@@ -4,7 +4,7 @@ class StudyTaskController {
 
 	static allowedMethods = [save: "POST", update: "POST", delete: "POST"]
 
-	def debug = grailsApplication.config.console.debugging
+	def debug = true
 	
 	def index = {
 		redirect(action: "list", params: params)
@@ -13,8 +13,8 @@ class StudyTaskController {
 	def list = {
 
 		if (debug) {
-			println "STUDY TASK CONTROLLER > INDEX ---------------------"
-			println "=> params: ${params}"
+			log.debug "STUDY TASK CONTROLLER > INDEX ---------------------"
+			log.debug "=> params: ${params}"
 		}
 
 		params.max = Math.min(params.max ? params.int('max') : 10, 100)

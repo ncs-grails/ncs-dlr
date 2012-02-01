@@ -6,7 +6,7 @@ class ReportedEffortController {
 
     def authenticateService
     def laborService
-	def debug = grailsApplication.config.console.debugging
+	def debug = true
 	//def debug = true
 		
 	static allowedMethods = [save: "POST", update: "POST", delete: "POST"]
@@ -14,8 +14,8 @@ class ReportedEffortController {
     def index = {
         
         if (debug) {
-			println "=> REPORTED EFFORT CONTROLLER > INDEX --------------------"                
-			println "=> ReportedEffortController.index.params: ${params}"
+			log.debug "=> REPORTED EFFORT CONTROLLER > INDEX --------------------"                
+			log.debug "=> ReportedEffortController.index.params: ${params}"
         }
 		                
         redirect(controller: 'main')
@@ -25,8 +25,8 @@ class ReportedEffortController {
     def cancel = {
         
         if (debug) {
-			println "=> REPORTED EFFORT CONTROLLER > CANCEL -------------------"                
-			println "=> ReportedEffortController.cancel.params: ${params}"
+			log.debug "=> REPORTED EFFORT CONTROLLER > CANCEL -------------------"                
+			log.debug "=> ReportedEffortController.cancel.params: ${params}"
         }   
         
         def assignedEffortInstance = AssignedEffort.read(params?.assignedEffort.id)        
@@ -38,12 +38,12 @@ class ReportedEffortController {
     def create = {
         
         if (debug) {
-			println "=> REPORTED EFFORT CONTROLLER > CREATE -------------------"                
-			println "=> ReportedEffortController.create.params: ${params}"
+			log.debug "=> REPORTED EFFORT CONTROLLER > CREATE -------------------"                
+			log.debug "=> ReportedEffortController.create.params: ${params}"
         }                
  
         def assignedEffortInstance = AssignedEffort.read(params?.id)        
-        if (debug) { println "=> ReportedEffortController.create.assignedEffortInstance: ${assignedEffortInstance}" }
+        if (debug) { log.debug "=> ReportedEffortController.create.assignedEffortInstance: ${assignedEffortInstance}" }
 		
 		// ABOVE CODE SHOULD READ AS FOLLOWS
 		// def assignedEffortInstance = AssignedEffort.read(params?.assignedEffort?.id)
@@ -55,7 +55,7 @@ class ReportedEffortController {
             reportedEffortInstance = new ReportedEffort()
             reportedEffortInstance.assignedEffort = assignedEffortInstance            
         }               
-        if (debug) { println "=> ReportedEffortController.create.reportedEffortInstance: ${reportedEffortInstance}" }        
+        if (debug) { log.debug "=> ReportedEffortController.create.reportedEffortInstance: ${reportedEffortInstance}" }        
                 
         [ reportedEffortInstance: reportedEffortInstance ]
  
@@ -64,36 +64,36 @@ class ReportedEffortController {
     def addSave = {
         
 		if (debug) {
-	        println "=> REPORTED EFFORT CONTROLLER > ADD-SAVE ---------------------"
-	        println "=> ReportedEffortController.addSave.params: ${params}"
+	        log.debug "=> REPORTED EFFORT CONTROLLER > ADD-SAVE ---------------------"
+	        log.debug "=> ReportedEffortController.addSave.params: ${params}"
 		}        
         
         // REPORTED EFFORT
         def reportedEffortInstance = new ReportedEffort(params)
         def reportedEffortConvertedVal = reportedEffortInstance.percentEffortConverted
 
-        if (debug) { println "=> ReportedEffortController.addSave.reportedEffortInstance: ${reportedEffortInstance}" }                    
-        if (debug) { println "=> ReportedEffortController.addSave.reportedEffortConvertedVal: ${reportedEffortConvertedVal}" }
+        if (debug) { log.debug "=> ReportedEffortController.addSave.reportedEffortInstance: ${reportedEffortInstance}" }                    
+        if (debug) { log.debug "=> ReportedEffortController.addSave.reportedEffortConvertedVal: ${reportedEffortConvertedVal}" }
 				
         // ASSIGNED EFFORT
         def assignedEffortInstance = AssignedEffort.read(params?.assignedEffort?.id)
         def assignedEffortConverted = assignedEffortInstance.assignedEffortConverted
 
-        if (debug) { println "=> ReportedEffortController.addSave.assignedEffortInstance: ${assignedEffortInstance}" }                           
-        if (debug) { println "=> ReportedEffortController.addSave.assignedEffortConverted}: ${assignedEffortConverted}" }
+        if (debug) { log.debug "=> ReportedEffortController.addSave.assignedEffortInstance: ${assignedEffortInstance}" }                           
+        if (debug) { log.debug "=> ReportedEffortController.addSave.assignedEffortConverted}: ${assignedEffortConverted}" }
 
         // COMBINED REPORTED EFFORT
 		def sumReportedPercentEffort = laborService.getSumOfReportedPercentEffort(assignedEffortInstance)		
-        if (debug) { println "=> ReportedEffortController.addSave.sumReportedPercentEffort: ${sumReportedPercentEffort}" }        
+        if (debug) { log.debug "=> ReportedEffortController.addSave.sumReportedPercentEffort: ${sumReportedPercentEffort}" }        
 
         def sumOfAlreadyReportedPercentEffortConverted 
         if ( sumReportedPercentEffort ) {
             sumOfAlreadyReportedPercentEffortConverted = sumReportedPercentEffort * 100                    
         }
-        if (debug) { println "=> ReportedEffortController.addSave.sumOfAlreadyReportedPercentEffortConverted: ${sumOfAlreadyReportedPercentEffortConverted}" }
+        if (debug) { log.debug "=> ReportedEffortController.addSave.sumOfAlreadyReportedPercentEffortConverted: ${sumOfAlreadyReportedPercentEffortConverted}" }
         
         def combineReportedEffortConverted = laborService.getCombineReportedEffortConverted(sumOfAlreadyReportedPercentEffortConverted, reportedEffortConvertedVal)
-        if (debug) { println "=> ReportedEffortController.addSave.combineReportedEffortConverted: ${combineReportedEffortConverted}" }
+        if (debug) { log.debug "=> ReportedEffortController.addSave.combineReportedEffortConverted: ${combineReportedEffortConverted}" }
 
         // REPORTED EFFORT ENTRY VALIDATION
         def err = false 
@@ -137,28 +137,28 @@ class ReportedEffortController {
 				
 			}			
 
-            if (debug) { println "=> ReportedEffortController.addSave.errMessage: ${errMessage}" }
+            if (debug) { log.debug "=> ReportedEffortController.addSave.errMessage: ${errMessage}" }
             
         }
 
         // USER who entered effort
         def principal = authenticateService.principal()                         
         reportedEffortInstance.userCreated = principal.getUsername()
-        if (debug) { println "=> ReportedEffortController.addSave.reportedEffortInstance.userCreated: ${reportedEffortInstance.userCreated}" }        
+        if (debug) { log.debug "=> ReportedEffortController.addSave.reportedEffortInstance.userCreated: ${reportedEffortInstance.userCreated}" }        
 
         // save successfully
         if ( err == false && reportedEffortInstance.validate() && reportedEffortInstance.save(flush: true)) {
 
-            if (debug) { println "SAVE SUCCESSFULLY" }
+            if (debug) { log.debug "SAVE SUCCESSFULLY" }
             render(view: "/assignedEffort/show", model: [assignedEffortInstance: assignedEffortInstance, hideAddButton: hideAddButton] )
                         
         // save fails
         } else {
 
             if (debug) { 
-				println "SAVE FAILED"         
+				log.debug "SAVE FAILED"         
             	reportedEffortInstance.errors.each{ 
-					println it 
+					log.debug it 
 				}
 			}
                         
@@ -171,41 +171,41 @@ class ReportedEffortController {
     def delete = {
         
 		if (debug) {
-			println "=> REPORTED EFFORT CONTROLLER > DELETE -------------------"                
-			println "=> ReportedEffortController.delete.params: ${params}"
+			log.debug "=> REPORTED EFFORT CONTROLLER > DELETE -------------------"                
+			log.debug "=> ReportedEffortController.delete.params: ${params}"
 		}        
         
         // ASSIGNED EFFORT
         def assignedEffortInstance = AssignedEffort.read(params?.id)
-        if (debug) { println "=> ReportedEffortController.delete.assignedEffortInstance: ${assignedEffortInstance}" }        
+        if (debug) { log.debug "=> ReportedEffortController.delete.assignedEffortInstance: ${assignedEffortInstance}" }        
 
 		// REPORTED EFFORT
         def reportedEffortInstance = ReportedEffort.read(params?.reportedEffort?.id)
-		if (debug) { println "=> ReportedEffortController.delete.reportedEffortInstance: ${reportedEffortInstance}" }
+		if (debug) { log.debug "=> ReportedEffortController.delete.reportedEffortInstance: ${reportedEffortInstance}" }
 		
         // validation
         def errMessage
 
         if ( reportedEffortInstance ) {
 			
-			if (debug) { println "=> ReportedEffortController.delete.if(reportedEffortInstance)=TRUE" }        
+			if (debug) { log.debug "=> ReportedEffortController.delete.if(reportedEffortInstance)=TRUE" }        
             try {
                 reportedEffortInstance.delete(flush: true)
-				if (debug) { println "=> DELETE SUCCESSFUL" }
+				if (debug) { log.debug "=> DELETE SUCCESSFUL" }
             }
             catch (org.springframework.dao.DataIntegrityViolationException e) {				
-				if (debug) { println "=> DELETE FAILED" }
+				if (debug) { log.debug "=> DELETE FAILED" }
                 errMessage = "Reported Effort could not be deleted"
             }
 			
         } else {
             
-			if (debug) { println "=> ReportedEffortController.delete.if(reportedEffortInstance)=FALSE" }        
+			if (debug) { log.debug "=> ReportedEffortController.delete.if(reportedEffortInstance)=FALSE" }        
             errMessage = "Must select a Reported Effort to delete."
 			
         }   
 		     
-        if (debug) { println "=> ReportedEffortController.delete.errMessage: ${errMessage}" }        		
+        if (debug) { log.debug "=> ReportedEffortController.delete.errMessage: ${errMessage}" }        		
         render(view: "/assignedEffort/show", model: [assignedEffortInstance: assignedEffortInstance, errMessage: errMessage] )
        
     } //def delete
@@ -213,13 +213,13 @@ class ReportedEffortController {
     def edit = {
         
 		if (debug) {
-	        println "=> REPORTED EFFORT CONTROLLER > EDIT --------------------"                
-	        println "=> ReportedEffortController.edit.params: ${params}"
+	        log.debug "=> REPORTED EFFORT CONTROLLER > EDIT --------------------"                
+	        log.debug "=> ReportedEffortController.edit.params: ${params}"
 		}
         
         // ASSIGNED EFFORT
         def assignedEffortInstance = AssignedEffort.read(params?.id)        
-        if (debug) { println "=> ReportedEffortController.edit.assignedEffortInstance: ${assignedEffortInstance}" }
+        if (debug) { log.debug "=> ReportedEffortController.edit.assignedEffortInstance: ${assignedEffortInstance}" }
 		
 		// CHANGE ABOVE CODE
 		// def assignedEffortInstance = AssignedEffort.read(params?.id)
@@ -232,7 +232,7 @@ class ReportedEffortController {
         if ( params?.reportedEffort?.id ) {
             reportedEffortInstance = ReportedEffort.get(params?.reportedEffort?.id)            
         }
-        if (debug) { println "=> ReportedEffortController.edit.reportedEffortInstance: ${reportedEffortInstance}" }
+        if (debug) { log.debug "=> ReportedEffortController.edit.reportedEffortInstance: ${reportedEffortInstance}" }
 		
         if ( reportedEffortInstance ) {
             			
@@ -256,17 +256,17 @@ class ReportedEffortController {
    def editSave = {
         
 	   if (debug) {
-			println "=> REPORTED EFFORT CONTROLLER > EDIT-SAVE ---------------------"                
-			println "=> ReportedEffortController.editSave.params: ${params}"
+			log.debug "=> REPORTED EFFORT CONTROLLER > EDIT-SAVE ---------------------"                
+			log.debug "=> ReportedEffortController.editSave.params: ${params}"
 	   }
                 
 		// REPORTED EFFORT
         def reportedEffortInstance = ReportedEffort.read(params.id)
 		
 		if (debug) {
-	        println "=> ReportedEffortController.editSave.reportedEffortInstance: ${reportedEffortInstance}"        
-	        println "=> ReportedEffortController.editSave.reportedEffortInstance.percentEffort: ${reportedEffortInstance.percentEffortConverted}"        
-	        println "=> ReportedEffortController.editSave.params?.version: ${params?.version}"
+	        log.debug "=> ReportedEffortController.editSave.reportedEffortInstance: ${reportedEffortInstance}"        
+	        log.debug "=> ReportedEffortController.editSave.reportedEffortInstance.percentEffort: ${reportedEffortInstance.percentEffortConverted}"        
+	        log.debug "=> ReportedEffortController.editSave.params?.version: ${params?.version}"
 		}
 		
         if ( reportedEffortInstance ) {
@@ -283,12 +283,12 @@ class ReportedEffortController {
 			// USER who entered effort
 			def principal = authenticateService.principal()
 			reportedEffortInstance.userCreated = principal.getUsername()
-			if (debug) { println "=> ReportedEffortController.editSave.reportedEffortInstance.userCreated: ${reportedEffortInstance.userCreated}" }
+			if (debug) { log.debug "=> ReportedEffortController.editSave.reportedEffortInstance.userCreated: ${reportedEffortInstance.userCreated}" }
 
             // ASSIGNED EFFORT
             def assignedEffortInstance = reportedEffortInstance.assignedEffort
-            if (debug) { println "=> ReportedEffortController.editSave.assignedEffortInstance.id: ${assignedEffortInstance.id}" }
-            if (debug) { println "=> ReportedEffortController.editSave.assignedEffortInstance.assignedEffortConverted: ${assignedEffortInstance.assignedEffortConverted}" }
+            if (debug) { log.debug "=> ReportedEffortController.editSave.assignedEffortInstance.id: ${assignedEffortInstance.id}" }
+            if (debug) { log.debug "=> ReportedEffortController.editSave.assignedEffortInstance.assignedEffortConverted: ${assignedEffortInstance.assignedEffortConverted}" }
             
             // already REPORTED EFFORT total
             def cSum = ReportedEffort.createCriteria()
@@ -302,20 +302,20 @@ class ReportedEffortController {
             if ( !sumOfAlreadyReportedPercentEffort ) {
                 sumOfAlreadyReportedPercentEffort = 0
             }
-            if (debug) { println "=> AssignedEffortController.editSave.sumOfAlreadyReportedPercentEffort: ${sumOfAlreadyReportedPercentEffort}" }
+            if (debug) { log.debug "=> AssignedEffortController.editSave.sumOfAlreadyReportedPercentEffort: ${sumOfAlreadyReportedPercentEffort}" }
 
             def sumOfAlreadyReportedPercentEffortConverted 
             if ( sumOfAlreadyReportedPercentEffort || sumOfAlreadyReportedPercentEffort == 0 ) {
                 sumOfAlreadyReportedPercentEffortConverted = sumOfAlreadyReportedPercentEffort * 100                    
             } 
-            if (debug) { println "=> ReportedEffortController.editSave.sumOfAlreadyReportedPercentEffortConverted: ${sumOfAlreadyReportedPercentEffortConverted}" }
+            if (debug) { log.debug "=> ReportedEffortController.editSave.sumOfAlreadyReportedPercentEffortConverted: ${sumOfAlreadyReportedPercentEffortConverted}" }
 
 			// ReportedEffortInstance accepts new percentEffort entry
 			reportedEffortInstance.properties = params
 			
             // combined REPORTED EFFORT 
 			def combineReportedEffortConverted = laborService.getCombineReportedEffortConverted(sumOfAlreadyReportedPercentEffortConverted, reportedEffortInstance.percentEffortConverted)			
-            if (debug) { println "=> ReportedEffortController.editSave.combineReportedEffortConverted: ${combineReportedEffortConverted}" }
+            if (debug) { log.debug "=> ReportedEffortController.editSave.combineReportedEffortConverted: ${combineReportedEffortConverted}" }
 
             // REPORTED EFFORT ENTRY VALIDATION
             def err = false
@@ -356,31 +356,31 @@ class ReportedEffortController {
 
                 }
 				
-				if (debug) { println "=> ReportedEffortController.editSave.reportedEffortInstance.percentEffortConverted BEFORE DISCARD(): ${reportedEffortInstance.percentEffortConverted}" }
+				if (debug) { log.debug "=> ReportedEffortController.editSave.reportedEffortInstance.percentEffortConverted BEFORE DISCARD(): ${reportedEffortInstance.percentEffortConverted}" }
 				if (err) {
 					reportedEffortInstance.discard()
 				}
-				if (debug) { println "=> ReportedEffortController.editSave.reportedEffortInstance.percentEffortConverted AFTER DISCARD(): ${reportedEffortInstance.percentEffortConverted}" }
+				if (debug) { log.debug "=> ReportedEffortController.editSave.reportedEffortInstance.percentEffortConverted AFTER DISCARD(): ${reportedEffortInstance.percentEffortConverted}" }
 				
             }			
-			if (debug) { println "=> ReportedEffortController.editSave.errMessage: ${errMessage}" }
+			if (debug) { log.debug "=> ReportedEffortController.editSave.errMessage: ${errMessage}" }
 			
             // SAVE
             if ( !err && reportedEffortInstance.validate() && !reportedEffortInstance.hasErrors() && reportedEffortInstance.save(flush: true) ) {
                 
-                if (debug) { println "SAVE SUCCESSFULLY" }
+                if (debug) { log.debug "SAVE SUCCESSFULLY" }
                 render(view: "/assignedEffort/show", model:[assignedEffortInstance: assignedEffortInstance, hideAddButton: hideAddButton] )
                 
             } else {
                 
-                if (debug) { println "=> SAVE FAILED" }
+                if (debug) { log.debug "=> SAVE FAILED" }
 				
                 def model = [
                     reportedEffortInstance: reportedEffortInstance, 
                     errMessage: errMessage
                 ]
                 
-                if (debug) { println "=> ReportedEffortController.editSave.model: ${model}" }
+                if (debug) { log.debug "=> ReportedEffortController.editSave.model: ${model}" }
                 render(view: "edit", model: model)
                 
             } //if ( err == false &&  !reportedEffortInstance.hasErrors() && reportedEffortInstance.save(flush: true) )

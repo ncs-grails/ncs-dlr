@@ -4,14 +4,14 @@ class ReportingPeriodController {
 
     static allowedMethods = [save: "POST", update: "POST", delete: "POST"]
 
-	def debug = grailsApplication.config.console.debugging
+	def debug = true
 	//def debug = true
 		
     def index = {
 		
 		if (debug) { 
-			println "=> REPORTING PERIOD CONTROLLER > INDEX -------------------"  
-			println "=> params: ${params}" 
+			log.debug "=> REPORTING PERIOD CONTROLLER > INDEX -------------------"  
+			log.debug "=> params: ${params}" 
 		} 
 		
 		redirect(action: "list", params: params)
@@ -21,12 +21,12 @@ class ReportingPeriodController {
 	def list = {
 		
 		if (debug) {
-			println "=> REPORTING PERIOD CONTROLLER > LIST --------------------" 
-			println "=> params: ${params}" 
+			log.debug "=> REPORTING PERIOD CONTROLLER > LIST --------------------" 
+			log.debug "=> params: ${params}" 
 		}
 		
 		def reportingPeriodInstance = ReportingPeriod.list(sort:"periodDate",order:"desc", max:12)
-		if (debug) { println "=> reportingPeriodInstance: ${reportingPeriodInstance}" } 
+		if (debug) { log.debug "=> reportingPeriodInstance: ${reportingPeriodInstance}" } 
 		
 		[ reportingPeriodInstance: reportingPeriodInstance ]
 
@@ -35,8 +35,8 @@ class ReportingPeriodController {
 	def updateRin = {
 		
 		if (debug) { 
-			println "=> REPORTING PERIOD CONTROLLER > updateRin -------------------"  
-			println "=> params: ${params}" 
+			log.debug "=> REPORTING PERIOD CONTROLLER > updateRin -------------------"  
+			log.debug "=> params: ${params}" 
 		} 
 		
 		def reportingPeriodInstance = ReportingPeriod.get(params.id)
@@ -75,25 +75,25 @@ class ReportingPeriodController {
 	def update = {
 		
 		if (debug) { 
-			println "=> REPORTING PERIOD CONTROLLER > UPDATE --------------------" 
-			println "=> params: ${params}"
+			log.debug "=> REPORTING PERIOD CONTROLLER > UPDATE --------------------" 
+			log.debug "=> params: ${params}"
 		} 
 
 		def reportingPeriodInstanceAll = ReportingPeriod.list(sort:"periodDate",order:"desc", max:12)
-		if (debug) { println "=> ReportingPeriodController.save.reportingPeriodInstanceAll: ${reportingPeriodInstanceAll}" }
+		if (debug) { log.debug "=> ReportingPeriodController.save.reportingPeriodInstanceAll: ${reportingPeriodInstanceAll}" }
 
 		def errList = []
 		def succesList = []
 		
 		params.each{
 			
-			//if (debug) { println "=> AssignedEffortController.update.params.each: ${it}" }
-			//if (debug) { println "=> ReportingPeriodController.save.params.each KEY: ${it.key}, VALUE: ${it.value}" }
+			//if (debug) { log.debug "=> AssignedEffortController.update.params.each: ${it}" }
+			//if (debug) { log.debug "=> ReportingPeriodController.save.params.each KEY: ${it.key}, VALUE: ${it.value}" }
 						
 			if ( it.key =~ /^id-[0-9]*$/ && it.value ) {
 				
 				def reportingPeriodInstance = ReportingPeriod.get(Integer.parseInt(it.key.replace('id-', '')))
-				if (debug) { println "=> ReportingPeriodController.save.reportingPeriodInstance: ${reportingPeriodInstance}" }  				
+				if (debug) { log.debug "=> ReportingPeriodController.save.reportingPeriodInstance: ${reportingPeriodInstance}" }  				
 								
 				if ( reportingPeriodInstance ) {
 					
@@ -102,7 +102,7 @@ class ReportingPeriodController {
 						def version = params.version.toLong()
 						
 						if (reportingPeriodInstance.version > version) {
-							if (debug) { println "=> VERSION ERROR" }			
+							if (debug) { log.debug "=> VERSION ERROR" }			
 							reportingPeriodInstance.errors.rejectValue("version", "default.optimistic.locking.failure", [message(code: 'reportingPeriod.label', default: 'ReportingPeriod')] as Object[], "Another user has updated this ReportingPeriod while you were editing")							
 							render(view: "list", model: [reportingPeriodInstance: reportingPeriodInstanceAll])
 							return
@@ -114,16 +114,16 @@ class ReportingPeriodController {
 					
 					if ( !reportingPeriodInstance.hasErrors() && reportingPeriodInstance.save(flush: true) ) {
 						
-						if (debug) { println "=> UPDATE SUCCESSFULLY" } 				
+						if (debug) { log.debug "=> UPDATE SUCCESSFULLY" } 				
 						flash.message = "${message(code: 'default.updated.message', args: [message(code: 'reportingPeriod.label', default: 'ReportingPeriod'), reportingPeriodInstance.id])}"
 						render(view: "list", model: [reportingPeriodInstance: reportingPeriodInstanceAll])
 						
 					} else {
 					
 						if (debug) { 
-							println "=> UPDATE FAILED"  
+							log.debug "=> UPDATE FAILED"  
 							reportingPeriodInstance.errors.each{
-								println "=> reportingPeriodInstance.error: ${it}"
+								log.debug "=> reportingPeriodInstance.error: ${it}"
 							}
 						}
 

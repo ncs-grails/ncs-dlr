@@ -3,7 +3,7 @@ package edu.umn.ncs
 class ReportSfrController {
 
     static allowedMethods = [save: "POST", update: "POST", delete: "POST"]
-	def debug = grailsApplication.config.console.debugging
+	def debug = true
 	//def debug = true
 		
     def index = {

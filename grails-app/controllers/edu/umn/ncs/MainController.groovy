@@ -7,13 +7,13 @@ class MainController {
 
     def authenticateService
     def laborService
-	def debug = grailsApplication.config.console.debugging
+	def debug = true
 	
     def index = {
         
 		if (debug) { 
-			println "MAIN CONTROLLER > INDEX ---------------------------------------"        
-			println "=> params: ${params}"
+			log.debug "MAIN CONTROLLER > INDEX ---------------------------------------"        
+			log.debug "=> params: ${params}"
         }        
         
         redirect(action: "show")
@@ -23,28 +23,28 @@ class MainController {
     def show = {
 		
         if (debug) { 
-			println "MAIN CONTROLLER > SHOW ----------------------------------------"        
-			println "=> params: ${params}"
+			log.debug "MAIN CONTROLLER > SHOW ----------------------------------------"        
+			log.debug "=> params: ${params}"
         }        
         
         // REPORTING STAFF
         def principal = authenticateService.principal()                         
-        if (debug) {  println "=> principal: ${principal}" }
+        if (debug) {  log.debug "=> principal: ${principal}" }
 		            
         def reportingStaffInstance = laborService.getReportingStaff(principal)
-		if (debug) { println "=> reportingStaffInstance: ${reportingStaffInstance}" }
+		if (debug) { log.debug "=> reportingStaffInstance: ${reportingStaffInstance}" }
 
         // REPORTING PERIOD
         def reportingPeriodInstance = laborService.getCurrentReportingPeriod()
-        if (debug) { println "=> reportingPeriodInstance: ${reportingPeriodInstance}" }            
+        if (debug) { log.debug "=> reportingPeriodInstance: ${reportingPeriodInstance}" }            
 
         // ASSIGNED EFFORT instance
 		def assignedEffortInstance = AssignedEffort.findByReportingStaffAndPeriod(reportingStaffInstance, reportingPeriodInstance)
-		if (debug) {  println "=> assignedEffortInstance: ${assignedEffortInstance}"
+		if (debug) {  log.debug "=> assignedEffortInstance: ${assignedEffortInstance}"
 			
 			if ( assignedEffortInstance ) {
-				println "=> if ( assignedEffortInstance ) = TRUE"
-				println "=> assignedEffortInstance.dateCommitted: ${assignedEffortInstance.dateCommitted}"
+				log.debug "=> if ( assignedEffortInstance ) = TRUE"
+				log.debug "=> assignedEffortInstance.dateCommitted: ${assignedEffortInstance.dateCommitted}"
 			}
 			
 		}
