@@ -1,8 +1,7 @@
-import java.util.Date;
-
 package edu.umn.ncs
 
 import grails.test.*
+import java.util.Date;
 
 class NotificationEmailTests extends GrailsUnitTestCase {
 	
