@@ -1,12 +1,12 @@
 package edu.umn.ncs
 import org.joda.time.*
 import edu.umn.ncs.dlr.ExportController
-import org.codehaus.groovy.grails.plugins.springsecurity.Secured
+import grails.plugins.springsecurity.Secured
 
 @Secured(['ROLE_NCS_IT', 'ROLE_NCS_DLR_MANAGE'])
 class ApplicationManagementController {
 
-    def authenticateService
+    def springSecurityService
     def laborService
 	def debug = true
 		

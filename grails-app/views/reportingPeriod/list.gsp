@@ -12,7 +12,7 @@
   
 	<body>
     
-		<g:ifAnyGranted role="ROLE_NCS_IT,ROLE_NCS_DLR_MANAGE">
+		<sec:ifAnyGranted roles="ROLE_NCS_IT,ROLE_NCS_DLR_MANAGE">
 
 	    	<!-- Navigation -->
 			<p class="breadcrumbs">
@@ -72,7 +72,7 @@
 			
 				</table>
 				
-			</g:ifAnyGranted>
+			</sec:ifAnyGranted>
 
 		<div class="pageSpacing"> </div>
 

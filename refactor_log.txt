@@ -1,0 +1,38 @@
+Starting Process at Wed Feb  1 10:39:16 CST 2012
+Updating Config.groovy
+Moving DataSource.groovy to /home/AD/sqv/GrailsDevelopment/grails/config/development/ncs-dlr-config.groovy
+Adding security plugin dependencies to grails-app/conf/BuildConfig.groovy
+Removing plugins.umn-acegi from application.properties
+./grails-app/controllers/edu/umn/ncs/ReportingStaffController.groovy	Updating	Annotation	grails.plugins.springsecurity.Secured
+./grails-app/controllers/edu/umn/ncs/ReportingStaffController.groovy	Updating	Definition	def springSecurityService
+./grails-app/controllers/edu/umn/ncs/ReportingStaffController.groovy	Updating	DefinitionuthenticateService.principal
+./grails-app/controllers/edu/umn/ncs/MainController.groovy	Updating	Annotation	grails.plugins.springsecurity.Secured
+./grails-app/controllers/edu/umn/ncs/MainController.groovy	Updating	Definition	def springSecurityService
+./grails-app/controllers/edu/umn/ncs/MainController.groovy	Updating	DefinitionuthenticateService.principal
+./grails-app/controllers/edu/umn/ncs/ReportedEffortController.groovy	Updating	Annotation	grails.plugins.springsecurity.Secured
+./grails-app/controllers/edu/umn/ncs/ReportedEffortController.groovy	Updating	Definition	def springSecurityService
+./grails-app/controllers/edu/umn/ncs/ReportedEffortController.groovy	Updating	DefinitionuthenticateService.principal
+./grails-app/controllers/edu/umn/ncs/AssignEffortController.groovy	Updating	Annotation	grails.plugins.springsecurity.Secured
+./grails-app/controllers/edu/umn/ncs/AssignEffortController.groovy	Updating	Definition	def springSecurityService
+./grails-app/controllers/edu/umn/ncs/AssignEffortController.groovy	Updating	DefinitionuthenticateService.principal
+./grails-app/controllers/edu/umn/ncs/ApplicationManagementController.groovy	Updating	Annotation	grails.plugins.springsecurity.Secured
+./grails-app/controllers/edu/umn/ncs/ApplicationManagementController.groovy	Updating	Definition	def springSecurityService
+./grails-app/controllers/edu/umn/ncs/AssignedEffortController.groovy	Updating	Annotation	grails.plugins.springsecurity.Secured
+./grails-app/controllers/edu/umn/ncs/AssignedEffortController.groovy	Updating	Definition	def springSecurityService
+./grails-app/controllers/edu/umn/ncs/AssignedEffortController.groovy	Updating	DefinitionuthenticateService.principal
+./grails-app/controllers/edu/umn/ncs/dlr/ExportController.groovy	Updating	Annotation	grails.plugins.springsecurity.Secured
+./grails-app/services/edu/umn/ncs/LaborService.groovy	Updating	Definition	def springSecurityService
+./grails-app/services/edu/umn/ncs/LaborService.groovy	Updating	DefinitionuthenticateService.principal
+./grails-app/views/reportingPeriod/list.gsp\tUpdating\tTags\tifAnyGranted
+./grails-app/views/applicationManagement/list.gsp\tUpdating\tTags\tifAnyGranted
+./grails-app/views/applicationManagement/report.gsp\tUpdating\tTags\tifAnyGranted
+./grails-app/views/reportedEffort/create.gsp\tUpdating\tTags\tifAnyGranted
+./grails-app/views/reportedEffort/edit.gsp\tUpdating\tTags\tifAnyGranted
+./grails-app/views/reportingStaff/create.gsp\tUpdating\tTags\tifAnyGranted
+./grails-app/views/reportingStaff/list.gsp\tUpdating\tTags\tifAnyGranted
+./grails-app/views/reportingStaff/edit.gsp\tUpdating\tTags\tifAnyGranted
+./grails-app/views/reportingStaff/listDoesNotReport.gsp\tUpdating\tTags\tifAnyGranted
+./grails-app/views/assignedEffort/show.gsp\tUpdating\tTags\tifAnyGranted
+./grails-app/views/main/show.gsp\tUpdating\tTags\tifAnyGranted
+Starting Process at Wed Feb  1 11:53:40 CST 2012
+Moving DataSource.groovy to /home/AD/sqv/GrailsDevelopment/ncs/config/development/ncs-dlr-config.groovy

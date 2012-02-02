@@ -1,11 +1,11 @@
 package edu.umn.ncs
 import java.awt.GraphicsConfiguration.DefaultBufferCapabilities;
-import org.codehaus.groovy.grails.plugins.springsecurity.Secured
+import grails.plugins.springsecurity.Secured
 
 @Secured(['ROLE_NCS_IT', 'ROLE_NCS_DLR_MANAGE', 'ROLE_NCS_DLR'])
 class AssignedEffortController {
 
-    def authenticateService
+    def springSecurityService
     def laborService
 	def debug = true
 	//def debug = true
@@ -241,7 +241,7 @@ class AssignedEffortController {
 					
 					if (debug) { log.debug "=> if ( sumOfReportedPercentEffort.toBigDecimal() == assignedPercentEffort.toBigDecimal() = TRUE)" }
 			
-					def principal = authenticateService.principal()
+					def principal = springSecurityService.principal
 					def reportingStaffInstance = laborService.getReportingStaff(principal)
 					if (debug) { log.debug "=> reportingStaffInstance: ${reportingStaffInstance}" }
 		

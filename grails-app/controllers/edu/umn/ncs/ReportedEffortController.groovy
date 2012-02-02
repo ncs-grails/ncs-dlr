@@ -1,10 +1,10 @@
 package edu.umn.ncs
-import org.codehaus.groovy.grails.plugins.springsecurity.Secured
+import grails.plugins.springsecurity.Secured
 
 @Secured(['ROLE_NCS_IT', 'ROLE_NCS_DLR_MANAGE', 'ROLE_NCS_DLR'])
 class ReportedEffortController {
 
-    def authenticateService
+    def springSecurityService
     def laborService
 	def debug = true
 	//def debug = true
@@ -142,7 +142,7 @@ class ReportedEffortController {
         }
 
         // USER who entered effort
-        def principal = authenticateService.principal()                         
+        def principal = springSecurityService.principal                         
         reportedEffortInstance.userCreated = principal.getUsername()
         if (debug) { log.debug "=> ReportedEffortController.addSave.reportedEffortInstance.userCreated: ${reportedEffortInstance.userCreated}" }        
 
@@ -281,7 +281,7 @@ class ReportedEffortController {
             }
 
 			// USER who entered effort
-			def principal = authenticateService.principal()
+			def principal = springSecurityService.principal
 			reportedEffortInstance.userCreated = principal.getUsername()
 			if (debug) { log.debug "=> ReportedEffortController.editSave.reportedEffortInstance.userCreated: ${reportedEffortInstance.userCreated}" }
 

@@ -1,6 +1,6 @@
 package edu.umn.ncs.dlr
 
-import org.codehaus.groovy.grails.plugins.springsecurity.Secured
+import grails.plugins.springsecurity.Secured
 import edu.umn.ncs.ProjectInfo
 import edu.umn.ncs.ReportingPeriod
 import edu.umn.ncs.ReportType

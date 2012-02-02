@@ -9,7 +9,7 @@ class LaborService {
 
     static transactional = true
 
-    def authenticateService
+    def springSecurityService
     def mailService
 	def debug = false
 	
@@ -380,7 +380,7 @@ class LaborService {
 		
 		
         // LOG-IN USER (SENDER)
-        def principal = authenticateService.principal()
+        def principal = springSecurityService.principal
         def username = principal.getUsername()
         def loginReportingStaffInstance = ReportingStaff.findByUsername(username)
         if (debug) { println "laborService.sendEmailNotification.loginReportingStaffInstance = ${loginReportingStaffInstance}" }

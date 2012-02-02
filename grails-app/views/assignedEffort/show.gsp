@@ -1,4 +1,4 @@
-<g:ifAnyGranted role="ROLE_NCS_IT,ROLE_NCS_DLR_MANAGE,ROLE_NCS_DLR">
+<sec:ifAnyGranted roles="ROLE_NCS_IT,ROLE_NCS_DLR_MANAGE,ROLE_NCS_DLR">
 
 	<g:form name="assignedEffort" method="post">
 	    
@@ -56,5 +56,5 @@
 	
 	</g:form>
 	
-</g:ifAnyGranted>
+</sec:ifAnyGranted>
 	

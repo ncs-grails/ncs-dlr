@@ -1,11 +1,11 @@
 package edu.umn.ncs
 import org.joda.time.*
-import org.codehaus.groovy.grails.plugins.springsecurity.Secured
+import grails.plugins.springsecurity.Secured
 
 @Secured(['ROLE_NCS_IT', 'ROLE_NCS_DLR_MANAGE', 'ROLE_NCS_DLR'])
 class MainController {
 
-    def authenticateService
+    def springSecurityService
     def laborService
 	def debug = true
 	
@@ -28,7 +28,7 @@ class MainController {
         }        
         
         // REPORTING STAFF
-        def principal = authenticateService.principal()                         
+        def principal = springSecurityService.principal                         
         if (debug) {  log.debug "=> principal: ${principal}" }
 		            
         def reportingStaffInstance = laborService.getReportingStaff(principal)

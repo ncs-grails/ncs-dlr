@@ -11,7 +11,7 @@
 
 	<body>
 
-		<g:ifAnyGranted role="ROLE_NCS_IT,ROLE_NCS_DLR_MANAGE">
+		<sec:ifAnyGranted roles="ROLE_NCS_IT,ROLE_NCS_DLR_MANAGE">
 		
 			<!-- NAVIGATION -->
 	    	<p class="breadcrumbs">
@@ -78,7 +78,7 @@
 	      
 			</fieldset>
 
-		</g:ifAnyGranted>
+		</sec:ifAnyGranted>
     
 		<!-- FOOTER SPACING -->
 		<div class="pageSpacing"> </div>

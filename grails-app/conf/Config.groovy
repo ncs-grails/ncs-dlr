@@ -1,3 +1,12 @@
+grails.config.locations = [ 
+	"file:/etc/grails/active-directory.groovy",
+	"file:/etc/grails/shibboleth.groovy",
+	"file:/etc/grails/mock-config.groovy",
+	"file:/etc/grails/logging-config.groovy",
+	"file:/etc/grails/mail-config.groovy",
+	"file:/etc/grails/zpfour-config.groovy",
+	"file:/etc/grails/${appName}-config.groovy" ]
+
 //debug or development flag
 console.debugging = false
 
@@ -51,44 +60,6 @@ grails.logging.jul.usebridge = true
 grails.spring.bean.packages = []
 
 grails.views.javascript.library="jquery"
-
-// set per-environment serverURL stem for creating absolute links
-environments {
-    production {
-        grails.serverURL = "https://secure.ncs.umn.edu/dlr"
-    }
-    development {
-        grails.serverURL = "https://localhost:8443/${appName}"
-    }
-    test {
-        grails.serverURL = "https://localhost:8443/${appName}"
-    }
-
-}
-
-// log4j configuration
-log4j = {
-    // Example of changing the log pattern for the default console
-    // appender:
-    //
-    //appenders {
-    //    console name:'stdout', layout:pattern(conversionPattern: '%c{2} %m%n')
-    //}
-
-    error  'org.codehaus.groovy.grails.web.servlet',  //  controllers
-           'org.codehaus.groovy.grails.web.pages', //  GSP
-           'org.codehaus.groovy.grails.web.sitemesh', //  layouts
-           'org.codehaus.groovy.grails.web.mapping.filter', // URL mapping
-           'org.codehaus.groovy.grails.web.mapping', // URL mapping
-           'org.codehaus.groovy.grails.commons', // core / classloading
-           'org.codehaus.groovy.grails.plugins', // plugins
-           'org.codehaus.groovy.grails.orm.hibernate', // hibernate integration
-           'org.springframework',
-           'org.hibernate',
-           'net.sf.ehcache.hibernate'
-
-    warn   'org.mortbay.log'
-}
 
 //log4j.logger.org.springframework.security='off,stdout'
 // Added by the Joda-Time plugin:

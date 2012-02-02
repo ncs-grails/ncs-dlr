@@ -2,7 +2,7 @@
 <%@ page import="edu.umn.ncs.StudyActivity" %>
 <%@ page import="edu.umn.ncs.StudyTask" %>
 
-<g:ifAnyGranted role="ROLE_NCS_IT,ROLE_NCS_DLR_MANAGE,ROLE_NCS_DLR">
+<sec:ifAnyGranted roles="ROLE_NCS_IT,ROLE_NCS_DLR_MANAGE,ROLE_NCS_DLR">
 
 	<!-- include for ASSIGNED, REPORTED & COMMITTED message boxes plus REPORTED EFFORT for current period -->      
 	<div class="include">
@@ -90,6 +90,6 @@
 	
 	</g:form>
 	
-</g:ifAnyGranted>
+</sec:ifAnyGranted>
 	      
    

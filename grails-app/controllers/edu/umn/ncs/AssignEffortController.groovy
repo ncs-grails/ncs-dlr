@@ -3,12 +3,12 @@ import org.joda.time.*
 import java.math.BigDecimal
 
 // security annotation
-import org.codehaus.groovy.grails.plugins.springsecurity.Secured
+import grails.plugins.springsecurity.Secured
 
 @Secured(['ROLE_NCS_IT', 'ROLE_NCS_DLR_MANAGE'])
 class AssignEffortController {
 
-    def authenticateService
+    def springSecurityService
     def laborService
     def mailService
 	def debug = true
@@ -201,7 +201,7 @@ class AssignEffortController {
          * LOG-IN USER 
          ********************************************************************************************************/
 		
-        def principal = authenticateService.principal()
+        def principal = springSecurityService.principal
         def username = principal.getUsername()
         def loggedInReportingStaffInstance = ReportingStaff.findByUsername(username)
         if (debug) { log.debug "=> loggedInReportingStaffInstance: ${loggedInReportingStaffInstance}" }
