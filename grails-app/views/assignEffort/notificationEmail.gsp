@@ -8,7 +8,7 @@
 
 		Dear ${reportingStaffInstance.firstName} ${reportingStaffInstance.lastName}:
 
-		<p>Please submit your EFFORT for work done DECEMBER 2011 for the National 
+		<p>Please submit your EFFORT for work done JANUARY 2012 for the National 
 		Children's Study, using the University of Minnesota - National 
 		Children's Study system. <strong>Because there have been changes in effort for 
 		various staff members, please keep these important issues in mind when 
