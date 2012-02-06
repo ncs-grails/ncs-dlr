@@ -468,8 +468,7 @@ class LaborService {
 					model:[
 						reportingPeriodInstance: reportingPeriodInstance,
 						reportingStaffInstance: reportingStaffInstance
-					]
-				)
+					]	)
 			}
 			if (debug) { println "=> laborService.sendEmailNotification.call mailService.sendMail" }
 			
