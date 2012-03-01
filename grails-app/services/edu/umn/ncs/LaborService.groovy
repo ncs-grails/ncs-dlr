@@ -426,7 +426,7 @@ class LaborService {
 			def reportingDueDateYear = reportingDueDate.toString('yyyy')
 			if (debug) { println "=> laborService.sendEmailNotification.reportingDueDateYear = ${reportingDueDateYear}" }
 
-			reportingDueDateString = reportingDueDateMonthName + ' ' + reportingDueDateDay + ' ' + reportingDueDateYear
+			reportingDueDateString = reportingDueDateMonthName + ' ' + reportingDueDateDay + ', ' + reportingDueDateYear
 
 		}				
 		if (debug) { println "=> laborService.sendEmailNotification.reportingDueDateString = ${reportingDueDateString}" }
