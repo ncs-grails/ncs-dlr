@@ -8,11 +8,10 @@ import grails.plugins.springsecurity.Secured
 @Secured(['ROLE_NCS_IT', 'ROLE_NCS_DLR_MANAGE'])
 class AssignEffortController {
 
-    def springSecurityService
-    def laborService
-    def mailService
+	def springSecurityService
+	def laborService
+	def mailService
 	def debug = true
-	//def debug = true
 		   
     def index = {
         

@@ -7,11 +7,11 @@ import org.codehaus.groovy.grails.commons.*
 
 class LaborService {
 
-    static transactional = true
+	static transactional = true
 
-    def springSecurityService
-    def mailService
-	def debug = false
+	def springSecurityService
+	def mailService
+	def debug = true
 	
     def getReportingStaff(principal) {
 
@@ -66,7 +66,9 @@ class LaborService {
 
     def getCurrentReportingPeriod() {
 
-        // today's date
+
+
+	// today's date
         def today = new LocalDate()
         if (debug) { println "=> laborService.getCurrentReportingPeriod.today = ${today}" }
 
@@ -89,10 +91,10 @@ class LaborService {
         //if current reporting period does not exist in db, insert a new one in there
         if ( !reportingPeriodInstance ) {
 			
-			if (debug) { println "=> laborService.getCurrentReportingPeriod.if(!reportingPeriodInstance) = TRUE" }			
-            reportingPeriodInstance = new ReportingPeriod(periodDate:lastMonthPeriodDateTime)
-            reportingPeriodInstance.save(flush:true)
-            if (debug) { println "=> laborService.getCurrentReportingPeriod.reportingPeriodInstance = ${reportingPeriodInstance}" }
+		if (debug) { println "=> laborService.getCurrentReportingPeriod.if(!reportingPeriodInstance) = TRUE" }			
+		reportingPeriodInstance = new ReportingPeriod(periodDate:lastMonthPeriodDateTime)
+		reportingPeriodInstance.save(flush:true)
+		if (debug) { println "=> laborService.getCurrentReportingPeriod.reportingPeriodInstance = ${reportingPeriodInstance}" }
 			 
         }
 
@@ -100,7 +102,6 @@ class LaborService {
 
     } 
 
-	
 
     def getNextReportingPeriodDateTime(paramReportingPeriodDate) {
 
@@ -372,90 +373,91 @@ class LaborService {
 		
 	} 
 	
-	
-    def sendEmailNotification (periodId, staffId) {
-        
-		if (debug) { println "laborService.sendEmailNotification.periodId = ${periodId}" }
-		if (debug) { println "laborService.sendEmailNotification.staffId = ${staffId}" }
-		
-		
-        // LOG-IN USER (SENDER)
-        def principal = springSecurityService.principal
-        def username = principal.getUsername()
-        def loginReportingStaffInstance = ReportingStaff.findByUsername(username)
-        if (debug) { println "laborService.sendEmailNotification.loginReportingStaffInstance = ${loginReportingStaffInstance}" }
-		
+	def sendEmailNotification (periodId, staffId) {
+
+		if (debug) { println "=>laborService.sendEmailNotification.periodId = ${periodId}" }
+		if (debug) { println "=>laborService.sendEmailNotification.staffId = ${staffId}" }
+
+		// LOG-IN USER (SENDER)
+		def principal = springSecurityService.principal
+		def username = principal.getUsername()
+		def loginReportingStaffInstance = ReportingStaff.findByUsername(username)
+		if (debug) { println "=>laborService.sendEmailNotification.loginReportingStaffInstance = ${loginReportingStaffInstance}" }
+
 		if ( loginReportingStaffInstance ) {
-	        if (debug) { println "=> laborService.sendEmailNotification.loginReportingStaffInstance.username = ${loginReportingStaffInstance.username}" }
-	        if (debug) { println "=> laborService.sendEmailNotification.loginReportingStaffInstance.email = ${loginReportingStaffInstance.email}" }
+			if (debug) { println "=> laborService.sendEmailNotification.loginReportingStaffInstance.username = ${loginReportingStaffInstance.username}" }
+			if (debug) { println "=> laborService.sendEmailNotification.loginReportingStaffInstance.email = ${loginReportingStaffInstance.email}" }
 		}
 
-        // REPORTING STAFF
-        def reportingStaffInstance = ReportingStaff.read(staffId)
-        if (debug) { println "=> laborService.sendEmailNotification.reportingStaffInstance = ${reportingStaffInstance}" }
-		
+		// REPORTING STAFF
+		def reportingStaffInstance = ReportingStaff.read(staffId)
+			if (debug) { println "=> laborService.sendEmailNotification.reportingStaffInstance = ${reportingStaffInstance}" }
+
 		if ( reportingStaffInstance ) {
 			if (debug) { "=> laborService.sendEmailNotification.reportingStaffInstance.email = ${reportingStaffInstance.email}" }
 		}
 
-        //REPORTING PERIOD  
+		//REPORTING PERIOD  
 		def reportingPeriodInstance = ReportingPeriod.read(periodId)
 		if (debug) { println "=> laborService.sendEmailNotification.reportingPeriodInstance.id: ${reportingPeriodInstance.id}" }
 		if (debug) { println "=> laborService.sendEmailNotification.reportingPeriodInstance: ${reportingPeriodInstance}" }
-		
+
 		//REPORTING DUE DATE
+		def reportingPeriodDateString
 		def reportingDueDateString
-		
+
 		if ( reportingPeriodInstance ) {
+
+			def reportingDueDate = new LocalDate(reportingPeriodInstance.periodDate)
+			if (debug) { println "=> laborService.sendEmailNotification.reportingDueDate: ${reportingDueDate}" }
 			
-			def reporingDueDate = new LocalDate(reportingPeriodInstance.periodDate)
-			if (debug) { println "=> laborService.sendEmailNotification.reporingDueDate: ${reporingDueDate}" }
+			reportingPeriodDateString = reportingDueDate.toString('MMMM') + ' ' + reportingDueDate.toString('yyyy')
+			if (debug) { println "=> laborService.sendEmailNotification.reportingPeriodDateString: ${reportingPeriodDateString}" }
 			
-			reporingDueDate = reporingDueDate.plusMonths(1).plusDays(19)
-			if (debug) { println "=> laborService.sendEmailNotification.reporingDueDate: ${reporingDueDate}" }
-			
-			def reportingDueDateMonthName = reporingDueDate.toString('MMMM')
+			reportingDueDate = reportingDueDate.plusMonths(1).plusDays(19)
+			if (debug) { println "=> laborService.sendEmailNotification.reportingDueDate: ${reportingDueDate}" }
+
+			def reportingDueDateMonthName = reportingDueDate.toString('MMMM')
 			if (debug) { println "=> laborService.sendEmailNotification.reportingDueDateMonthName = ${reportingDueDateMonthName}" }
-	
-			def reportingDueDateDay = reporingDueDate.toString('dd')
+
+			def reportingDueDateDay = reportingDueDate.toString('dd')
 			if (debug) { println "=> laborService.sendEmailNotification.reportingDueDateDay = ${reportingDueDateDay}" }
 
-			def reportingDueDateYear = reporingDueDate.toString('yyyy')
+			def reportingDueDateYear = reportingDueDate.toString('yyyy')
 			if (debug) { println "=> laborService.sendEmailNotification.reportingDueDateYear = ${reportingDueDateYear}" }
-	
+
 			reportingDueDateString = reportingDueDateMonthName + ' ' + reportingDueDateDay + ' ' + reportingDueDateYear
-			
+
 		}				
 		if (debug) { println "=> laborService.sendEmailNotification.reportingDueDateString = ${reportingDueDateString}" }
 
 		// ASSIGNED EFFORT 
 		def assignedEffortInstance = AssignedEffort.findByPeriodAndReportingStaff(reportingPeriodInstance,reportingStaffInstance)
 		if (debug) { println "=> laborService.sendEmailNotification.assignedEffortInstance: ${assignedEffortInstance}" }
-		
+
 		if ( assignedEffortInstance ) {
 			if (debug) { println "=> laborService.sendEmailNotification.assignedEffortInstance.id: ${assignedEffortInstance.id}" }
 		} 
-		
+
 		// send & record NOTIFICATION EMAIL
 		if ( reportingStaffInstance && loginReportingStaffInstance && reportingPeriodInstance) {
 
 			// subject title (initial or reminder)
 			def notificationEmailInstanceList
 			def emailSubjectTitle
-			
+
 			notificationEmailInstanceList = assignedEffortInstance.emails
 			if (debug) { println "=> laborService.sendEmailNotification.notificationEmailInstanceList: ${notificationEmailInstanceList}" }
 
 			// specific subject line for December 2011 effort reporting
-			if (periodId == 60) {
-				emailSubjectTitle = "IMPORTANT: READ REVISED INSTRUCTIONS ABOUT NCS DIRECT LABOR REPORT FOR DEC 2011 (DUE JANUARY 20)" 	
+			emailSubjectTitle = "IMPORTANT: READ REVISED INSTRUCTIONS ABOUT NCS DIRECT LABOR REPORT FOR ${reportingPeriodDateString} (due ${reportingDueDateString})" 	
+			/*
+			if ( notificationEmailInstanceList ) {
+				emailSubjectTitle = "Reminder - NCS Direct Labor Report due ${reportingDueDateString}"
 			} else {
-				if ( notificationEmailInstanceList ) {
-					emailSubjectTitle = "Reminder - NCS Direct Labor Report due ${reportingDueDateString}"
-				} else {
-					emailSubjectTitle = "Notification - NCS Direct Labor Report due ${reportingDueDateString}"
-				}	
-			}
+				emailSubjectTitle = "Notification - NCS Direct Labor Report due ${reportingDueDateString}"
+			}	
+			*/
 			if (debug) { println "=> laborService.sendEmailNotification.emailSubjectTitle: ${emailSubjectTitle}" }
 
 			// send email						
@@ -468,35 +470,32 @@ class LaborService {
 					model:[
 						reportingPeriodInstance: reportingPeriodInstance,
 						reportingStaffInstance: reportingStaffInstance
-					]	)
+					]	
+				)
 			}
 			if (debug) { println "=> laborService.sendEmailNotification.call mailService.sendMail" }
-			
+
 			// record NOTIFICATION EMAIL into db
-			def notificationEmailInstance = new NotificationEmail(
-				assignedEffort:assignedEffortInstance,
-				userSent:loginReportingStaffInstance.username
-			)
+			def notificationEmailInstance = new NotificationEmail(assignedEffort:assignedEffortInstance, userSent:loginReportingStaffInstance.username)
 			if ( notificationEmailInstance.save(flush:true) ) {
 				if (debug) {
-					println "=> laborService.sendEmailNotification.notificationEmailInstance.save SUCCESSFULLY"
+
 					println "=> laborService.sendEmailNotification.newly created notificationEmailInstance.id:${notificationEmailInstance.id} "
 					println "=> laborService.sendEmailNotification.newly created notificationEmailInstance.assignedEffort:${notificationEmailInstance.assignedEffort} "
 					println "=> laborService.sendEmailNotification.newly created notificationEmailInstance.dateSent:${notificationEmailInstance.dateSent} "
 					println "=> laborService.sendEmailNotification.newly created notificationEmailInstance.userSent:${notificationEmailInstance.userSent} "
+				} else {
+					if (debug) { println "=> notificationEmailInstance.save FAILED" }
+					notificationEmailInstance.errors.each{
+						if (debug) { println it }
+					}
 				}
-			} else {
-				if (debug) { println "=> notificationEmailInstance.save FAILED" }
-				notificationEmailInstance.errors.each{
-					if (debug) { println it }
-				}
-			}
-			
+			}	
 			return 'sent email!'
-			
+
 		} //if ( reportingStaffInstance && loginReportingStaffInstance && reportingPeriodInstance)        
-		
-    } 
+
+	} 
 
 	
 	def sendReportEmail (AssignedEffort assignedEffortInstance) {

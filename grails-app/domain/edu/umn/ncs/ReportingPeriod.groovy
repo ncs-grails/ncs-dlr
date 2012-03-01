@@ -23,7 +23,7 @@ class ReportingPeriod {
 	static hasMany = [assignedEfforts: AssignedEffort]
 	
 	/** Read-only calculated fields  */
-	static transients = ['year', 'month', 'previousPeriod', 'nextPeriod']
+	static transients = ['year', 'month', 'previousPeriod', 'nextPeriod', 'effortDate']
 
 	/** Returns the reporting period's year  */
 	Integer getYear() {
@@ -59,7 +59,7 @@ class ReportingPeriod {
 
 	}
 
-	/** Sets default string for this domain to the period's month and year */	
+	/* Sets default string for this domain to the period's month and year */	
 	String toString() { "${month}/${year}" }
     
 	/** Non-default constraints for this class 
