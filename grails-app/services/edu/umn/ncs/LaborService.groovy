@@ -531,7 +531,7 @@ class LaborService {
 		
 		// send email
 		mailService.sendMail {
-			to "sqv@cccs.umn.edu", "gdw@cccs.umn.edu", "jaf@cccs.umn.edu", "will1945@umn.edu"
+			to "sqv@cccs.umn.edu", "gdw@cccs.umn.edu", "jaf@cccs.umn.edu", "will1945@umn.edu, aarellan@cccs.umn.edu"
 			from fromEmailList
 			subject emailSubjectTitle
 			body(
