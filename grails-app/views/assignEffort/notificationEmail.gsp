@@ -12,7 +12,7 @@
 			Children's Study system. <strong>Because there have been changes in effort for various staff members, please keep these important issues in mind when 
 			completing your DLR</strong>.
 			<ul>
-				<li>Your total effort or allocation of effort among projects for the National Children's Study may have changed starting in December.</li>
+				<li>Your total effort or allocation of effort among projects for the National Children's Study may have changed starting in <g:formatDate date="${reportingPeriodInstance.periodDate}" format="MMMM" />.</li>
 				<li>Some staff who did not previously report effort on one of the formative research projects (e.g., Executive Function, Nutrition, etc) 
 					may now need to report effort for formative research, in addition to any effort on the hi-lo project.
 				</li>

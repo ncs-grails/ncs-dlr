@@ -40,7 +40,7 @@ class LaborService {
             reportingStaff.userCreated = uname
 			if (debug) { println "=> laborService.getReportingStaff.reportingStaff.userCreated: ${reportingStaff.userCreated}" }
 			        
-            def nameParts = reportingStaff.fullName.tokenize()
+			def nameParts = reportingStaff.fullName.tokenize()
             if ( nameParts.size() == 2 ) {
                 reportingStaff.firstName = nameParts[0]
                 reportingStaff.lastName = nameParts[1]
@@ -65,8 +65,6 @@ class LaborService {
 	
 
     def getCurrentReportingPeriod() {
-
-
 
 	// today's date
         def today = new LocalDate()

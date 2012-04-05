@@ -23,7 +23,22 @@ class AssignEffortController {
         redirect(action:'show')        
 
     }
-    
+ /*  
+	// sqv added this code to test something
+	def notificationEmail = {
+		
+			log.debug "ASSIGN EFFORT CONTROLLER > NOTIFICDATION EMAIL ------------------------------"
+			log.debug "=> params: ${params}"	
+
+			def reportingPeriodInstance	= laborService.getCurrentReportingPeriod()		
+			
+			def principal = springSecurityService.principal
+			def reportingStaffInstance = laborService.getReportingStaff(principal)
+
+			redirect(view:"notificationEmail", model:[reportingPeriodInstance: reportingPeriodInstance, reportingStaffInstance: reportingStaffInstance])
+
+	}
+*/
     def show = {
         
         if (debug) {
