@@ -16,10 +16,7 @@ grails.project.dependency.resolution = {
 
         // uncomment the below to enable remote dependency resolution
         // from public Maven repositories
-        //mavenLocal()
-        //mavenCentral()
         mavenRepo "http://artifact.ncs.umn.edu/plugins-release"
-        //mavenRepo "http://artifact.ncs.umn.edu/plugins-snapshot"
     }
     dependencies {
         // specify dependencies here under either 'build', 'compile', 'runtime', 'test' or 'provided' scopes eg.

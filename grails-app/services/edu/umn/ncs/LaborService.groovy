@@ -1,6 +1,4 @@
 package edu.umn.ncs
-import java.math.BigDecimal;
-import java.util.Date;
 import org.joda.time.*
 import org.codehaus.groovy.grails.commons.*
 
