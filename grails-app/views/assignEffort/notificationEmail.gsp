@@ -12,8 +12,7 @@
 			for the National Children's Study, using the University of Minnesota - National Children's Study system. 
 			<strong>
 				Because there have been changes in effort for various staff members with our new contract that started 9/28/12, 
-				please keep these important issues in mind when completing your DLR
-			</strong>.
+				please keep these important issues in mind when completing your DLR</strong>.
 			<ul>
 				<li>
 					Your total effort or allocation of effort among projects for the National Children's Study may have changed starting 
