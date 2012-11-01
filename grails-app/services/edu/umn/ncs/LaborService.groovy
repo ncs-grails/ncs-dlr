@@ -13,13 +13,19 @@ class LaborService {
 	
     def getReportingStaff(principal) {
 
+		log.debug "=> getReportingStaff(principal)" 	
+
 		debug = ConfigurationHolder.config.console.debugging
-	
+		log.debug "=> debug: ${debug}"	
+
 		def uname = principal.getUsername()          
-        if (debug) { println "=> laborService.getReportingStaff.uname: ${uname}" }
+		//def uname = 'sqv'          
+		log.debug "=> uname ${uname}"	
+        //if (debug) { println "=> laborService.getReportingStaff.uname: ${uname}" }
 
         def reportingStaff = ReportingStaff.findByUsername(uname)
-        if (debug) { println "=> laborService.getReportingStaff.reportingStaff: ${reportingStaff}" }
+		log.debug "=> reportingStaff ${reportingStaff}"	
+        //if (debug) { println "=> laborService.getReportingStaff.reportingStaff: ${reportingStaff}" }
 	
         if ( !reportingStaff ) {
 

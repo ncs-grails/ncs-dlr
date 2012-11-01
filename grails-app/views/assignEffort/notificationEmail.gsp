@@ -1,30 +1,37 @@
 <%@ page contentType="text/html"%><html>
 
 	<head>
-		<title>NCS Direct Labor Reporting Notification Email</title>
+		<title>**REVISED/NEW** INSTRUCTIONS FOR NCS DIRECT LABOR REPORTING FOR NEW/JOFOC CONTRACT EFFECTIVE 9/28/12</title>
 	</head>
 
 	<body>
 
 		Dear ${reportingStaffInstance.firstName} ${reportingStaffInstance.lastName}:
 
-		<p>Please submit your EFFORT for work done <g:formatDate date="${reportingPeriodInstance.periodDate}" format="MMMM yyyy" /> for the National Children's Study, using the University of Minnesota - National 
-			Children's Study system. <strong>Because there have been changes in effort for various staff members, please keep these important issues in mind when 
-			completing your DLR</strong>.
+		<p>Please submit your EFFORT for work done in <g:formatDate date="${reportingPeriodInstance.periodDate}" format="MMMM yyyy" /> 
+			for the National Children's Study, using the University of Minnesota - National Children's Study system. 
+			<strong>
+				Because there have been changes in effort for various staff members with our new contract that started 9/28/12, 
+				please keep these important issues in mind when completing your DLR
+			</strong>.
 			<ul>
-				<li>Your total effort or allocation of effort among projects for the National Children's Study may have changed starting in <g:formatDate date="${reportingPeriodInstance.periodDate}" format="MMMM" />.</li>
-				<li>Some staff who did not previously report effort on one of the formative research projects (e.g., Executive Function, Nutrition, etc) 
-					may now need to report effort for formative research, in addition to any effort on the hi-lo project.
+				<li>
+					Your total effort or allocation of effort among projects for the National Children's Study may have changed starting 
+					in <g:formatDate date="${reportingPeriodInstance.periodDate}" format="MMMM" />.
 				</li>
-				<li>If you have effort on the hi-lo project, select the "High-Low Recruitment Vanguard" activity and <strong>use as few "tasks" as feasible 
-					to describe your effort</strong> (i.e., when selecting from the drop down menu, try not to choose more than 3 tasks per activity).
+				<li>
+					Staff who previously reported effort on one of the formative research projects (e.g., Executive Function, Nutrition, etc) 
+					will NO LONGER REPORT EFFORT ON FORMATIVE RESEARCH PROJECTS
 				</li>
-				<li>If you have effort on one or more of the formative projects, select the appropriate "Activity" specific to that project (e.g.,
-					"Executive Function"," "Dietary Assessment", etc.) and <strong>use as few "tasks" as feasible</strong> to describe your effort.
+				<li>
+					<strong>All effort should be under the "NCS Follow-on Contract" activity, using as few "tasks" as feasible to describe your effort</strong>
+					(no more than 3)
 				</li>
-				<li>Your committed effort should include the total of <u>all NCS effort</u> (i.e., all NCS projects you are paid on).</li>
-				<li><strong>Please contact your NCS supervisor if you have questions regarding your effort on any of the given project</strong>.</li>
-			</ul>
+				<li>
+					Please contact your NCS supervisor if you have questions regarding your effort.
+				</li>
+			<ul/>
+			
 		</p>
 
 		To access this system:
