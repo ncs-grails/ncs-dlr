@@ -10,18 +10,7 @@
 
 		<p>Please submit your EFFORT for work done in <g:formatDate date="${reportingPeriodInstance.periodDate}" format="MMMM yyyy" /> 
 			for the National Children's Study, using the University of Minnesota - National Children's Study system. 
-			<strong>
-				Because there have been changes in effort for various staff members with our new contract that started 9/28/12, 
-				please keep these important issues in mind when completing your DLR</strong>.
 			<ul>
-				<li>
-					Your total effort or allocation of effort among projects for the National Children's Study may have changed starting 
-					in <g:formatDate date="${reportingPeriodInstance.periodDate}" format="MMMM" />.
-				</li>
-				<li>
-					Staff who previously reported effort on one of the formative research projects (e.g., Executive Function, Nutrition, etc) 
-					will NO LONGER REPORT EFFORT ON FORMATIVE RESEARCH PROJECTS
-				</li>
 				<li>
 					<strong>All effort should be under the "NCS Follow-on Contract" activity, using as few "tasks" as feasible to describe your effort</strong>
 					(no more than 3)

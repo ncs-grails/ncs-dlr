@@ -451,16 +451,14 @@ class LaborService {
 			notificationEmailInstanceList = assignedEffortInstance.emails
 			if (debug) { println "=> laborService.sendEmailNotification.notificationEmailInstanceList: ${notificationEmailInstanceList}" }
 
+			//emailSubjectTitle = "**REVISED/NEW** INSTRUCTIONS FOR NCS DIRECT LABOR REPORTING FOR NEW/JOFOC CONTRACT EFFECTIVE 9/28/12"
 			// specific subject line for December 2011 effort reporting
-			emailSubjectTitle = "**REVISED/NEW** INSTRUCTIONS FOR NCS DIRECT LABOR REPORTING FOR NEW/JOFOC CONTRACT EFFECTIVE 9/28/12"
 			//IMPORTANT: READ REVISED INSTRUCTIONS ABOUT NCS DIRECT LABOR REPORT FOR ${reportingPeriodDateString} (due ${reportingDueDateString})" 	
-			/*
 			if ( notificationEmailInstanceList ) {
 				emailSubjectTitle = "Reminder - NCS Direct Labor Report due ${reportingDueDateString}"
 			} else {
 				emailSubjectTitle = "Notification - NCS Direct Labor Report due ${reportingDueDateString}"
 			}	
-			*/
 			if (debug) { println "=> laborService.sendEmailNotification.emailSubjectTitle: ${emailSubjectTitle}" }
 
 			// send email						
