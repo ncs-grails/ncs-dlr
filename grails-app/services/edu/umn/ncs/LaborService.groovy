@@ -10,22 +10,20 @@ class LaborService {
 	def springSecurityService
 	def mailService
 	def debug = true
-	
     def getReportingStaff(principal) {
 
 		log.debug "=> getReportingStaff(principal)" 	
 
-		debug = ConfigurationHolder.config.console.debugging
-		log.debug "=> debug: ${debug}"	
+		//debug = ConfigurationHolder.config.console.debugging
 
 		def uname = principal.getUsername()          
 		//def uname = 'sqv'          
 		log.debug "=> uname ${uname}"	
-        //if (debug) { println "=> laborService.getReportingStaff.uname: ${uname}" }
+        if (debug) { println "=> laborService.getReportingStaff.uname: ${uname}" }
 
         def reportingStaff = ReportingStaff.findByUsername(uname)
 		log.debug "=> reportingStaff ${reportingStaff}"	
-        //if (debug) { println "=> laborService.getReportingStaff.reportingStaff: ${reportingStaff}" }
+        if (debug) { println "=> laborService.getReportingStaff.reportingStaff: ${reportingStaff}" }
 	
         if ( !reportingStaff ) {
 
@@ -282,12 +280,13 @@ class LaborService {
 					re.activity a INNER JOIN
 					re.task t INNER JOIN
 					t.taskOde to   
-				WHERE (ae.period.id = ? AND a.id = 54)
+				WHERE (ae.period.id = ?)
 				GROUP BY s.lastName, s.firstName, s.middleInit, lc.name, to.name  
 				ORDER BY s.lastName, s.firstName, s.middleInit, sum(re.percentEffort) desc, to.name"""
+				if (debug) { println "=> laborService.getReportingPeriodData.hql: $hql" }
 				
 				resultSet = AssignedEffort.executeQuery(hql, [reportingPeriodInstance.id] );
-				//if (debug) { println "=> laborService.getReportingPeriodData.resultSet: ${resultSet}" }
+				if (debug) { println "=> laborService.getReportingPeriodData.resultSet: ${resultSet}" }
 
 				resultSet.each{ rowOfData ->
 					
