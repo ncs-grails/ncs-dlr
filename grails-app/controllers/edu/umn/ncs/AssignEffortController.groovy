@@ -142,7 +142,6 @@ class AssignEffortController {
 
 	def crs = ReportingStaff.createCriteria()        
 	def reportingStaffInstanceList = crs.list{
-		eq("reportsEffort", true) 
 		assignedEfforts{
 			eq('period', reportingPeriodInstance)
 		}
