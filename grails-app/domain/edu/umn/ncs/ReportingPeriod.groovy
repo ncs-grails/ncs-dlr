@@ -23,7 +23,7 @@ class ReportingPeriod {
 	static hasMany = [assignedEfforts: AssignedEffort]
 	
 	/** Read-only calculated fields  */
-	static transients = ['year', 'month', 'previousPeriod', 'nextPeriod', 'effortDate']
+	static transients = ['year', 'month', 'currentPeriodDate', 'previousPeriod', 'nextPeriod', 'effortDate']
 
 	/** Returns the reporting period's year  */
 	Integer getYear() {
@@ -37,7 +37,7 @@ class ReportingPeriod {
 		return localMonth.monthOfYear
 	}
 	
-	/** Returns the previous reporting period  */
+	/** Returns the previous reporting period */
 	ReportingPeriod getPreviousPeriod() {
 
 		ReportingPeriod.createCriteria().get{

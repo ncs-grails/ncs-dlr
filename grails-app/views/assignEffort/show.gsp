@@ -50,7 +50,7 @@
 							<g:select 
 								class="basic"
 								name="reportingPeriodInstance.id"
-								from="${periodSelectiontList}"
+								from="${periodSelectionList}"
 								optionKey="id"
 								optionValue="name"
 								value="${reportingPeriodInstance.id}" 
@@ -208,8 +208,8 @@
 			
 			<!-- TABLE FOOTER -->
 		    <div class="tableFooterNote">Table row highlighting scheme: 
-		    	<span class="backgroundColorGainsboro">is not assigned effort</span>, 
-		    	<span class="backgroundColorOrange">is assigned effort, but no reported effort committed</span>.
+		    	<span class="backgroundColorGainsboro">staff is not assigned effort</span>, 
+		    	<span class="backgroundColorOrange">staff is assigned effort, but reported effort has not been committed yet</span>.
 		    </div>
 
 		<!-- end FORM -->

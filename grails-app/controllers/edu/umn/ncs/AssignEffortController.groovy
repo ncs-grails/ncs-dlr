@@ -16,9 +16,9 @@ class AssignEffortController {
     def index = {
         
         if (debug) {
-			log.debug "ASSIGN EFFORT CONTROLLER > INDEX ------------------------------"
-			log.debug "=> params: ${params}"	
-		}
+		log.debug "ASSIGN EFFORT CONTROLLER > INDEX ------------------------------"
+		log.debug "=> params: ${params}"	
+	}
 		              
         redirect(action:'show')        
 
@@ -96,37 +96,63 @@ class AssignEffortController {
 		}
         
         // format periodDate for control
-        def periodSelectiontList = []
+        def periodSelectionList = []
         periodList.each{
-            periodSelectiontList.add([id:it.id, name: g.formatDate(date:it.periodDate, format:'MMMM yyyy')])
+            periodSelectionList.add([id:it.id, name: g.formatDate(date:it.periodDate, format:'MMMM yyyy')])
         }		
-        if (debug) { log.debug "=> periodSelectiontList: ${periodSelectiontList}" }                        
+        if (debug) { log.debug "=> periodSelectionList: ${periodSelectionList}" }                        
 
 		
         /********************************************************************************************************
          * DATA FOR ASSIGNED EFFORT TABLE
          ********************************************************************************************************/
         
-        // selected REPORTING PERIOD (if no reportingPeriod selected, assume current period)
+        // get selected REPORTING PERIOD (if no reportingPeriod selected, assume current period)
         def reportingPeriodInstance = ReportingPeriod.read(params?.reportingPeriodInstance?.id)
         if (debug) { log.debug "=> ReportingPeriod.read(params?.reportingPeriod?.id).reportingPeriodInstance: ${reportingPeriodInstance}" }        
         if ( ! reportingPeriodInstance ) {
-            reportingPeriodInstance = laborService.getCurrentReportingPeriod()
-            if (debug) { log.debug "=> laborService.getCurrentReportingPeriod().reportingPeriodInstance: ${reportingPeriodInstance}" }
+		reportingPeriodInstance = laborService.getCurrentReportingPeriod()
+		if (debug) { log.debug "=> laborService.getCurrentReportingPeriod().reportingPeriodInstance: ${reportingPeriodInstance}" }
         }
-        if (debug) { log.debug "=> reportingPeriodInstance: ${reportingPeriodInstance}" }        
-                        
-        // staff list
-        def crs = ReportingStaff.createCriteria()        
-        def reportingStaffInstanceList = crs.list{
-            eq("reportsEffort", true) 
-            order("lastName", "asc")
-            order("firstName", "asc")
-            order("middleInit", "asc")
-        }
+        if (debug) { log.debug "=> reportingPeriodInstance: ${reportingPeriodInstance}"	}        
+ 
+        // staff list based on period selected
 
-		// Create the LIST to pass all parameters to gsp page
-		def effortAssignmentList = []
+/* 
+	// get current period
+	def now = new LocalDate()
+	def dom = now.getDayOfMonth()
+	def currentPeriodDate = now.minusDays(dom-1).minusMonths(1)
+        if (debug) { 
+		log.debug "=> now: ${now}"
+		log.debug "=> dom: ${dom}"
+		log.debug "=> currentPeriodDate: ${currentPeriodDate}"
+		log.debug "=> currentPeriodDate objectType:: ${currentPeriodDate.getClass()}"
+	}        
+	
+	// get period selected, from dropdownbox on assignEffort/index page
+	def reportingPeriodDateTime = reportingPeriodInstance.periodDate
+	def reportingPeriodDate = new LocalDate(reportingPeriodDateTime)
+        if (debug) { 
+		log.debug "=> reportingPeriodDateTime: ${reportingPeriodDateTime}"
+		log.debug "=> reportingPeriodDateTime objectType:: ${reportingPeriodDateTime.getClass()}"
+		log.debug "=> reportingPeriodDate: ${reportingPeriodDate}"
+	}        
+*/
+
+	def crs = ReportingStaff.createCriteria()        
+	def reportingStaffInstanceList = crs.list{
+		eq("reportsEffort", true) 
+		assignedEfforts{
+			eq('period', reportingPeriodInstance)
+		}
+		order("lastName", "asc")
+		order("firstName", "asc")
+		order("middleInit", "asc")			
+	}
+
+	// Create the LIST to pass all parameters to gsp page
+	def effortAssignmentList = []
 
         // Add records to Staff List Instance
         reportingStaffInstanceList.eachWithIndex{ rs, i ->
@@ -158,9 +184,9 @@ class AssignEffortController {
             }
             if (debug) { log.debug "=> record.previousPeriodEffort: ${record.previousPeriodEffort}" }
 
-			// this period's ASSIGNED EFFORT
-			def thisPeriodAssignedEffort = AssignedEffort.findByPeriodAndReportingStaff(reportingPeriodInstance, rs)
-			if (debug) { log.debug "=> AssignedEffort.findByPeriodAndReportingStaff(reportingPeriodInstance,rs).thisPeriodAssignedEffort: ${thisPeriodAssignedEffort}" }            
+	// this period's ASSIGNED EFFORT
+	def thisPeriodAssignedEffort = AssignedEffort.findByPeriodAndReportingStaff(reportingPeriodInstance, rs)
+	if (debug) { log.debug "=> AssignedEffort.findByPeriodAndReportingStaff(reportingPeriodInstance,rs).thisPeriodAssignedEffort: ${thisPeriodAssignedEffort}" }            
             record.thisPeriodAssignedEffort = thisPeriodAssignedEffort?.assignedEffort       
             if (debug) { log.debug "=> record.thisPeriodAssignedEffort: ${record.thisPeriodAssignedEffort}" }           
 
@@ -194,7 +220,7 @@ class AssignEffortController {
 		
         [
             reportingPeriodInstance: reportingPeriodInstance, 
-            periodSelectiontList: periodSelectiontList,
+            periodSelectionList: periodSelectionList,
             effortAssignmentList: effortAssignmentList
         ]
 
