@@ -16,8 +16,8 @@ class LaborService {
 
 		//debug = ConfigurationHolder.config.console.debugging
 
-		def uname = principal.getUsername()          
-		//def uname = 'huh?'          
+		//def uname = principal.getUsername()          
+		def uname = 'sqv'          
 		log.debug "=> uname ${uname}"	
         if (debug) { println "=> laborService.getReportingStaff.uname: ${uname}" }
 
@@ -280,7 +280,7 @@ class LaborService {
 					re.activity a INNER JOIN
 					re.task t INNER JOIN
 					t.taskOde to   
-				WHERE (ae.period.id = ?) AND (a.id = 54)
+				WHERE (ae.period.id = ?) AND (a.id IN (54, 61))
 				GROUP BY s.lastName, s.firstName, s.middleInit, lc.name, to.name  
 				ORDER BY s.lastName, s.firstName, s.middleInit, sum(re.percentEffort) desc, to.name"""
 				if (debug) { println "=> laborService.getReportingPeriodData.hql: $hql" }
