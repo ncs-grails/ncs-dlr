@@ -16,8 +16,8 @@ class LaborService {
 
 		//debug = ConfigurationHolder.config.console.debugging
 
-		//def uname = principal.getUsername()          
-		def uname = 'sqv'          
+		def uname = principal.getUsername()          
+		//def uname = 'sqv'          
 		log.debug "=> uname ${uname}"	
         if (debug) { println "=> laborService.getReportingStaff.uname: ${uname}" }
 
@@ -232,12 +232,13 @@ class LaborService {
 					te.name as taskEtdlr, 							
 					sum(re.percentEffort) as percentEffort
 				FROM AssignedEffort ae inner join
-					ae.reportingStaff s inner join
-					ae.laborCategory lc inner join
-					ae.reportedEffort re inner join
-					re.task t left outer join
+					ae.reportingStaff s INNER JOIN
+					ae.laborCategory lc INNER JOIN
+					ae.reportedEffort re INNER JOIN
+					re.activity a INNER JOIN
+					re.task t INNER JOIN
 					t.taskEtdlr te 		
-				WHERE (ae.period.id = ?) AND (re.activity_id = 54)
+				WHERE (ae.period.id = ?) AND (a.id IN (54, 61))
 				GROUP BY s.lastName, s.firstName, s.middleInit, lc.name, te.name 
 				ORDER BY s.lastName, s.firstName, s.middleInit, sum(re.percentEffort) desc, te.name"""
 				
