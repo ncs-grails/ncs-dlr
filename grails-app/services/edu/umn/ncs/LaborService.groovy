@@ -16,8 +16,8 @@ class LaborService {
 
 		//debug = ConfigurationHolder.config.console.debugging
 
-		def uname = principal.getUsername()          
-		//def uname = 'sqv'          
+		//def uname = principal.getUsername()          
+		def uname = 'sqv'          
 		log.debug "=> uname ${uname}"	
         if (debug) { println "=> laborService.getReportingStaff.uname: ${uname}" }
 
@@ -237,7 +237,7 @@ class LaborService {
 					ae.reportedEffort re inner join
 					re.task t left outer join
 					t.taskEtdlr te 		
-				WHERE (ae.period.id = ?)
+				WHERE (ae.period.id = ?) AND (re.activity_id = 54)
 				GROUP BY s.lastName, s.firstName, s.middleInit, lc.name, te.name 
 				ORDER BY s.lastName, s.firstName, s.middleInit, sum(re.percentEffort) desc, te.name"""
 				
@@ -521,7 +521,7 @@ class LaborService {
 		if (debug) { println "=> laborService.generateReportEmail.emailSubjectTitle = ${emailSubjectTitle}" }		
 		
 		// email TO list
-		//def toEmailList = "sqv@cccs.umn.edu, gdw@cccs.umn.edu, jaf@cccs.umn.edu, will1945@umn.edu, bsteward@umn.edu"
+		def toEmailList = "sqv@cccs.umn.edu, jaf@cccs.umn.edu, bsteward@umn.edu, dmd@cccs.umn.edu"
 		//def toEmailList = "sqv@cccs.umn.edu, sqv@umn.edu" 
 		//if (debug) { println "=> laborService.generateReportEmail.toEmailList = ${toEmailList}" }
 		
@@ -531,7 +531,7 @@ class LaborService {
 		
 		// send email
 		mailService.sendMail {
-			to "sqv@cccs.umn.edu", "gdw@cccs.umn.edu", "jaf@cccs.umn.edu", "will1945@umn.edu, aarellan@cccs.umn.edu"
+			to toEmailList
 			from fromEmailList
 			subject emailSubjectTitle
 			body(
