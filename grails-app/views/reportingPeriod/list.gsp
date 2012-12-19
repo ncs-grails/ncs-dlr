@@ -59,7 +59,7 @@
 											onFailure="saveFail('referenceInvoiceNumber-${rp.id}');"
 											name="referenceInvoiceNumber-${rp.id}" 
 											id="${rp.id}" 
-											size="8"
+											size="12"
 											paramName="referenceInvoiceNumber" 
 											value="${rp.referenceInvoiceNumber}"/>
 											
