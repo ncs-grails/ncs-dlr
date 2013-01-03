@@ -42,6 +42,7 @@ class AssignEffortController {
     def show = {
         
         if (debug) {
+	        log.debug ""
 	        log.debug "ASSIGN EFFORT CONTROLLER > SHOW -------------------------------"
 	        log.debug "=> params: ${params}"
         }                        
@@ -140,15 +141,33 @@ class AssignEffortController {
 	}        
 */
 
-	def crs = ReportingStaff.createCriteria()        
-	def reportingStaffInstanceList = crs.list{
-		assignedEfforts{
-			eq('period', reportingPeriodInstance)
+	def crs         
+	def reportingStaffInstanceList
+        if ( reportingPeriodInstance ) {
+        	if ( reportingPeriodInstance.periodDate >= currentPeriod.periodDate ) {
+			crs = ReportingStaff.createCriteria()        
+			reportingStaffInstanceList = crs.list{
+				eq("reportsEffort", true)
+				order("lastName", "asc")
+				order("firstName", "asc")
+				order("middleInit", "asc")			
+			}
+		} else {
+			crs = ReportingStaff.createCriteria()        
+			reportingStaffInstanceList = crs.list{
+				assignedEfforts{
+					eq('period', reportingPeriodInstance)
+				}
+				order("lastName", "asc")
+				order("firstName", "asc")
+				order("middleInit", "asc")			
+			}
 		}
-		order("lastName", "asc")
-		order("firstName", "asc")
-		order("middleInit", "asc")			
 	}
+	if (debug) { 
+		log.debug "=> reportingStaffInstanceList: ${reportingStaffInstanceList}"
+	}        
+
 
 	// Create the LIST to pass all parameters to gsp page
 	def effortAssignmentList = []

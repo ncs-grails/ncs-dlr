@@ -16,8 +16,8 @@ class LaborService {
 
 		//debug = ConfigurationHolder.config.console.debugging
 
-		def uname = principal.getUsername()          
-		//def uname = 'sqv'          
+		//def uname = principal.getUsername()          
+		def uname = 'sqv'          
 		log.debug "=> uname ${uname}"	
         if (debug) { println "=> laborService.getReportingStaff.uname: ${uname}" }
 
