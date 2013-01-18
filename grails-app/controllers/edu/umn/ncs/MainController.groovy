@@ -10,6 +10,7 @@ class MainController {
 	
     def index = {
         
+		log.debug ""
 		log.debug "MAIN CONTROLLER > INDEX ---------------------------------------"        
 		log.debug "=> params: ${params}"
         
@@ -18,19 +19,16 @@ class MainController {
     
     def show = {
 		
+		log.debug ""
 		log.debug "MAIN CONTROLLER > SHOW ----------------------------------------"        
 		log.debug "=> params: ${params}"
-		//println "=> println MAIN CONTROLLER > SHOW ----------------------------------------"
-		//println "=> println params: ${params}"
         
         // REPORTING STAFF
         def principal = springSecurityService.principal                         
-		//println "=> principal: ${principal}"
         log.debug "=> principal: ${principal}"
 		            
         def reportingStaffInstance = laborService.getReportingStaff(principal)
-		log.debug "=> reportingStaffInstance: ${reportingStaffInstance}"
-        log.debug "=> println reportingStaffInstance: ${reportingStaffInstance}"
+	log.debug "=> reportingStaffInstance: ${reportingStaffInstance}"
 
         // REPORTING PERIOD
         def reportingPeriodInstance = laborService.getCurrentReportingPeriod()
@@ -45,6 +43,6 @@ class MainController {
             reportingPeriodInstance: reportingPeriodInstance,
             assignedEffortInstance: assignedEffortInstance ]
 
-    } //def show            
+    } 
 	
 } 

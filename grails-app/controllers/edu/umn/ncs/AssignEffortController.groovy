@@ -16,6 +16,7 @@ class AssignEffortController {
     def index = {
         
         if (debug) {
+		log.debug ""
 		log.debug "ASSIGN EFFORT CONTROLLER > INDEX ------------------------------"
 		log.debug "=> params: ${params}"	
 	}
@@ -247,6 +248,7 @@ class AssignEffortController {
     def update = {
 		
 		if (debug) {
+			log.debug ""
 			log.debug "ASSIGN EFFORT CONTROLLER > UPDATE ---------------------------"
 			//if (debug) {log.debug "=> params: ${params}" }
 		}

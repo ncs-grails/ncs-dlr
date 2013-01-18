@@ -9,94 +9,96 @@ class LaborService {
 
 	def springSecurityService
 	def mailService
+
 	def debug = true
-    def getReportingStaff(principal) {
 
-		log.debug "=> getReportingStaff(principal)" 	
+	def getReportingStaff(principal) {
 
-		//debug = ConfigurationHolder.config.console.debugging
+		log.debug ""
+		log.debug "=> Begin LABOR SERVICE > GET-REPORTING-STAFF" 	
 
 		def uname = principal.getUsername()          
 		//def uname = 'sqv'          
-		log.debug "=> uname ${uname}"	
-        if (debug) { println "=> laborService.getReportingStaff.uname: ${uname}" }
+		log.debug "==> uname (based on principal.getUsername()): ${uname}"	
 
-        def reportingStaff = ReportingStaff.findByUsername(uname)
-		log.debug "=> reportingStaff ${reportingStaff}"	
-        if (debug) { println "=> laborService.getReportingStaff.reportingStaff: ${reportingStaff}" }
+		def reportingStaff = ReportingStaff.findByUsername(uname)
+		log.debug "==> reportingStaff (based on ReportingStaff.findByUsername(uname): ${reportingStaff}"	
 	
-        if ( !reportingStaff ) {
+		if ( !reportingStaff ) {
 
-			if (debug) { "=> if(!reportingStaff) = TRUE" }
+			if (debug) { "==> if (!reportingStaff) = TRUE" }
 			
 			// get info about logged user from cookie (see edu.umn.auth.UmnCookiesUserDetails)
-            reportingStaff = new ReportingStaff(username:uname)
-			if (debug) { println "=> laborService.getReportingStaff.reportingStaff: ${reportingStaff}" }
-			
-            reportingStaff.email = principal.getEmail()
-			if (debug) { println "=> laborService.getReportingStaff.reportingStaff.email: ${reportingStaff.email}" }
-			
-            reportingStaff.fullName = principal.getFullName()
-			if (debug) { println "=> laborService.getReportingStaff.reportingStaff.fullName: ${reportingStaff.fullName}" }
-			
-            reportingStaff.userCreated = uname
-			if (debug) { println "=> laborService.getReportingStaff.reportingStaff.userCreated: ${reportingStaff.userCreated}" }
-			        
+			reportingStaff = new ReportingStaff(username:uname)
+			reportingStaff.email = principal.getEmail()
+			reportingStaff.fullName = principal.getFullName()
+			reportingStaff.userCreated = uname
+			if (debug) { log.debug "==> reportingStaff (based on new ReportingStaff(username:uname)): ${reportingStaff}" }
+			if (debug) { log.debug "==> reportingStaff.email (based on principal.getEmail()): ${reportingStaff.email}" }
+			if (debug) { log.debug "==> reportingStaff.fullName (based on principal.getFullName()): ${reportingStaff.fullName}" }
+			if (debug) { log.debug "==> reportingStaff.userCreated (based on uname): ${reportingStaff.userCreated}" }
+				
 			def nameParts = reportingStaff.fullName.tokenize()
-            if ( nameParts.size() == 2 ) {
-                reportingStaff.firstName = nameParts[0]
-                reportingStaff.lastName = nameParts[1]
-            }
-            if ( nameParts.size() == 3 ) {
-                reportingStaff.firstName = nameParts[0]
-                reportingStaff.middleInit = nameParts[1]
-                reportingStaff.lastName = nameParts[2]
-            }
-            if (debug) { println "=> laborService.getReportingStaff.nameParts = ${nameParts.size()}" }
-            if (debug) { println "=> laborService.getReportingStaff.nameParts[0] = ${nameParts[0]}" }
-            if (debug) { println "=> laborService.getReportingStaff.nameParts[1] = ${nameParts[1]}" }
-            if (debug) { println "=> laborService.getReportingStaff.nameParts[2] = ${nameParts[2]}" }
+			if ( nameParts.size() == 2 ) {
+				reportingStaff.firstName = nameParts[0]
+				reportingStaff.lastName = nameParts[1]
+			}
+			if ( nameParts.size() == 3 ) {
+				reportingStaff.firstName = nameParts[0]
+				reportingStaff.middleInit = nameParts[1]
+				reportingStaff.lastName = nameParts[2]
+			}
+			if (debug) { log.debug "==> nameParts (based on reportingStaff.fullName.tokenize())= ${nameParts.size()}" }
+			if (debug) { log.debug "==> nameParts[0] = ${nameParts[0]}" }
+			if (debug) { log.debug "==> nameParts[1] = ${nameParts[1]}" }
+			if (debug) { log.debug "==> nameParts[2] = ${nameParts[2]}" }
 
-            reportingStaff.save(flush:true)
+			reportingStaff.save(flush:true)
 
-        } //if ( !reportingStaff )
+		} 
 
-        return reportingStaff
+		log.debug "=> End LABOR SERVICE > GET-REPORTING-STAFF"
+		log.debug ""
+		return reportingStaff
 
-    } 
+	} 
 	
 
     def getCurrentReportingPeriod() {
 
+	log.debug ""
+	log.debug "=> Begin LABOR SERVICE > GET-CURRENT-REPORTING-PERIOD" 	
+
 	// today's date
         def today = new LocalDate()
-        if (debug) { println "=> laborService.getCurrentReportingPeriod.today = ${today}" }
+        if (debug) { log.debug "==> today = ${today}" }
 
         def midnight = new LocalTime(0, 0)
-        if (debug) { println "=> laborService.getCurrentReportingPeriod.midnight = ${midnight}" }
+        if (debug) { log.debug "==> midnight = ${midnight}" }
 
         // REPORTING PERIOD 
         def lastMonth = today.minusMonths(1)
-        if (debug) { println "=> laborService.getCurrentReportingPeriod.lastMonth = ${lastMonth}" }
+        if (debug) { log.debug "==> lastMonth = ${lastMonth}" }
 		
         def lastMonthPeriodDate = lastMonth.minusDays(lastMonth.dayOfMonth - 1)
-        if (debug) { println "=> laborService.getCurrentReportingPeriod.lastMonthPeriodDate = ${lastMonthPeriodDate}" }
+        if (debug) { log.debug "==> lastMonthPeriodDate = ${lastMonthPeriodDate}" }
 
         def lastMonthPeriodDateTime = lastMonthPeriodDate.toDateTime(midnight).toCalendar().getTime()
-        if (debug) { println "=> laborService.getCurrentReportingPeriod.lastMonthPeriodDateTime = ${lastMonthPeriodDateTime}" }
+        if (debug) { log.debug "==> lastMonthPeriodDateTime = ${lastMonthPeriodDateTime}" }
 
         def reportingPeriodInstance = ReportingPeriod.findByPeriodDate(lastMonthPeriodDateTime)
-        if (debug) { println "=> laborService.getCurrentReportingPeriod.reportingPeriodInstance = ${reportingPeriodInstance}" }
+        if (debug) { log.debug "==> reportingPeriodInstance = ${reportingPeriodInstance}" }
 
         //if current reporting period does not exist in db, insert a new one in there
         if ( !reportingPeriodInstance ) {
-			
-		if (debug) { println "=> laborService.getCurrentReportingPeriod.if(!reportingPeriodInstance) = TRUE" }			
+		if (debug) { log.debug "==> if(!reportingPeriodInstance) = TRUE" }			
 		reportingPeriodInstance = new ReportingPeriod(periodDate:lastMonthPeriodDateTime)
 		reportingPeriodInstance.save(flush:true)
-		if (debug) { println "=> laborService.getCurrentReportingPeriod.reportingPeriodInstance = ${reportingPeriodInstance}" }
-			 
+		if (debug) { log.debug "==> reportingPeriodInstance = ${reportingPeriodInstance}" }
         }
+
+	log.debug "=> End LABOR SERVICE > GET-CURRENT-REPORTING-PERIOD" 	
+	log.debug ""
 
         return reportingPeriodInstance
 
@@ -105,17 +107,23 @@ class LaborService {
 
     def getNextReportingPeriodDateTime(paramReportingPeriodDate) {
 
+	log.debug ""
+	log.debug "=> Begin LABOR SERVICE > GET-NEXT-REPORTING-PERIOD" 	
+
         def theReportingPeriodDate = new LocalDate(paramReportingPeriodDate)
-        if (debug) { println "=> laborService.getNextReportingPeriodDate.theReportingPeriodDate = ${theReportingPeriodDate}" }
+        if (debug) { log.debug "==> theReportingPeriodDate = ${theReportingPeriodDate}" }
 
         def midnight = new LocalTime(0, 0)
-		if (debug) { println "=> laborService.getNextReportingPeriodDate.midnight = ${midnight}" }
+	if (debug) { log.debug "==> midnight = ${midnight}" }
 		
         def nextReportingPeriodDate = theReportingPeriodDate.plusMonths(1)
-        if (debug) { println "=> laborService.getNextReportingPeriodDate.nextReportingPeriodDate = ${nextReportingPeriodDate}" }
+        if (debug) { log.debug "==> nextReportingPeriodDate = ${nextReportingPeriodDate}" }
 
         def nextReportingPeriodDateTime = nextReportingPeriodDate.toDateTime(midnight).toCalendar().getTime()
-        if (debug) { println "=> laborService.getNextReportingPeriodDate.nextReportingPeriodDateTime = ${nextReportingPeriodDateTime}" }
+        if (debug) { log.debug "==> nextReportingPeriodDateTime = ${nextReportingPeriodDateTime}" }
+
+	log.debug "=> End LABOR SERVICE > GET-NEXT-REPORTING-PERIOD" 	
+	log.debug ""
 
         return nextReportingPeriodDateTime
 
@@ -129,7 +137,7 @@ class LaborService {
             eq("obsolete", false) 
             order("name", "asc")
         }
-        //if (debug) { println "=> laborServicegetActiveStudyActivityList: ${studyActivityList}" }        
+        //if (debug) { log.debug "==> getActiveStudyActivityList: ${studyActivityList}" }        
         
         return studyActivityList
         
@@ -142,7 +150,7 @@ class LaborService {
             eq("obsolete", false) 
             order("name", "asc")
         }
-        //if (debug) { laborServicegetActiveStudyTaskList: ${getActiveStudyTaskList}" }        
+        //if (debug) { getActiveStudyTaskList: ${getActiveStudyTaskList}" }        
                         
         return studyTaskList
         
@@ -150,20 +158,25 @@ class LaborService {
 	
 	def getReportingPeriodDataForCsv(ReportType reportTypeInstance, ReportingPeriod reportingPeriodInstance) {
         
+		log.debug ""
+		log.debug "=> Begin LABOR SERVICE > GET-REPORTING-PERIOD-DATA-FOR-CSV" 	
+		log.debug "==> params ReportType reportTypeInstance: ${reportTypeInstance}" 	
+		log.debug "==> params ReportingPeriod reportingPeriodInstance: ${reportingPeriodInstance}" 	
+
 		def hql = null
 		def resultSet
 		def dataset = null
 		
 		if (reportTypeInstance && reportingPeriodInstance) {
 			
-			if (debug) { println "=> laborService.getReportingPeriodDataForCsv.if(reportTypeInstance && reportingPeriodInstance) = TRUE" }
+			if (debug) { log.debug "==> if (reportTypeInstance && reportingPeriodInstance) = TRUE" }
 			
 			dataset = []			
 			
 			// SFR
 			if (reportTypeInstance.abbreviation == 'SFR') {
 				
-				if (debug) { println "=> laborService.getReportingPeriodData.(reportTypeInstance.abbreviation == 'SFR')" }
+				if (debug) { log.debug "==> if (reportTypeInstance.abbreviation == 'SFR')" }
 												
 				def projectInfoInstance = ProjectInfo.findByPrincipalInvestigatorIsNotNull()				
 				def contractNumber = projectInfoInstance.contractNumber
@@ -174,12 +187,13 @@ class LaborService {
 				DateTime reportingPeriodDate = new DateTime(reportingPeriodInstance.periodDate)
 								
 				if (debug) { 
-					println "=> laborService.getReportingPeriodDataForCsv.contractNumber: ${contractNumber}"
-					println "=> laborService.getReportingPeriodDataForCsv.contractPeriod: ${contractPeriod}"
-					println "=> laborService.getReportingPeriodDataForCsv.datePrepared: ${datePrepared}"					
-					println "=> laborService.getReportingPeriodDataForCsv.rin: ${rin}"										
-					println "=> laborService.getReportingPeriodDataForCsv.principalInvestigator: ${principalInvestigator}"  
-					println "=> laborService.getReportingPeriodDataForCsv.reportingPeriodDate: ${reportingPeriodDate}" 
+					log.debug "==> projectInfoInstance: ${projectInfoInstance}"
+					log.debug "==> contractNumber: ${contractNumber}"
+					log.debug "==> contractPeriod: ${contractPeriod}"
+					log.debug "==> datePrepared: ${datePrepared}"					
+					log.debug "==> rin: ${rin}"										
+					log.debug "==> principalInvestigator: ${principalInvestigator}"  
+					log.debug "==> reportingPeriodDate: ${reportingPeriodDate}" 
 				}
 				
 				hql = """SELECT TRIM(CONCAT(s.lastName , ', ', s.firstName, ' ', s.middleInit)),
@@ -197,11 +211,11 @@ class LaborService {
 				ORDER BY s.lastName, s.firstName, s.middleInit, re.percentEffort desc, a.name, t.name"""
 				
 				resultSet = AssignedEffort.executeQuery(hql, [reportingPeriodInstance.id]);
-				//if (debug) { println "=> laborService.getReportingPeriodDataForCsv.resultSet: ${resultSet}" }
+				//if (debug) { log.debug "==> resultSet: ${resultSet}" }
 	
 				resultSet.each{ rowOfData ->
 					
-					//if (debug) { println "=> laborService.getReportingPeriodDataForCsv.rowOfData: ${rowOfData}" }
+					//if (debug) { log.debug "==> rowOfData: ${rowOfData}" }
 
 					def row = [:]
 					
@@ -216,7 +230,7 @@ class LaborService {
 					row["StudyActivity"] = rowOfData[2]
 					row["Study Task"] = rowOfData[3]
 					row["PercentEffort"] = rowOfData[4]
-					if (debug) { println "=> laborService.getReportingPeriodDataForCsv.row; ${row}" }
+					if (debug) { log.debug "==> row; ${row}" }
 					
 					dataset.add(row)
 					
@@ -225,7 +239,7 @@ class LaborService {
 			// ETDLR
 			} else if (reportTypeInstance.abbreviation == 'ETDLR')  {
 			
-				if (debug) { println "=> laborService.getReportingPeriodData.(reportTypeInstance.abbreviation == 'ETDLR')" }
+				if (debug) { log.debug "==> reportTypeInstance.abbreviation == 'ETDLR'" }
 			
 				hql = """SELECT TRIM(CONCAT(s.lastName , ', ', s.firstName, ' ', s.middleInit)), 
 					lc.name as laborCategory,
@@ -243,11 +257,11 @@ class LaborService {
 				ORDER BY s.lastName, s.firstName, s.middleInit, sum(re.percentEffort) desc, te.name"""
 				
 				resultSet = AssignedEffort.executeQuery(hql, [reportingPeriodInstance.id] );
-				//if (debug) { println "=> laborService.getReportingPeriodData.resultSet: ${resultSet}" }
+				//if (debug) { log.debug "==> resultSet: ${resultSet}" }
 				
 				resultSet.each{ rowOfData ->
 					
-					if (debug) { println "=> laborService.getReportingPeriodData.rowOfData: ${rowOfData}" }
+					if (debug) { log.debug "==> rowOfData: ${rowOfData}" }
 					
 					def row = [:]
 					
@@ -257,7 +271,7 @@ class LaborService {
 					row["blank1"] = ''
 					row["blank2"] = ''
 					row["PercentEffort"] = rowOfData[3]
-					//if (debug) { println "=> laborService.getReportingPeriodData.row; ${row}" }
+					//if (debug) { log.debug "==> row; ${row}" }
 					
 					dataset.add(row)
 					
@@ -266,7 +280,7 @@ class LaborService {
 			// ODE
 			} else if (reportTypeInstance.abbreviation == 'ODE') {
 			
-				if (debug) { println "=> laborService.getReportingPeriodData.(reportTypeInstance.abbreviation == 'ODE')" }
+				if (debug) { log.debug "==> (reportTypeInstance.abbreviation == 'ODE')" }
 
 				hql = """SELECT TRIM(CONCAT(s.lastName , ', ', s.firstName, ' ', s.middleInit)), 
 					lc.name as laborCategory,
@@ -284,14 +298,14 @@ class LaborService {
 				WHERE (ae.period.id = ?) AND (a.id IN (54, 61))
 				GROUP BY s.lastName, s.firstName, s.middleInit, lc.name, to.name  
 				ORDER BY s.lastName, s.firstName, s.middleInit, sum(re.percentEffort) desc, to.name"""
-				if (debug) { println "=> laborService.getReportingPeriodData.hql: $hql" }
+				if (debug) { log.debug "==> hql: $hql" }
 				
 				resultSet = AssignedEffort.executeQuery(hql, [reportingPeriodInstance.id] );
-				if (debug) { println "=> laborService.getReportingPeriodData.resultSet: ${resultSet}" }
+				if (debug) { log.debug "==> resultSet: ${resultSet}" }
 
 				resultSet.each{ rowOfData ->
 					
-					if (debug) { println "=> laborService.getReportingPeriodData.rowOfData: ${rowOfData}" }
+					if (debug) { log.debug "==> rowOfData: ${rowOfData}" }
 					
 					def row = [:]
 					
@@ -302,7 +316,7 @@ class LaborService {
 					row["Hours for Month"] = rowOfData[4]
 					row["Weekly Hours"] = rowOfData[5]
 					
-					//if (debug) { println "=> laborService.getReportingPeriodData.row; ${row}" }
+					//if (debug) { log.debug "==> row; ${row}" }
 					
 					dataset.add(row)
 					
@@ -312,6 +326,9 @@ class LaborService {
 			
 		} //if (reportTypeInstance && reportingPeriodInstance)
         
+		log.debug "=> End LABOR SERVICE > GET-REPORTING-PERIOD-DATA-FOR-CSV" 	
+		log.debug ""
+
 		return dataset
         
 	} //def getReportingPeriodData(ReportType reportTypeInstance, ReportingPeriod reportingPeriodInstance) 
@@ -335,8 +352,8 @@ class LaborService {
 	
 	def getCombineReportedEffortConverted(sumConverted, entryConverted) {
 		
-        if (debug) { println "=> laborService.getCombineReportedEffortConverted.sumConverted: ${sumConverted}" }
-		if (debug) { println "=> laborService.getCombineReportedEffortConverted.entryConverted: ${entryConverted}" }
+        if (debug) { log.debug "==> sumConverted: ${sumConverted}" }
+		if (debug) { log.debug "==> entryConverted: ${entryConverted}" }
 		
 		def combineConverted
 		
@@ -377,32 +394,32 @@ class LaborService {
 	
 	def sendEmailNotification (periodId, staffId) {
 
-		if (debug) { println "=>laborService.sendEmailNotification.periodId = ${periodId}" }
-		if (debug) { println "=>laborService.sendEmailNotification.staffId = ${staffId}" }
+		if (debug) { log.debug "==>periodId = ${periodId}" }
+		if (debug) { log.debug "==>staffId = ${staffId}" }
 
 		// LOG-IN USER (SENDER)
 		def principal = springSecurityService.principal
 		def username = principal.getUsername()
 		def loginReportingStaffInstance = ReportingStaff.findByUsername(username)
-		if (debug) { println "=>laborService.sendEmailNotification.loginReportingStaffInstance = ${loginReportingStaffInstance}" }
+		if (debug) { log.debug "==>loginReportingStaffInstance = ${loginReportingStaffInstance}" }
 
 		if ( loginReportingStaffInstance ) {
-			if (debug) { println "=> laborService.sendEmailNotification.loginReportingStaffInstance.username = ${loginReportingStaffInstance.username}" }
-			if (debug) { println "=> laborService.sendEmailNotification.loginReportingStaffInstance.email = ${loginReportingStaffInstance.email}" }
+			if (debug) { log.debug "==> loginReportingStaffInstance.username = ${loginReportingStaffInstance.username}" }
+			if (debug) { log.debug "==> loginReportingStaffInstance.email = ${loginReportingStaffInstance.email}" }
 		}
 
 		// REPORTING STAFF
 		def reportingStaffInstance = ReportingStaff.read(staffId)
-			if (debug) { println "=> laborService.sendEmailNotification.reportingStaffInstance = ${reportingStaffInstance}" }
+			if (debug) { log.debug "==> reportingStaffInstance = ${reportingStaffInstance}" }
 
 		if ( reportingStaffInstance ) {
-			if (debug) { "=> laborService.sendEmailNotification.reportingStaffInstance.email = ${reportingStaffInstance.email}" }
+			if (debug) { "==> reportingStaffInstance.email = ${reportingStaffInstance.email}" }
 		}
 
 		//REPORTING PERIOD  
 		def reportingPeriodInstance = ReportingPeriod.read(periodId)
-		if (debug) { println "=> laborService.sendEmailNotification.reportingPeriodInstance.id: ${reportingPeriodInstance.id}" }
-		if (debug) { println "=> laborService.sendEmailNotification.reportingPeriodInstance: ${reportingPeriodInstance}" }
+		if (debug) { log.debug "==> reportingPeriodInstance.id: ${reportingPeriodInstance.id}" }
+		if (debug) { log.debug "==> reportingPeriodInstance: ${reportingPeriodInstance}" }
 
 		//REPORTING DUE DATE
 		def reportingPeriodDateString
@@ -411,34 +428,34 @@ class LaborService {
 		if ( reportingPeriodInstance ) {
 
 			def reportingDueDate = new LocalDate(reportingPeriodInstance.periodDate)
-			if (debug) { println "=> laborService.sendEmailNotification.reportingDueDate: ${reportingDueDate}" }
+			if (debug) { log.debug "==> reportingDueDate: ${reportingDueDate}" }
 			
 			reportingPeriodDateString = reportingDueDate.toString('MMMM') + ' ' + reportingDueDate.toString('yyyy')
-			if (debug) { println "=> laborService.sendEmailNotification.reportingPeriodDateString: ${reportingPeriodDateString}" }
+			if (debug) { log.debug "==> reportingPeriodDateString: ${reportingPeriodDateString}" }
 			
 			reportingDueDate = reportingDueDate.plusMonths(1).plusDays(19)
-			if (debug) { println "=> laborService.sendEmailNotification.reportingDueDate: ${reportingDueDate}" }
+			if (debug) { log.debug "==> reportingDueDate: ${reportingDueDate}" }
 
 			def reportingDueDateMonthName = reportingDueDate.toString('MMMM')
-			if (debug) { println "=> laborService.sendEmailNotification.reportingDueDateMonthName = ${reportingDueDateMonthName}" }
+			if (debug) { log.debug "==> reportingDueDateMonthName = ${reportingDueDateMonthName}" }
 
 			def reportingDueDateDay = reportingDueDate.toString('dd')
-			if (debug) { println "=> laborService.sendEmailNotification.reportingDueDateDay = ${reportingDueDateDay}" }
+			if (debug) { log.debug "==> reportingDueDateDay = ${reportingDueDateDay}" }
 
 			def reportingDueDateYear = reportingDueDate.toString('yyyy')
-			if (debug) { println "=> laborService.sendEmailNotification.reportingDueDateYear = ${reportingDueDateYear}" }
+			if (debug) { log.debug "==> reportingDueDateYear = ${reportingDueDateYear}" }
 
 			reportingDueDateString = reportingDueDateMonthName + ' ' + reportingDueDateDay + ', ' + reportingDueDateYear
 
 		}				
-		if (debug) { println "=> laborService.sendEmailNotification.reportingDueDateString = ${reportingDueDateString}" }
+		if (debug) { log.debug "==> reportingDueDateString = ${reportingDueDateString}" }
 
 		// ASSIGNED EFFORT 
 		def assignedEffortInstance = AssignedEffort.findByPeriodAndReportingStaff(reportingPeriodInstance,reportingStaffInstance)
-		if (debug) { println "=> laborService.sendEmailNotification.assignedEffortInstance: ${assignedEffortInstance}" }
+		if (debug) { log.debug "==> assignedEffortInstance: ${assignedEffortInstance}" }
 
 		if ( assignedEffortInstance ) {
-			if (debug) { println "=> laborService.sendEmailNotification.assignedEffortInstance.id: ${assignedEffortInstance.id}" }
+			if (debug) { log.debug "==> assignedEffortInstance.id: ${assignedEffortInstance.id}" }
 		} 
 
 		// send & record NOTIFICATION EMAIL
@@ -449,7 +466,7 @@ class LaborService {
 			def emailSubjectTitle
 
 			notificationEmailInstanceList = assignedEffortInstance.emails
-			if (debug) { println "=> laborService.sendEmailNotification.notificationEmailInstanceList: ${notificationEmailInstanceList}" }
+			if (debug) { log.debug "==> notificationEmailInstanceList: ${notificationEmailInstanceList}" }
 
 			//emailSubjectTitle = "**REVISED/NEW** INSTRUCTIONS FOR NCS DIRECT LABOR REPORTING FOR NEW/JOFOC CONTRACT EFFECTIVE 9/28/12"
 			// specific subject line for December 2011 effort reporting
@@ -459,7 +476,7 @@ class LaborService {
 			} else {
 				emailSubjectTitle = "Notification - NCS Direct Labor Report due ${reportingDueDateString}"
 			}	
-			if (debug) { println "=> laborService.sendEmailNotification.emailSubjectTitle: ${emailSubjectTitle}" }
+			if (debug) { log.debug "==> emailSubjectTitle: ${emailSubjectTitle}" }
 
 			// send email						
 			mailService.sendMail {
@@ -474,21 +491,21 @@ class LaborService {
 					]	
 				)
 			}
-			if (debug) { println "=> laborService.sendEmailNotification.call mailService.sendMail" }
+			if (debug) { log.debug "==> call mailService.sendMail" }
 
 			// record NOTIFICATION EMAIL into db
 			def notificationEmailInstance = new NotificationEmail(assignedEffort:assignedEffortInstance, userSent:loginReportingStaffInstance.username)
 			if ( notificationEmailInstance.save(flush:true) ) {
 				if (debug) {
 
-					println "=> laborService.sendEmailNotification.newly created notificationEmailInstance.id:${notificationEmailInstance.id} "
-					println "=> laborService.sendEmailNotification.newly created notificationEmailInstance.assignedEffort:${notificationEmailInstance.assignedEffort} "
-					println "=> laborService.sendEmailNotification.newly created notificationEmailInstance.dateSent:${notificationEmailInstance.dateSent} "
-					println "=> laborService.sendEmailNotification.newly created notificationEmailInstance.userSent:${notificationEmailInstance.userSent} "
+					log.debug "==> newly created notificationEmailInstance.id:${notificationEmailInstance.id} "
+					log.debug "==> newly created notificationEmailInstance.assignedEffort:${notificationEmailInstance.assignedEffort} "
+					log.debug "==> newly created notificationEmailInstance.dateSent:${notificationEmailInstance.dateSent} "
+					log.debug "==> newly created notificationEmailInstance.userSent:${notificationEmailInstance.userSent} "
 				} else {
-					if (debug) { println "=> notificationEmailInstance.save FAILED" }
+					if (debug) { log.debug "==> notificationEmailInstance.save FAILED" }
 					notificationEmailInstance.errors.each{
-						if (debug) { println it }
+						if (debug) { log.debug it }
 					}
 				}
 			}	
@@ -503,32 +520,32 @@ class LaborService {
 
 		// REPORTING PERIOD
 		if (debug) {
-			println "=> laborService.generateReportEmail.assignedEffortInstance.id: ${assignedEffortInstance.id}"
-			println "=> laborService.generateReportEmail.assignedEffortInstance: ${assignedEffortInstance}"
+			log.debug "==> assignedEffortInstance.id: ${assignedEffortInstance.id}"
+			log.debug "==> assignedEffortInstance: ${assignedEffortInstance}"
 		}
 
 		def reportingPeriodInstance = assignedEffortInstance.period		
 		if (debug) { 
-			println "=> laborService.generateReportEmail.reportingPeriodInstance.id: ${reportingPeriodInstance.id}"
-			println "=> laborService.generateReportEmail.reportingPeriodInstance: ${reportingPeriodInstance}"
+			log.debug "==> reportingPeriodInstance.id: ${reportingPeriodInstance.id}"
+			log.debug "==> reportingPeriodInstance: ${reportingPeriodInstance}"
 		} 
 		
 		Date periodDate = new Date(reportingPeriodInstance.periodDate.time)
 		def reportingPeriodString = periodDate.format('MMMM yyyy') 
-		if (debug) { println "=> laborService.generateReportEmail.reportingPeriodString = ${reportingPeriodString}" }
+		if (debug) { log.debug "==> reportingPeriodString = ${reportingPeriodString}" }
 		
 		// email SUBJECT
 		def emailSubjectTitle = "NCS DLR: generate reports for reporting period ${reportingPeriodString}"
-		if (debug) { println "=> laborService.generateReportEmail.emailSubjectTitle = ${emailSubjectTitle}" }		
+		if (debug) { log.debug "==> emailSubjectTitle = ${emailSubjectTitle}" }		
 		
 		// email TO list
 		def toEmailList = "sqv@cccs.umn.edu, jaf@cccs.umn.edu, bsteward@umn.edu, dmd@cccs.umn.edu"
 		//def toEmailList = "sqv@cccs.umn.edu, sqv@umn.edu" 
-		//if (debug) { println "=> laborService.generateReportEmail.toEmailList = ${toEmailList}" }
+		//if (debug) { log.debug "==> toEmailList = ${toEmailList}" }
 		
 		// email FROM list
 		def fromEmailList = "sqv@cccs.umn.edu"
-		//if (debug) { println "=> laborService.generateReportEmail.fromEmailList = ${fromEmailList}" }
+		//if (debug) { log.debug "==> fromEmailList = ${fromEmailList}" }
 		
 		// send email
 		mailService.sendMail {
@@ -540,11 +557,11 @@ class LaborService {
 				model:[reportingPeriodInstance: reportingPeriodInstance]
 			)
 		} 
-		if (debug) { println "=> called mailService.sendMail" }
+		if (debug) { log.debug "==> called mailService.sendMail" }
 		
 		return 'sent Generate Report email!'
 				
 	} 
 
 				 
-} //class LaborService
+} 

@@ -8,16 +8,16 @@
 		<title>NCS Study Center Technical Direct Labor Form </title>
       
 		<style type="text/css">
-        	@page { size: 11in 8.5in; }
-        	body { font-size: 9pt; }
+			@page { size: 11in 8.5in; }
+			body { font-size: 9pt; }
 			h1 { text-align: center; }
 			h2 { text-align: center; }
 			dt { margin: .75em 0}
 			hr { margin:0 }
-        	table { border-collapse: collapse; border:.05em solid black; font-size: 9pt; }
-        	th, td { border:.05em solid black; padding:0.25em; vertical-align:top; }
+			table { border-collapse: collapse; border:.05em solid black; font-size: 9pt; }
+			th, td { border:.05em solid black; padding:0.25em; vertical-align:top; }
 			nowrap { white-space:nowrap }        	
-        </style>
+		</style>
       
 	</head>
   
@@ -26,7 +26,7 @@
 		<h2>NCS Study Center Technical Direct Labor Form for <g:formatDate date="${reportingPeriodInstance.periodDate}" format="MMMM yyyy" /></h2>
 		<h2>University of Minnesota - Ramsey County</h2>
 
-    	<hr/>
+		<hr/>
   
 			<dl>
 			
@@ -59,12 +59,13 @@
 									<td rowspan="${ae.reportedEffort.size()}">${ae.laborCategory}</td>
 									<g:each status="i" var="re" in="${ae.reportedEffort}">
 										<g:if test="${i > 0}">
-											<!-- If this is the second row, let's shift it in. -->
 											${"</tr><tr>"}
 										</g:if>
 										<td>${fieldValue(bean: re, field: "activity")}</td>
 										<td>${fieldValue(bean: re, field: "task")}</td>
-										<td align="right"><g:formatNumber number="${re.percentEffort}" type="percent" maxFractionDigits="2"/></td>
+										<td align="right">
+											<g:formatNumber number="${re.percentEffort}" type="percent" maxFractionDigits="2"/>
+										</td>
 									</g:each>
 									<g:if test="${ ! ae.reportedEffort}">
 										<td/><td/><td/>
