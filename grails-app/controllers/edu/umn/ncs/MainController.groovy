@@ -31,7 +31,8 @@ class MainController {
 	log.debug "=> reportingStaffInstance: ${reportingStaffInstance}"
 
         // REPORTING PERIOD
-        def reportingPeriodInstance = laborService.getCurrentReportingPeriod()
+        def reportingPeriodInstance = ReportingPeriod.findById(76)
+        //def reportingPeriodInstance = laborService.getCurrentReportingPeriod()
         log.debug "=> reportingPeriodInstance: ${reportingPeriodInstance}"
 
         // ASSIGNED EFFORT instance
