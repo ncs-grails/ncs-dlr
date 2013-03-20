@@ -324,7 +324,9 @@ class AssignedEffortController {
 	        log.debug "=> params: ${params}"
 		}
 
-		def reportingPeriodInstance = laborService.getCurrentReportingPeriod()
+		//def reportingPeriodInstance = laborService.getCurrentReportingPeriod()
+		def reportingPeriodInstance = ReportingPeriod.findById(76)
+		if (debug) { log.debug "=> reportingPeriodInstance: ${reportingPeriodInstance}" }
 		
 		[reportingPeriodInstance: reportingPeriodInstance]		
 		
