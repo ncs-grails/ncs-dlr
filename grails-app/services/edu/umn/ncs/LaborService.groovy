@@ -18,7 +18,7 @@ class LaborService {
 		log.debug "=> Begin LABOR SERVICE > GET-REPORTING-STAFF" 	
 
 		def uname = principal.getUsername()          
-		//def uname = '<username>'          
+		//def uname = 'username'
 		log.debug "==> uname (based on principal.getUsername()): ${uname}"	
 
 		def reportingStaff = ReportingStaff.findByUsername(uname)

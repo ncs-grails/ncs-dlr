@@ -35,7 +35,8 @@ class ApplicationManagementController {
 		log.debug "=> params: ${params}"
 
 		// REPORTING PERIOD
-		def currentReportingPeriodInstance = laborService.getCurrentReportingPeriod()
+		def currentReportingPeriodInstance = ReportingPeriod.findById(76)
+		//def currentReportingPeriodInstance = laborService.getCurrentReportingPeriod()
 		log.debug "=> currentReportingPeriodInstance: ${currentReportingPeriodInstance}"
 			
 		def c = ReportingPeriod.createCriteria()
@@ -50,7 +51,7 @@ class ApplicationManagementController {
 		periodList.each{
 			reportingPeriodInstanceList.add(['reporting_period_id':it.id, name:g.formatDate(date:it.periodDate, format:'MMMM yyyy')] )
 		}
-		//log.debug "=> reportingPeriodInstanceList: ${reportingPeriodInstanceList}" 
+		log.debug "=> reportingPeriodInstanceList: ${reportingPeriodInstanceList}" 
 		
 		// REPORT TYPES
 		def cR = ReportType.createCriteria()
